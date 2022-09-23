@@ -1,0 +1,26 @@
+@import "../_variables";
+
+.form {
+    background-color: $primary-bg-dark-theme;
+    padding: 3rem 6rem;
+    font-size: 2rem;
+    min-width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    & > div {
+        width: 100%;
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        justify-content: center;
+    }
+    & > div:last-child {
+        font-size: 2.3rem;
+        & > a {
+            font-weight: 700;
+        }
+    }
+}

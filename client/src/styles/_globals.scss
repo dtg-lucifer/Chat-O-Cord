@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Harmattan&display=swap');
+@import "./_variables";
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    background-color: $primary-bg-dark-theme;
+    color: $primary-color-dark-theme;
+    font-family: $primary-font;
+}
