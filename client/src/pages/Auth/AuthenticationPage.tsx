@@ -1,6 +1,6 @@
 import React from 'react'
-import RegisterForm from '../components/_general/forms/RegisterForm'
-import styles from "../styles/AuthenticationPage/index.module.scss"
+import RegisterForm from '../../components/_general/forms/RegisterForm'
+import styles from "../../styles/AuthenticationPage/index.module.scss"
 
 const AuthenticationPage = () => {
   return (

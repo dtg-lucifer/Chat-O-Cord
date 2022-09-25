@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "chat-o-cord-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,6 +13,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.36.0",
+    "react-icons": "^4.4.0",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "sass": "^1.55.0",

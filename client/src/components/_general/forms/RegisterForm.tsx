@@ -13,27 +13,30 @@ const RegisterForm = () => {
         <form className={styles.form}>
             <div className={styles.field__wrapper}>
                 <InputContainer>
-                    <InputLabel>Email</InputLabel>
-                    <InputField />
+                    <InputLabel htmlFor="email">Email</InputLabel>
+                    <InputField type="email" name="email" id="email" autoFocus />
                 </InputContainer>
             </div>
             <div className={styles.field__wrapper}>
                 <InputContainer>
-                    <InputLabel>First Name</InputLabel>
-                    <InputField />
+                    <InputLabel htmlFor="fname">First Name</InputLabel>
+                    <InputField type="text" name="fname" id="fname" />
                 </InputContainer>
                 <InputContainer>
-                    <InputLabel>Last Name</InputLabel>
-                    <InputField />
+                    <InputLabel htmlFor="lname">Last Name</InputLabel>
+                    <InputField type="text" name="lname" id="lname" />
                 </InputContainer>
             </div>
             <div className={styles.field__wrapper}>
                 <InputContainer>
-                    <InputLabel>Password</InputLabel>
-                    <InputField type="password" />
+                    <InputLabel htmlFor="passw">Password</InputLabel>
+                    <InputField type="password" name="passw" id="passw" />
                 </InputContainer>
             </div>
-            <RegisterButton to="api/v1/auth/register">Create Account</RegisterButton>
+
+            {/* @onClick it will fetch the details from our own api at => "api/v1/auth/register" */} 
+            <RegisterButton to={"/"}>Create Account</RegisterButton>
+
             <div className={styles.login__link}>
                 Already have an account?<SignInLink to="/signin">Log in.</SignInLink>
             </div>
