@@ -21,15 +21,17 @@ export const SignInLink = styled(Link)`
     color: white;
 `;
 
-export const RegisterButton = styled(Link)`
+export const Button = styled.button`
     color: white;
     background-color: #2b19fd;
     width: 100%;
+    border: none;
     border-radius: 1rem;
-    padding: 1rem 4rem;
-    font-size: 2.5rem;
+    padding: 2rem 4rem;
+    font-size: 2rem;
     text-align: center;
-    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     transition: background-color .15s ease;
     &:hover {
         background-color: #1c0bd0;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { Props } from "../../types/StyledComponentProps/SocialIconsProps";
+import { SocialIconWrapperProps } from "../../types/StyledComponentProps/SocialIconsProps";
 
-export const SocialWrapper = styled.div<Props>`
+export const SocialWrapper = styled.div<SocialIconWrapperProps>`
     display: flex;
     flex-direction: ${(props) => props.fDirection};
     justify-content: space-around;

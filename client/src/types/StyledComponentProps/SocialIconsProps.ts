@@ -1,4 +1,4 @@
-export interface Props {
+export interface SocialIconWrapperProps {
     fDirection: string;
     gap: string;
     color: string;
