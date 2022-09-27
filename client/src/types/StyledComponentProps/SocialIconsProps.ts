@@ -1,6 +1,7 @@
 export interface SocialIconWrapperProps {
-    fDirection: string;
+    fDirection: "column" | "row";
     gap: string;
     color: string;
     size: string;
+
 }

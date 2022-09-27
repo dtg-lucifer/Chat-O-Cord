@@ -1,4 +1,4 @@
-export interface ProRegisterFormInputs {
+export interface RegisterFormInputs {
     email: string
     fname: string
     lname: string
