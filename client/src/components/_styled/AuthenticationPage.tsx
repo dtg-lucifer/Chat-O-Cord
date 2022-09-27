@@ -52,3 +52,7 @@ export const InputContainer = styled.div`
     padding: 1rem 2rem;
     border-radius: 1rem;
 `;
+
+export const WRAPPER = styled.div`
+    
+`;

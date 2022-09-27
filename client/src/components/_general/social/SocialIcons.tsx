@@ -21,3 +21,14 @@ const SocialIcons = () => {
 }
 
 export default SocialIcons
+
+// fdirection="column"    <--------------- props
+
+/* props = {
+  fdirection: "colmun"
+  color:""jjhj
+  gap:"2rem"
+}
+
+
+*/

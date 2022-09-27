@@ -3,7 +3,7 @@ import { SocialIconWrapperProps } from "../../types/StyledComponentProps/SocialI
 
 export const SocialWrapper = styled.div<SocialIconWrapperProps>`
     display: flex;
-    flex-direction: ${(props) => props.fDirection};
+    flex-direction: ${({ fDirection }) => fDirection};
     justify-content: space-around;
     gap: ${(props) => props.gap};
     font-size: ${(props) => props.size};

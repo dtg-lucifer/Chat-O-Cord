@@ -5,10 +5,11 @@ import {
     InputLabel,
     Button,
     SignInLink,
+    WRAPPER,
 } from "../../_styled/AuthenticationPage";
 import styles from "../../../styles/AuthenticationPage/RegisterPage.module.scss";
 import { useForm } from "react-hook-form";
-import { ProRegisterFormInputs } from "../../../types/ComponentProps/RegsiterForm";
+import { RegisterFormInputs } from "../../../types/ComponentProps/RegsiterForm";
 
 const RegisterForm = () => {
     const {
@@ -16,7 +17,7 @@ const RegisterForm = () => {
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm<ProRegisterFormInputs>();
+    } = useForm<RegisterFormInputs>();
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -54,6 +55,9 @@ const RegisterForm = () => {
                 Already have an account?
                 <SignInLink to="/signin">Log in.</SignInLink>
             </div>
+            <WRAPPER>
+                jhdfjhfjfefifi
+            </WRAPPER>
         </form>
     );
 };
