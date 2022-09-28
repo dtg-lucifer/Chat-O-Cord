@@ -5,7 +5,6 @@ import {
     InputLabel,
     Button,
     SignInLink,
-    WRAPPER,
 } from "../../_styled/AuthenticationPage";
 import styles from "../../../styles/AuthenticationPage/RegisterPage.module.scss";
 import { useForm } from "react-hook-form";
@@ -15,36 +14,71 @@ const RegisterForm = () => {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<RegisterFormInputs>();
+
+    /* 
+
+    @it will be needed when we use only typical submit finctions where we have to worry about the events 
+    but in React_Hook_Form it habdles the events for us
 
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     };
 
+    */
+
+    console.log(errors);
+    const onSubmit = (data: any) => console.log(data);
+
     return (
-        <form onSubmit={onSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
             <div className={styles.field__wrapper}>
                 <InputContainer>
-                    <InputLabel htmlFor="email" {...register("email", {required: "Email is required!"})}>Email</InputLabel>
-                    <InputField type="email" name="email" id="email"/>
+                    <InputLabel htmlFor="email">Email</InputLabel>
+                    <InputField
+                        type="email"
+                        id="email"
+                        autoFocus
+                        {...register("email", {
+                            required: "Email is required!",
+                        })}
+                    />
                 </InputContainer>
             </div>
             <div className={styles.field__wrapper}>
                 <InputContainer>
-                    <InputLabel htmlFor="fname" {...register("fname", { required: "First name is required!"})}>First Name</InputLabel>
-                    <InputField type="text" name="fname" id="fname" />
+                    <InputLabel htmlFor="fname">First Name</InputLabel>
+                    <InputField
+                        type="text"
+                        id="fname"
+                        {...register("fname", {
+                            required: "First name is required!",
+                        })}
+                    />
                 </InputContainer>
                 <InputContainer>
-                    <InputLabel htmlFor="lname" {...register("lname", { required: "Last name is required!"})}>Last Name</InputLabel>
-                    <InputField type="text" name="lname" id="lname" />
+                    <InputLabel htmlFor="lname">Last Name</InputLabel>
+                    <InputField
+                        type="text"
+                        id="lname"
+                        {...register("lname", {
+                            required: "Last name is required!",
+                        })}
+                    />
                 </InputContainer>
             </div>
             <div className={styles.field__wrapper}>
                 <InputContainer>
-                    <InputLabel htmlFor="passw" {...register("passw", { required: "Without password huh???"})}>Password</InputLabel>
-                    <InputField type="password" name="passw" id="passw" />
+                    <InputLabel htmlFor="passw">Password</InputLabel>
+                    <InputField
+                        type="password"
+                        id="passw"
+                        {...register("passw", {
+                            required: "Without password huh???",
+                            minLength: 8,
+                        })}
+                    />
                 </InputContainer>
             </div>
 
@@ -53,11 +87,8 @@ const RegisterForm = () => {
 
             <div className={styles.login__link}>
                 Already have an account?
-                <SignInLink to="/signin">Log in.</SignInLink>
+                <SignInLink to="/auth/login">Log in.</SignInLink>
             </div>
-            <WRAPPER>
-                jhdfjhfjfefifi
-            </WRAPPER>
         </form>
     );
 };

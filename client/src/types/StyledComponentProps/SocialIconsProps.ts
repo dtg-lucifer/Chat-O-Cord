@@ -3,5 +3,4 @@ export interface SocialIconWrapperProps {
     gap: string;
     color: string;
     size: string;
-
 }
