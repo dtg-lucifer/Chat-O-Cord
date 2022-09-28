@@ -8,7 +8,7 @@ import {
 } from "../../_styled/AuthenticationPage";
 import styles from "../../../styles/AuthenticationPage/RegisterPage.module.scss";
 import { useForm } from "react-hook-form";
-import { RegisterFormInputs } from "../../../types/ComponentProps/RegsiterForm";
+import { LoginData, RegisterFormInputs } from "../../../types/ComponentProps/Authentication";
 
 const LogInForm = () => {
     const {
@@ -29,7 +29,7 @@ const LogInForm = () => {
     */
 
     console.log(errors);
-    const onSubmit = (data: any) => console.log(data);
+    const onSubmit = (data: LoginData) => console.log(data);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>

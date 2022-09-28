@@ -1,7 +1,8 @@
 import React from "react";
 import { Routes, Outlet, Route } from "react-router-dom";
 import LogInPage from "./pages/Auth/LogInPage";
-import AuthenticationPage from "./pages/Auth/RegisterPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
+import ConversationPage from "./pages/conversation/ConversationPage";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
 import PageNotFound from "./pages/_PageNotFound";
@@ -12,13 +13,15 @@ function App() {
             <Routes>
                 <Route path="/" element={<GetStartedPage />} />
                 <Route path="/home" element={<HomePage />} />
-                <Route path="/auth/register" element={<AuthenticationPage />} />
-                <Route path="/auth/login" element={<LogInPage />} />
+                <Route path="/auth">
+                    <Route path="register"  element={<RegisterPage/>} />
+                    <Route path="login"  element={<LogInPage/>} />
+                </Route>
                 <Route
-                    path="/conversation"
+                    path="/conversations"
                     element={
                         <div>
-                            Conversation
+                            <ConversationPage />
                             <Outlet />
                         </div>
                     }
