@@ -4,7 +4,6 @@ import LogInPage from "./pages/Auth/LogInPage";
 import AuthenticationPage from "./pages/Auth/RegisterPage";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
-import NewPage from "./pages/NewPage";
 import PageNotFound from "./pages/_PageNotFound";
 
 function App() {
@@ -15,7 +14,6 @@ function App() {
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/auth/register" element={<AuthenticationPage />} />
                 <Route path="/auth/login" element={<LogInPage />} />
-                <Route path="/new" element={<NewPage/>}/>
                 <Route
                     path="/conversation"
                     element={
