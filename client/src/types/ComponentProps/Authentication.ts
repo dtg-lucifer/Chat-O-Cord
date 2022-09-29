@@ -1,18 +1,18 @@
 export interface RegisterFormInputs {
-    email: string
-    fname: string
-    lname: string
-    passw: string
+    readonly email: string
+    readonly fname: string
+    readonly lname: string
+    readonly passw: string
 }
 
 export interface LoginData {
-    email: string
-    passw: string
+    readonly email: string
+    readonly passw: string
 }
 
 export interface RegisterData {
-    email: string
-    fname: string
-    lname: string
-    passw: string
+    readonly email: string
+    readonly fname: string
+    readonly lname: string
+    readonly passw: string
 }
