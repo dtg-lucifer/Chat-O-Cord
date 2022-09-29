@@ -1,8 +1,11 @@
 import React from 'react'
+import { SideBarWrapper } from '../../_styled/ConversationPage'
 
 const ConversationSidebar = () => {
   return (
-    <aside>ConversationSidebar</aside>
+    <SideBarWrapper>
+      SideBar
+    </SideBarWrapper>
   )
 }
 
