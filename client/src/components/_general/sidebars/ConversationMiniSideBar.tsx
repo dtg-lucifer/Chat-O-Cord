@@ -4,7 +4,6 @@ import profPic from "../../../assets/my_pic.jpg";
 import { FiMessageSquare } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
-import { useLocation } from "react-router-dom";
 
 const ConversationMiniSideBar = () => {
     return (
