@@ -6,12 +6,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        gap: 5rem;
+        gap: 1rem;
         flex: 1;
         padding: 1rem;
         width: 100%;
         & > svg {
-            font-size: 3rem;
+            font-size: 2.5rem;
             cursor: pointer;
             border-radius: 50%;
             box-sizing: content-box;
@@ -33,7 +33,7 @@
         }
     }
     img {
-        height: 6rem;
+        height: 4.5rem;
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         outline: 2px solid $away-sts-bg-color;
