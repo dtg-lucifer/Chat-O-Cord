@@ -7,6 +7,23 @@
     box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+    width: .5rem;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgb(0 0 0 / .2);
+    border-radius: .5rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(0 0 0 / .4);
+    &:hover {
+        background-color: rgb(0 0 0 / .5);
+    }
+}
+
 html {
     font-size: 62.5%;
 }

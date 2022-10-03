@@ -1,10 +1,16 @@
-import React from 'react'
-import { Wrapper } from '../../_styled/ConversationPage'
+import React from "react";
+import {
+  ChatFilterButtonsContainer,
+  SideBarChatButton,
+} from "../../_styled/ConversationPage";
 
 const ConversationButton = () => {
   return (
-    <Wrapper bottomLine={false}>ConversationButton</Wrapper>
-  )
-}
+    <ChatFilterButtonsContainer>
+      <SideBarChatButton>Direct Messages</SideBarChatButton>
+      <SideBarChatButton>Group Chats</SideBarChatButton>
+    </ChatFilterButtonsContainer>
+  );
+};
 
-export default ConversationButton
+export default ConversationButton;
