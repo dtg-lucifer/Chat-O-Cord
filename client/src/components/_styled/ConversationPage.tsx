@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import {
   ChatCardOuterProps,
@@ -17,7 +18,7 @@ export const PageWrapper = styled.div<PageWrapperProps>`
 export const SideBarWrapper = styled.aside`
   background-color: #121212;
   height: 100%;
-  width: 20%;
+  width: 18%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,7 +112,7 @@ export const ChatFilterButtonsContainer = styled.div`
   width: 100%;
 `;
 
-export const SideBarChatButton = styled.div`
+export const SideBarChatButton = styled(NavLink)`
   background-color: #212121;
   padding: .3rem .5rem;
   text-align: center;
@@ -121,6 +122,8 @@ export const SideBarChatButton = styled.div`
   box-shadow: 2px 2px 10px 1px rgb(0 0 0 / 0.3);
   cursor: pointer;
   transition: background-color .1s;
+  text-decoration: none;
+  color: white;
   &:hover {
     background-color: #303030;
   }
@@ -134,21 +137,25 @@ export const ChatOuter = styled.div<ChatCardOuterProps>`
   gap: 2rem;
   width: 100%;
   padding: .5rem 0;
-  border-bottom: ${({ key, arrLength }) => (
-    key === arrLength + 1 ? "" : "1px solid rgb(255 255 255 / .1)"
-  )};
-`;
+  cursor: pointer;
+  `;
 
 export const ChatCardContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  width: calc(100% - .5rem);
+  width: calc(100% - 1rem);
+  margin: auto;
+  padding: .5rem;
+  border-radius: .5rem;
   & > div {
     flex: 1;
   }
-`;
+  &:hover {
+    background-color: #080808;
+  }
+  `;
 
 export const Image = styled.img`
   height: 3.5rem;
@@ -158,7 +165,9 @@ export const Image = styled.img`
   outline-offset: 1px;
 `;
 
-export const CardHeader = styled.h2``;
+export const CardHeader = styled.h2`
+  font-weight: 400;
+`;
 
 export const CardLastMessage = styled.span`
   color: rgb(255 255 255 / .4);
@@ -168,7 +177,36 @@ export const CardLastMessage = styled.span`
 
 export const MainWrapper = styled.div`
   background-color: #141414;
-  width: 100%;
   height: 100%;
+  flex: 1;
 `;
 
+export const NotFoundWrapper = styled.main`
+  flex: 1;
+  height: 100%;
+  background-color: #141414;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+`;
+
+export const NoChatImage = styled.img`
+  height: 20%;
+  color: white;
+`;
+
+export const NoChatHeader = styled.h2`
+  font-weight: 500;
+  font-size: 2rem;
+`;
+
+/* Right Profile listing */
+
+export const ProfileListContainer = styled.aside`
+  width: 16%;
+  height: 100%;
+  background-color: #141414;
+  border-inline-start: 1px solid rgb(255 255 255 / .1);
+`;

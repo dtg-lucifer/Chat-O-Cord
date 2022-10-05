@@ -15,7 +15,9 @@ const ChatCard: React.FC<MiniChatCardProps> = ({ img, name, lastMsg }) => {
         <CardHeader>{name}</CardHeader>
         <CardLastMessage>
             {
-                lastMsg.length >= 30 ? `${lastMsg.substring(0, 30)}...` : lastMsg                
+                lastMsg && (
+                  lastMsg?.length >= 30 ? `${lastMsg?.substring(0, 30)}...` : lastMsg
+                )               
             }
         </CardLastMessage>
       </div>

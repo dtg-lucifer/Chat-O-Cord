@@ -7,8 +7,8 @@ import {
 const ConversationButton = () => {
   return (
     <ChatFilterButtonsContainer>
-      <SideBarChatButton>Direct Messages</SideBarChatButton>
-      <SideBarChatButton>Group Chats</SideBarChatButton>
+      <SideBarChatButton to={"?panel=dm"}>Direct Messages</SideBarChatButton>
+      <SideBarChatButton to={"?panel=gc"}>Group Chats</SideBarChatButton>
     </ChatFilterButtonsContainer>
   );
 };

@@ -4,6 +4,7 @@ import profPic from "../../../assets/my_pic.jpg";
 import { FiMessageSquare } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
+import { NavLink } from "react-router-dom";
 
 const ConversationMiniSideBar = () => {
     return (
@@ -12,11 +13,11 @@ const ConversationMiniSideBar = () => {
                 <img src={profPic} alt="prof_picture" />
             </div>
             <div className={styles.middle}>
-                <FiMessageSquare />
-                <FaRegUser />
+                <NavLink to={"?panel=conversation"}><FiMessageSquare /></NavLink>
+                <NavLink to={"?panel=friends"}><FaRegUser /></NavLink>
             </div>
             <div className={styles.bottom}>
-                <BiLogOutCircle />
+                <NavLink to={"/auth/logout"}><BiLogOutCircle /></NavLink>
             </div>
         </ConversationMiniSideBarWrapper>
     );

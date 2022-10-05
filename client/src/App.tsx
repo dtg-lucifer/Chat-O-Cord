@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import LogInPage from "./pages/Auth/LogInPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
-import ConversationChannelPage from "./pages/conversation/ConversationChannelPage";
 import ConversationPage from "./pages/conversation/ConversationPage";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
@@ -17,8 +16,9 @@ function App() {
           <Route path="register" element={<RegisterPage />} />
           <Route path="login" element={<LogInPage />} />
         </Route>
-        <Route path="/conversations" element={<ConversationPage />}>
-          <Route path=":id" element={<ConversationChannelPage />} />
+        <Route path="/conversations">
+          <Route index element={<ConversationPage channelActive={false} />} />
+          <Route path=":id" element={<ConversationPage channelActive />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
