@@ -1,4 +1,3 @@
-import React from "react";
 import { SideBarWrapper } from "../../_styled/ConversationPage";
 import ConversationButton from "./ConversationButton";
 import ConversationChatList from "./ConversationChatList";

@@ -3,15 +3,12 @@ import LogInPage from "./pages/Auth/LogInPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import ConversationPage from "./pages/conversation/ConversationPage";
 import GetStartedPage from "./pages/GetStartedPage";
-import HomePage from "./pages/HomePage";
 import PageNotFound from "./pages/_PageNotFound";
 
 function App() {
   return (
-    <>
       <Routes>
         <Route path="/" element={<GetStartedPage />} />
-        <Route path="/home" element={<HomePage />} />
         <Route path="/auth">
           <Route path="register" element={<RegisterPage />} />
           <Route path="login" element={<LogInPage />} />
@@ -22,7 +19,6 @@ function App() {
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </>
   );
 }
 

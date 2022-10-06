@@ -79,6 +79,23 @@ export const Wrapper = styled.div<SIdeBarProps>`
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: content-box;
+  scrollbar-color: rgb(0 0 0 / .8) rgb(0 0 0 / .3) !important;
+  scrollbar-width: thin !important;
+  scrollbar-gutter: stable both-side !important;
+  &::-webkit-scrollbar {
+    width: .5rem;
+    cursor: pointer;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: rgb(0 0 0 / .2);
+    border-radius: .5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(0 0 0 / .4);
+    &:hover {
+        background-color: rgb(0 0 0 / .5);
+    } 
+  }
   ::after {
     content: "";
     display: block;
@@ -192,14 +209,10 @@ export const NotFoundWrapper = styled.main`
   gap: 5rem;
 `;
 
-export const NoChatImage = styled.img`
-  height: 20%;
-  color: white;
-`;
-
 export const NoChatHeader = styled.h2`
   font-weight: 500;
   font-size: 2rem;
+  opacity: .2;
 `;
 
 /* Right Profile listing */

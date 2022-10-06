@@ -7,7 +7,7 @@ import ConversationMiniSideBar from "../../components/_general/sidebars/Conversa
 import { PageWrapper } from "../../components/_styled/ConversationPage";
 import { ConversationPageStateProps } from "../../types/StyledComponentProps/ConversationPage";
 
-const ConversationPage:React.FC<ConversationPageStateProps> = ({ channelActive }) => {
+const ConversationPage: React.FC<ConversationPageStateProps> = ({ channelActive }) => {
     return (
         <PageWrapper display="flex" fdirection="row" alignItems="center" gap={0}>
             <ConversationMiniSideBar />
