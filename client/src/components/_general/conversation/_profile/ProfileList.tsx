@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProfileListContainer } from '../../_styled/ConversationPage'
+import { ProfileListContainer } from '../../../_styled/ConversationPage'
 
 const ProfileList = () => {
   return (

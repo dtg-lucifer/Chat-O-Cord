@@ -23,7 +23,7 @@ export const SideBarWrapper = styled.aside`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  padding: 2rem;
+  padding: 1rem 2rem;
   gap: 2rem;
   & > div:last-child {
     flex: 1;
@@ -74,7 +74,7 @@ const InputBottomLineAnimation = keyframes`
 export const Wrapper = styled.div<SIdeBarProps>`
   width: 100%;
   position: relative;
-  padding: 0 0 2rem 0;
+  padding: 0 0 calc(1.5rem - 1px) 0;
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: content-box;
@@ -102,7 +102,7 @@ export const Wrapper = styled.div<SIdeBarProps>`
     left: 0;
     bottom: 0;
     height: 1px;
-    background-color: rgb(255 255 255 / 0.2);
+    background-color: rgb(255 255 255 / 0.1);
     opacity: ${({ bottomLine }) => (bottomLine === true ? "1" : "0")};
     animation: ${InputBottomLineAnimation} 1s 0.5s ease forwards;
   }
@@ -213,6 +213,54 @@ export const NoChatHeader = styled.h2`
   font-size: 2rem;
   opacity: .2;
 `;
+
+const HeaderBottomLineAnimation = keyframes`
+  from {
+    width: 0;
+  } to {
+    width: 95%;
+  }
+`;
+
+export const ChatHeader = styled.header`
+  position: relative;
+  height: 6rem;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  &::after {
+    position: absolute;
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: rgb(255 255 255 / .1);
+    bottom: 0;
+    left: auto;
+    right: auto;
+    animation: ${HeaderBottomLineAnimation} 1s ease forwards;
+  }
+`;
+
+export const HeaderAvatar = styled.img`
+  height: 5rem;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+`;
+
+export const HeaderIconContainer = styled.div`
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  & svg {
+    font-size: 2rem;
+    cursor: pointer;
+  }
+`;
+
 
 /* Right Profile listing */
 
