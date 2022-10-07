@@ -25,18 +25,17 @@ export const SideBarWrapper = styled.aside`
   justify-content: space-around;
   padding: 2rem;
   gap: 2rem;
-  border-right: 1px solid rgb(255 255 255 / .1);
   & > div:last-child {
     flex: 1;
   }
 `;
 
 const MiniSideBarRightBorderAnimation = keyframes`
-    from {
-        height: 0;
-    } to {
-        height: 95%;
-    }
+  from {
+      height: 0;
+  } to {
+      height: 95%;
+  }
 `;
 
 export const ConversationMiniSideBarWrapper = styled.div`
@@ -220,6 +219,5 @@ export const NoChatHeader = styled.h2`
 export const ProfileListContainer = styled.aside`
   width: 16%;
   height: 100%;
-  background-color: #141414;
-  border-inline-start: 1px solid rgb(255 255 255 / .1);
+  background-color: #101010;
 `;
