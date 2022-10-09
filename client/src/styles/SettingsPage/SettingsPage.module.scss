@@ -1,34 +1,50 @@
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+@import "../_variables";
+
+.main {
+  background: #121212;
+  height: 100%;
+  width: 14%;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 3rem;
 }
-.main{
-    background: #111111;
-    height: 100vh;
-    width:  14%;
-    padding: 2.5rem 3.8rem;
+header {
+  font-size: 3rem;
+  width: 100%;
+}
+
+.options {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-}
-h2{font-size: 2.2rem;}
-.options{
-    gap: 2.5em;
-    display: flex;
     align-items: flex-start;
-    flex-direction: column ;
-    padding: 0 .8em;
-}
-.settingsOptions{
-    font-size: 1.6em;
-    display: flex;
-    align-items: center;
-    gap: .7em;
-    cursor: pointer;
-}
-.svg{
-    aspect-ratio: 1/1;
-    height: 1.4em;
-    background: white;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 0;
+    gap: 1.5rem;
+    & > div.settingsOptions {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1.5rem;
+        padding: .5rem 1rem;
+        border-radius: .5rem;
+        height: 3.5rem;
+        font-size: 1.6rem;
+        cursor: pointer;
+        &:hover {
+            background-color: #090909;
+        }
+        & > div:nth-child(1) { 
+            height: 1.8rem;
+            & > svg {
+                font-size: 1.8rem;
+                color: $away-sts-bg-color;
+            }
+        }
+    }
 }

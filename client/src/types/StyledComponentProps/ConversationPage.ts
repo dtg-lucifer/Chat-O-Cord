@@ -14,6 +14,7 @@ export interface MiniChatCardProps {
     readonly img: string;
     readonly name: string;
     readonly lastMsg?: string | undefined;
+    readonly id: number;
 }
 
 export interface ChatCardOuterProps {
@@ -23,4 +24,9 @@ export interface ChatCardOuterProps {
 
 export interface ConversationPageStateProps {
     readonly channelActive: boolean;
+}
+
+export interface MessageInputProps {
+    readonly name: string;
+    readonly id?: number;
 }

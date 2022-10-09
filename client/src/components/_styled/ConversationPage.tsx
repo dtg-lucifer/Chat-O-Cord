@@ -8,6 +8,7 @@ import {
 
 export const PageWrapper = styled.div<PageWrapperProps>`
   height: 100vh;
+  background-color: #141414;
   display: ${({ display }) => display};
   justify-content: ${({ justifyContent }) => justifyContent};
   align-items: ${({ alignItems }) => alignItems};
@@ -56,7 +57,7 @@ export const ConversationMiniSideBarWrapper = styled.div`
     right: 0;
     width: 1px;
     transform-origin: center;
-    background-color: rgb(255 255 255 / .01);
+    background-color: rgb(255 255 255 / 0.01);
     animation: ${MiniSideBarRightBorderAnimation} 1s ease forwards;
   }
 `;
@@ -78,22 +79,22 @@ export const Wrapper = styled.div<SIdeBarProps>`
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: content-box;
-  scrollbar-color: rgb(0 0 0 / .8) rgb(0 0 0 / .3) !important;
+  scrollbar-color: rgb(0 0 0 / 0.8) rgb(0 0 0 / 0.3) !important;
   scrollbar-width: thin !important;
   scrollbar-gutter: stable both-side !important;
   &::-webkit-scrollbar {
-    width: .5rem;
+    width: 0.5rem;
     cursor: pointer;
   }
   &::-webkit-scrollbar-track {
-    background-color: rgb(0 0 0 / .2);
-    border-radius: .5rem;
+    background-color: rgb(0 0 0 / 0.2);
+    border-radius: 0.5rem;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: rgb(0 0 0 / .4);
+    background-color: rgb(0 0 0 / 0.4);
     &:hover {
-        background-color: rgb(0 0 0 / .5);
-    } 
+      background-color: rgb(0 0 0 / 0.5);
+    }
   }
   ::after {
     content: "";
@@ -118,7 +119,7 @@ export const SearhBar = styled.input`
   color: white;
   box-shadow: 2px 2px 10px 1px rgb(0 0 0 / 0.3);
   border-radius: 0.3rem;
-  `;
+`;
 
 export const ChatFilterButtonsContainer = styled.div`
   display: flex;
@@ -130,14 +131,14 @@ export const ChatFilterButtonsContainer = styled.div`
 
 export const SideBarChatButton = styled(NavLink)`
   background-color: #212121;
-  padding: .3rem .5rem;
+  padding: 0.3rem 0.5rem;
   text-align: center;
   font-size: 1rem;
   flex: 1;
-  border-radius: .3rem;
+  border-radius: 0.3rem;
   box-shadow: 2px 2px 10px 1px rgb(0 0 0 / 0.3);
   cursor: pointer;
-  transition: background-color .1s;
+  transition: background-color 0.1s;
   text-decoration: none;
   color: white;
   &:hover {
@@ -152,9 +153,9 @@ export const ChatOuter = styled.div<ChatCardOuterProps>`
   justify-content: space-between;
   gap: 2rem;
   width: 100%;
-  padding: .5rem 0;
+  padding: 0.5rem 0;
   cursor: pointer;
-  `;
+`;
 
 export const ChatCardContainer = styled.div`
   display: flex;
@@ -163,30 +164,36 @@ export const ChatCardContainer = styled.div`
   gap: 1rem;
   width: calc(100% - 1rem);
   margin: auto;
-  padding: .5rem;
-  border-radius: .5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  height: 6rem;
   & > div {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
   }
   &:hover {
     background-color: #080808;
   }
-  `;
+`;
 
 export const Image = styled.img`
   height: 3.5rem;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  outline: 1px solid #FFA800;
+  outline: 1px solid #ffa800;
   outline-offset: 1px;
 `;
 
-export const CardHeader = styled.h2`
+export const CardHeader = styled.h3`
+  font-size: 1.8rem;
   font-weight: 400;
 `;
 
 export const CardLastMessage = styled.span`
-  color: rgb(255 255 255 / .4);
+  color: rgb(255 255 255 / 0.4);
 `;
 
 /* Conversation channel components */
@@ -195,6 +202,10 @@ export const MainWrapper = styled.div`
   background-color: #141414;
   height: 100%;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
 `;
 
 export const NotFoundWrapper = styled.main`
@@ -211,7 +222,7 @@ export const NotFoundWrapper = styled.main`
 export const NoChatHeader = styled.h2`
   font-weight: 500;
   font-size: 2rem;
-  opacity: .2;
+  opacity: 0.2;
 `;
 
 const HeaderBottomLineAnimation = keyframes`
@@ -235,7 +246,7 @@ export const ChatHeader = styled.header`
     content: "";
     display: block;
     height: 1px;
-    background-color: rgb(255 255 255 / .1);
+    background-color: rgb(255 255 255 / 0.1);
     bottom: 0;
     left: auto;
     right: auto;
@@ -244,7 +255,7 @@ export const ChatHeader = styled.header`
 `;
 
 export const HeaderAvatar = styled.img`
-  height: 5rem;
+  height: 4.4rem;
   border-radius: 50%;
   aspect-ratio: 1 / 1;
 `;
@@ -261,6 +272,42 @@ export const HeaderIconContainer = styled.div`
   }
 `;
 
+export const ConversationWrapper = styled.main`
+  width: 100%;
+  padding: 0.5rem 2rem;
+  flex: 1;
+`;
+
+export const ConversationInputWrapper = styled.form`
+  margin: 1rem 2rem 4rem 2rem;
+  padding: .5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background-color: #101010;
+  border-radius: 1rem;
+  & div {
+    height: 2rem;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    svg {
+      font-size: 2rem;
+    }
+  }
+`;
+
+export const MsgInput = styled.input`
+  background-color: transparent;
+  color: white;
+  outline: none;
+  border: none;
+  flex: 1;
+  padding: 1rem;
+  &:focus {
+    outline: none;
+  }
+`;
 
 /* Right Profile listing */
 

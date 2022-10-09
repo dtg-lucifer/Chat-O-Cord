@@ -17,9 +17,19 @@ const ConversationPanelHeader: React.FC<PanelHeaderProps> = ({
   return (
     <ChatHeader>
       <HeaderAvatar src={avatar} alt="user-avatar" />
-      <div style={{flex: "1"}}>
+      <div style={{ flex: "1" }}>
         <div style={{ fontWeight: "400", fontSize: "2rem" }}>{name}</div>
-        {sts && <div style={{ fontWeight: "400", color: "rgb(255 255 255 / .7)" }}>{sts}</div>}
+        {sts && (
+          <div
+            style={{
+              fontWeight: "400",
+              color: "rgb(255 255 255 / .7)",
+              fontSize: "1rem",
+            }}
+          >
+            {sts}
+          </div>
+        )}
       </div>
       <HeaderIconContainer>
         <BiPhoneCall />

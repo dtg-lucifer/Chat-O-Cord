@@ -6,10 +6,14 @@ import {
   Image,
 } from "../../_styled/ConversationPage";
 import { MiniChatCardProps } from "../../../types/StyledComponentProps/ConversationPage";
+import { useNavigate } from "react-router-dom";
 
-const ChatCard: React.FC<MiniChatCardProps> = ({ img, name, lastMsg }) => {
+const ChatCard: React.FC<MiniChatCardProps> = ({ img, name, lastMsg, id }) => {
+
+  const navigate = useNavigate();
+
   return (
-    <ChatCardContainer>
+    <ChatCardContainer onClick={() => navigate(`/conversations/${id}`)}>
       <Image src={img} />
       <div>
         <CardHeader>{name}</CardHeader>

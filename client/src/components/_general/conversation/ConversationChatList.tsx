@@ -16,6 +16,7 @@ const ConversationChatList = () => {
               img="https://raw.githubusercontent.com/dtg-lucifer/Chat-O-Cord/main/client/src/assets/my_pic.jpg"
               name={name}
               lastMsg={lastMsg}
+              id={id}
             />
           </ChatOuter>
         );

@@ -1,37 +1,35 @@
 import React from "react";
-<<<<<<< HEAD
-import styles from "../../../styles/SettingsBar/SettingsBar.module.scss";
-=======
 import styles from "../../../styles/SettingsPage/SettingsPage.module.scss";
->>>>>>> 95aa4c163827a269990dd97ed3a5e1edf447f5e9
+import { FaUserAlt, FaUnlock, FaBell, FaBrush } from "react-icons/fa";
+import { TbWebhook } from "react-icons/tb";
 
 const SettingsBar = () => {
   return (
-    <div className={styles.main}>
-      <h2>Settings</h2>
+    <aside className={styles.main}>
+      <header>Settings</header>
       <div className={styles.options}>
         <div className={styles.settingsOptions}>
-          <div className={styles.svg}></div>
+          <div className={styles.svg}><FaUserAlt /></div>
           <div id="profileOption">Profile</div>
         </div>
         <div className={styles.settingsOptions}>
-          <div className={styles.svg}></div>
+          <div className={styles.svg}><FaUnlock /></div>
           <div id="securityOption">Security</div>
         </div>
         <div className={styles.settingsOptions}>
-          <div className={styles.svg}></div>
+          <div className={styles.svg}><FaBell /></div>
           <div id="notificationOption">Notification</div>
         </div>
         <div className={styles.settingsOptions}>
-          <div className={styles.svg}></div>
+          <div className={styles.svg}><TbWebhook /></div>
           <div id="integrationsOption">Integrations</div>
         </div>
         <div className={styles.settingsOptions}>
-          <div className={styles.svg}></div>
+          <div className={styles.svg}><FaBrush /></div>
           <div id="appearanceOption">Appearance</div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
