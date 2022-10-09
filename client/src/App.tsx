@@ -12,7 +12,6 @@ function App() {
       <Routes>
         <Route path="/" element={<GetStartedPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/setting" element={<SettingsBar />} />
         <Route path="/auth">
           <Route path="register" element={<RegisterPage />} />
           <Route path="login" element={<LogInPage />} />
