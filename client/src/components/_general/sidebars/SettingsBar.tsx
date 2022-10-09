@@ -1,10 +1,10 @@
 import React from "react";
-import styles from "../../styles/SettingsBar/SettingsBar.module.scss";
+import styles from "../../../styles/SettingsPage/SettingsPage.module.scss";
 
 const SettingsBar = () => {
   return (
     <div className={styles.main}>
-        <h2>Settings</h2>
+      <h2>Settings</h2>
       <div className={styles.options}>
         <div className={styles.settingsOptions}>
           <div className={styles.svg}></div>

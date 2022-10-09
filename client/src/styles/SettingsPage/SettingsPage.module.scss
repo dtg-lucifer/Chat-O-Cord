@@ -6,27 +6,29 @@
 .main{
     background: #111111;
     height: 100vh;
-    width:  12%;
+    width:  14%;
     padding: 2.5rem 3.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
-h2{
-    font-size: 2.2rem;
-}
+h2{font-size: 2.2rem;}
 .options{
-    gap: 1em;
+    gap: 2.5em;
     display: flex;
     align-items: flex-start;
     flex-direction: column ;
-
+    padding: 0 .8em;
 }
 .settingsOptions{
-    font-size: 1.6rem;
+    font-size: 1.6em;
     display: flex;
     align-items: center;
     gap: .7em;
+    cursor: pointer;
 }
 .svg{
     aspect-ratio: 1/1;
-    height: 15px;
+    height: 1.4em;
     background: white;
 }

@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import SettingsBar from "./components/settingsbar/SettingsBar";
 import LogInPage from "./pages/Auth/LogInPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import ConversationPage from "./pages/conversation/ConversationPage";
