@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import SettingsBar from "./components/settingsbar/SettingsBar";
+import SettingsBar from "./components/_general/sidebars/SettingsBar";
 import LogInPage from "./pages/Auth/LogInPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import ConversationPage from "./pages/conversation/ConversationPage";
 import GetStartedPage from "./pages/GetStartedPage";
-import SettingsPage from "./pages/SettingsPage/SettingsPage";
+import SettingsPage from "./pages/SettingsPage";
 import PageNotFound from "./pages/_PageNotFound";
 
 function App() {

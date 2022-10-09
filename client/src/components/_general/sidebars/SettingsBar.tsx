@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/SettingsBar/SettingsBar.module.scss";
+import styles from "../../../styles/SettingsBar/SettingsBar.module.scss";
 
 const SettingsBar = () => {
   return (
