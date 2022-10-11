@@ -11,8 +11,8 @@ ___
 ## **All features we have covered in this project**
 <br>
 
-- [O] Realtime chatting
-- [O] Realtime voice chat
-- [O] Realtime video chat
-- [O] Image and other media sharing
-- [O] Group or direact messages
+- [X] Realtime chatting
+- [X] Realtime voice chat
+- [X] Realtime video chat
+- [X] Image and other media sharing
+- [X] Group or direact messages
