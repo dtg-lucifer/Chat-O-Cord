@@ -13,8 +13,8 @@ const ConversationMiniSideBar = () => {
                 <img src={profPic} alt="prof_picture" />
             </div>
             <div className={styles.middle}>
-                <NavLink to={"?panel=conversation"}><FiMessageSquare /></NavLink>
-                <NavLink to={"?panel=friends"}><FaRegUser /></NavLink>
+                <NavLink to={"?panel=conversation"} data-tooltip="Conversation"><FiMessageSquare /></NavLink>
+                <NavLink to={"?panel=friends"} data-tooltip="Conversation"><FaRegUser /></NavLink>
             </div>
             <div className={styles.bottom}>
                 <NavLink to={"/auth/logout"}><BiLogOutCircle /></NavLink>

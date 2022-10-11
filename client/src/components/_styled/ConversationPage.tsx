@@ -42,7 +42,7 @@ const MiniSideBarRightBorderAnimation = keyframes`
 export const ConversationMiniSideBarWrapper = styled.div`
   background-color: #101010;
   height: 100%;
-  width: 8rem;
+  width: 7rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -112,7 +112,7 @@ export const Wrapper = styled.div<SIdeBarProps>`
 export const SearhBar = styled.input`
   width: 100%;
   padding: 1rem 1rem;
-  font-size: 1rem;
+  font-size: .5rem;
   outline: none;
   background-color: #202020;
   border: none;
@@ -255,7 +255,7 @@ export const ChatHeader = styled.header`
 `;
 
 export const HeaderAvatar = styled.img`
-  height: 4.4rem;
+  height: 4rem;
   border-radius: 50%;
   aspect-ratio: 1 / 1;
 `;
@@ -300,6 +300,7 @@ export const ConversationInputWrapper = styled.form`
 export const MsgInput = styled.input`
   background-color: transparent;
   color: white;
+  font-size: .2rem;
   outline: none;
   border: none;
   flex: 1;
@@ -315,4 +316,14 @@ export const ProfileListContainer = styled.aside`
   width: 16%;
   height: 100%;
   background-color: #101010;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2rem;
+`;
+
+export const Section = styled.section`
+  width: 100%;
 `;

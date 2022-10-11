@@ -1,12 +1,12 @@
 import React from 'react'
-import { ProfileListContainer } from '../../../_styled/ConversationPage'
+import { ProfileListContainer, Section } from '../../../_styled/ConversationPage'
 
 const ProfileList = () => {
   return (
     <ProfileListContainer>
-        <header>Header</header>
-        <section>Online users</section>
-        <section>Offline users</section>
+        <header>Participants</header>
+        <Section>Online users</Section>
+        <Section>Offline users</Section>
     </ProfileListContainer>
   )
 }
