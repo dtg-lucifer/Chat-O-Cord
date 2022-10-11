@@ -112,7 +112,7 @@ export const Wrapper = styled.div<SIdeBarProps>`
 export const SearhBar = styled.input`
   width: 100%;
   padding: 1rem 1rem;
-  font-size: .5rem;
+  font-size: 0.5rem;
   outline: none;
   background-color: #202020;
   border: none;
@@ -280,7 +280,7 @@ export const ConversationWrapper = styled.main`
 
 export const ConversationInputWrapper = styled.form`
   margin: 1rem 2rem 4rem 2rem;
-  padding: .5rem 2rem;
+  padding: 0.5rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
