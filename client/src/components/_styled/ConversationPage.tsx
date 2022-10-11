@@ -112,7 +112,7 @@ export const Wrapper = styled.div<SIdeBarProps>`
 export const SearhBar = styled.input`
   width: 100%;
   padding: 1rem 1rem;
-  font-size: 0.5rem;
+  font-size: 1.2rem;
   outline: none;
   background-color: #202020;
   border: none;
@@ -300,7 +300,7 @@ export const ConversationInputWrapper = styled.form`
 export const MsgInput = styled.input`
   background-color: transparent;
   color: white;
-  font-size: 1rem;
+  font-size: 1.2rem;
   outline: none;
   border: none;
   flex: 1;
@@ -322,6 +322,9 @@ export const ProfileListContainer = styled.aside`
   align-items: flex-start;
   justify-content: flex-start;
   gap: 2rem;
+  & header {
+    border-bottom: 1px solid rgb(255 255 255 / .1);
+  }
 `;
 
 export const Section = styled.section`
