@@ -300,7 +300,7 @@ export const ConversationInputWrapper = styled.form`
 export const MsgInput = styled.input`
   background-color: transparent;
   color: white;
-  font-size: .2rem;
+  font-size: 1rem;
   outline: none;
   border: none;
   flex: 1;
