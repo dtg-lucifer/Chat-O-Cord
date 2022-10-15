@@ -330,3 +330,5 @@ export const ProfileListContainer = styled.aside`
 export const Section = styled.section`
   width: 100%;
 `;
+
+export const UserListWrapper = styled.div``;
