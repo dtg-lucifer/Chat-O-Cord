@@ -5,8 +5,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { PORT } = process.env;
   try {
-    await app.listen(process.env.PORT || 3001, () => {
-      console.info(`Server Running On Port ${PORT || 3001}`);
+    await app.listen(PORT, () => {
+      console.info(`\nServer Running On Port ${PORT}`);
     });
   } catch (err) {
     console.error(err);
