@@ -1,21 +1,35 @@
 import React from 'react'
 import { ProfileListContainer, Section, UserListWrapper } from '../../../_styled/ConversationPage'
+import ProfileCard from './ProfileCard';
+import imgSrc from "../../../../assets/my_pic.jpg"
 
 const ProfileList = () => {
 
   const onlineCount: number = 5;
-  const offlineCount: number = 17;
+  const offlineCount: number = 27;
 
   return (
     <ProfileListContainer>
         <header>Participants</header>
         <Section>
-          <div>Online Users - {`(${onlineCount})`}</div>
-          <UserListWrapper></UserListWrapper>
+          <header>Online Users - {`(${onlineCount})`}</header>
+          <UserListWrapper>
+            {new Array(onlineCount).fill("").map((_, i) => {
+              return (
+                <ProfileCard avatar={imgSrc} name="Piush Bose" id={i} key={i} sts="Hey wassup!!" />
+              )
+            })}
+          </UserListWrapper>
         </Section>
         <Section>
-          <div>Offline Users - {`(${offlineCount})`}</div>
-          <UserListWrapper></UserListWrapper>
+          <header>Offline Users - {`(${offlineCount})`}</header>
+          <UserListWrapper>
+            {new Array(offlineCount).fill("").map((_, i) => {
+              return (
+                <ProfileCard avatar={imgSrc} name="Piush Bose" id={i} key={i} sts="Hey wassup!!" />
+              )
+            })}
+          </UserListWrapper>
         </Section>
     </ProfileListContainer>
   )

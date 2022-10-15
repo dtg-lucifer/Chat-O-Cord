@@ -313,8 +313,9 @@ export const MsgInput = styled.input`
 /* Right Profile listing */
 
 export const ProfileListContainer = styled.aside`
+  position: relative;
   width: 16%;
-  height: 100%;
+  max-height: 100%;
   background-color: #101010;
   padding: 1rem 2rem;
   display: flex;
@@ -322,8 +323,16 @@ export const ProfileListContainer = styled.aside`
   align-items: flex-start;
   justify-content: flex-start;
   gap: 2rem;
-  & header {
-    border-bottom: 1px solid rgb(255 255 255 / .1);
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-color: rgb(0 0 0 /.8) rgb(0 0 0 / .3) !important;
+  scrollbar-width: thin !important;
+  & > header {
+    background-color: #101010;
+    border-bottom: 1px solid rgb(255 255 255 / .1) !important;
+  }
+  & > section > header {
+    font-size: 2rem !important;
   }
 `;
 
@@ -332,3 +341,34 @@ export const Section = styled.section`
 `;
 
 export const UserListWrapper = styled.div``;
+
+export const CardWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-block: 1rem;
+  padding-inline: 1rem;
+  padding-block: .3rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  & img {
+    aspect-ratio: 1 / 1;
+    height: 3.5rem;
+    border-radius: 50%;
+  }
+  & > div {
+    flex: 1;
+    & > header {
+      font-size: 1.8rem;
+      border: none;
+    }
+    & > span {
+      font-size: 1rem;
+      color: rgb(255 255 255 / .3);
+    }
+  }
+  &:hover {
+    background-color: #080808;
+  }
+`;
