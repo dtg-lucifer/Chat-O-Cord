@@ -4,3 +4,8 @@ export interface CreateUserDetails {
     lastName: string
     password: string
 }
+
+export interface ValidateUserCredentials {
+    email: string
+    password: string
+}
