@@ -24,6 +24,7 @@ export class UsersService implements IUserService {
             userName: `@${userDetails.firstName.toLowerCase()}_${userDetails.lastName.toLowerCase()}`, 
             password 
         })
+        
         return this.userRepository.save(newUser)
     }
 }
