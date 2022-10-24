@@ -3,15 +3,15 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hashPassword } from 'src/utils/helpers';
-import { User as UserRepository } from 'src/utils/typeorm';
-import { CreateUserDetails } from 'src/utils/types';
+import { User } from 'src/utils/typeorm';
+import { CreateUserDetails, FindUserParams } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IUserService } from './users';
 
 @Injectable()
 export class UsersService implements IUserService {
 
-    constructor(@InjectRepository(UserRepository) private readonly userRepository: Repository<UserRepository>) { }
+    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
 
     async createUser(userDetails: CreateUserDetails) {
         const existingUser = await this.userRepository.findOneBy({ email: userDetails.email })
@@ -21,10 +21,14 @@ export class UsersService implements IUserService {
         const password = await hashPassword(userDetails.password)
         const newUser = this.userRepository.create({ 
             ...userDetails,
-            userName: `@${userDetails.firstName.toLowerCase()}_${userDetails.lastName.toLowerCase()}`, 
+            userName: `@${userDetails.firstName.toLowerCase().replace(" ", "")}_${userDetails.lastName.toLowerCase().replace(" ", "")}`, 
             password 
         })
         
         return this.userRepository.save(newUser)
+    }
+
+    async findUser(findUser: FindUserParams): Promise<User> {
+        return await this.userRepository.findOneBy(findUser)        
     }
 }

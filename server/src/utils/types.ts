@@ -9,3 +9,9 @@ export interface ValidateUserCredentials {
     email: string
     password: string
 }
+
+export interface FindUserParams {
+    id?: number;
+    email?: string;
+    // password?: string;
+}
