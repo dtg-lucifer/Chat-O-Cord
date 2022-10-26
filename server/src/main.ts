@@ -7,16 +7,15 @@ import * as passport from "passport"
 
 async function bootstrap() {
 
-  const currentDate = new Date()
-  let day = currentDate.getDate()
-  let month = currentDate.getMonth() + 1;
-  let year = currentDate.getFullYear();
-  let hour = currentDate.getHours() > 12 ? currentDate.getHours() - 12 : currentDate.getHours()
-  let min = currentDate.getMinutes() < 10 ? `0${currentDate.getMinutes()}` : currentDate.getMinutes()
-  let sec = currentDate.getSeconds() < 10 ? `0${currentDate.getSeconds()}` : currentDate.getSeconds()
-
   const { PORT, COOKIE_SECRET } = process.env;
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const currentDate = new Date()
+  const day = currentDate.getDate()
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+  const hour = currentDate.getHours() > 12 ? currentDate.getHours() - 12 : currentDate.getHours()
+  const min = currentDate.getMinutes() < 10 ? `0${currentDate.getMinutes()}` : currentDate.getMinutes()
+  const sec = currentDate.getSeconds() < 10 ? `0${currentDate.getSeconds()}` : currentDate.getSeconds()
+  const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix("api/v1")
   app.useGlobalPipes(new ValidationPipe())
@@ -25,8 +24,8 @@ async function bootstrap() {
     saveUninitialized: false,
     resave: false,
     cookie: {
-      maxAge: 86400000, // to ensure that the cookie resets after a day (a day has 86400 seconds hence there is 86400000 miliseconds)
-    }
+      maxAge: 86400000, // to ensure that the cookie expires after a day (in miliseconds)
+    },
   }))
   app.use(passport.initialize())
   app.use(passport.session())

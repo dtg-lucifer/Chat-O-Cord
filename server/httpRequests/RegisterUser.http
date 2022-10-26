@@ -1,0 +1,10 @@
+# registering with all details
+POST http://localhost:8998/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "piush.dev@gmail.com",
+  "firstName": "Piush",
+  "lastName": "The Developer",
+  "password": "12345678"
+}

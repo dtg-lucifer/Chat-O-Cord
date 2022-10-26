@@ -1,0 +1,8 @@
+# loggin in with credentials
+POST http://localhost:8998/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "piushbasu@gmail.com",
+  "password": "pass1234"
+}

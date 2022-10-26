@@ -14,7 +14,7 @@ export class UsersService implements IUserService {
     constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
 
     async createUser(userDetails: CreateUserDetails) {
-        const existingUser = await this.userRepository.findOneBy({ email: userDetails.email })
+        const existingUser = await this.userRepository.findOne({ email: userDetails.email })
 
         if (existingUser) throw new HttpException("User already exists!", HttpStatus.CONFLICT);
 
@@ -29,6 +29,6 @@ export class UsersService implements IUserService {
     }
 
     async findUser(findUser: FindUserParams): Promise<User> {
-        return await this.userRepository.findOneBy(findUser)        
+        return await this.userRepository.findOne(findUser)        
     }
 }
