@@ -11,7 +11,7 @@ export interface ValidateUserCredentials {
 }
 
 export interface FindUserParams {
-    id?: number;
+    _id?: number;
     email?: string;
     // password?: string;
 }

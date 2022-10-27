@@ -4,6 +4,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from "express-session"
 import * as passport from "passport"
+import { getRepository } from "typeorm";
+import { Session } from "./utils/typeorm";
+import { TypeormStore } from "connect-typeorm/out";
 
 async function bootstrap() {
 
@@ -15,7 +18,9 @@ async function bootstrap() {
   const hour = currentDate.getHours() > 12 ? currentDate.getHours() - 12 : currentDate.getHours()
   const min = currentDate.getMinutes() < 10 ? `0${currentDate.getMinutes()}` : currentDate.getMinutes()
   const sec = currentDate.getSeconds() < 10 ? `0${currentDate.getSeconds()}` : currentDate.getSeconds()
+
   const app = await NestFactory.create(AppModule);
+  const sessionRepository = getRepository(Session);
 
   app.setGlobalPrefix("api/v1")
   app.useGlobalPipes(new ValidationPipe())
@@ -26,7 +31,9 @@ async function bootstrap() {
     cookie: {
       maxAge: 86400000, // to ensure that the cookie expires after a day (in miliseconds)
     },
+    store: new TypeormStore().connect(sessionRepository),
   }))
+
   app.use(passport.initialize())
   app.use(passport.session())
 
