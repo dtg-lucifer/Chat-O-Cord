@@ -1,4 +1,3 @@
-import React from 'react'
 import RegisterForm from '../../components/_general/forms/RegisterForm'
 import styles from "../../styles/AuthenticationPage/index.module.scss"
 

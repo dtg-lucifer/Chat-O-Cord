@@ -13,7 +13,7 @@ const ConversationChatList = () => {
         return (
           <ChatOuter key={id} arrLength={ChatDetails.length}>
             <ChatCard
-              img="https://raw.githubusercontent.com/dtg-lucifer/Chat-O-Cord/master/dev/client/src/assets/my_pic.jpg"
+              img="https://github.com/dtg-lucifer/Chat-O-Cord/master/dev/client/src/assets/my_pic.jpg"
               name={name}
               lastMsg={lastMsg}
               id={id}

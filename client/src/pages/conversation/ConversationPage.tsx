@@ -13,7 +13,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = ({ channelActive 
             <ConversationMiniSideBar />
             <ConversationSidebar />
             {channelActive ? <ConversationPageActiveChat 
-                avatar="https://raw.githubusercontent.com/dtg-lucifer/Chat-O-Cord/master/dev/client/src/assets/my_pic.jpg"
+                avatar="https://github.com/dtg-lucifer/Chat-O-Cord/blob/master/dev/client/src/assets/my_pic.jpg"
                 name="Piush Bose"
                 sts="Coding a discord clone"
                 id={1}
