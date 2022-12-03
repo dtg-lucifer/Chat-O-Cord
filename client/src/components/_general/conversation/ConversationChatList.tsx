@@ -1,6 +1,7 @@
 import { ChatType } from "../../../types/Utils/ConversationsChatCard";
 import { ChatDetails } from "../../../_mocks/Conversations";
 import { ChatOuter, Wrapper } from "../../_styled/ConversationPage";
+import myPic from "../../../assets/my_pic.jpg"
 import ChatCard from "./ChatCard";
 
 const ConversationChatList = () => {
@@ -9,11 +10,11 @@ const ConversationChatList = () => {
 
   return (
     <Wrapper bottomLine={false}>
-      {ChatDetails.map(({id, name, lastMsg}: ChatType, index) => {
+      {ChatDetails.map(({id, name, lastMsg}: ChatType) => {
         return (
           <ChatOuter key={id} arrLength={ChatDetails.length}>
             <ChatCard
-              img="https://github.com/dtg-lucifer/Chat-O-Cord/master/dev/client/src/assets/my_pic.jpg"
+              img={myPic}
               name={name}
               lastMsg={lastMsg}
               id={id}

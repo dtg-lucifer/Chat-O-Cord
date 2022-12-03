@@ -1,4 +1,3 @@
-import React from "react";
 import {
     InputContainer,
     InputField,
@@ -8,14 +7,18 @@ import {
 } from "../../_styled/AuthenticationPage";
 import styles from "../../../styles/AuthenticationPage/RegisterPage.module.scss";
 import { useForm } from "react-hook-form";
-import { LoginData, RegisterFormInputs } from "../../../types/ComponentProps/Authentication";
+import { LoginData } from "../../../types/ComponentProps/Authentication";
+import { LoginUser } from "../../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const LogInForm = () => {
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<RegisterFormInputs>();
+    } = useForm<LoginData>();
+
+    const navigate = useNavigate()
 
     /* 
 
@@ -29,7 +32,15 @@ const LogInForm = () => {
     */
 
     console.log(errors);
-    const onSubmit = (data: LoginData) => console.log(data);
+    const onSubmit = async (data: LoginData) => {
+        console.log(data);
+        try{
+            await LoginUser(data)
+            navigate("/conversations")
+        } catch(err) {
+            console.log(err)
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -52,7 +63,7 @@ const LogInForm = () => {
                     <InputField
                         type="password"
                         id="passw"
-                        {...register("passw", {
+                        {...register("password", {
                             required: "Without password huh???",
                             minLength: 8,
                         })}

@@ -24,6 +24,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api/v1")
   app.useGlobalPipes(new ValidationPipe())
+  app.enableCors({ origin: ["http://localhost:3000"], credentials: true })
   app.use(session({
     secret: COOKIE_SECRET,
     saveUninitialized: false,
