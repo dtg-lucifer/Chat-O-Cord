@@ -30,10 +30,7 @@ const LogInForm = () => {
     };
 
     */
-
-    console.log(errors);
     const onSubmit = async (data: LoginData) => {
-        console.log(data);
         try{
             await LoginUser(data)
             navigate("/conversations")

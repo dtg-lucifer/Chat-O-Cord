@@ -14,3 +14,11 @@ export interface UseAuthProps {
     name?: string
     children?: React.ReactNode
 }
+
+export interface User {
+    readonly _id: number
+    readonly email: string
+    readonly firstName: string
+    readonly lastName: string
+    readonly userName: string
+}

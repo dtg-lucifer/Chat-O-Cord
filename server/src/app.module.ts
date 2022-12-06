@@ -10,7 +10,7 @@ import entities from './utils/typeorm';
   imports: [
     AuthModule,
     UsersModule,
-    ConfigModule.forRoot({ envFilePath: ".env.development" }),
+    ConfigModule.forRoot({ envFilePath: ".env" }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRoot({
       type: "mysql",

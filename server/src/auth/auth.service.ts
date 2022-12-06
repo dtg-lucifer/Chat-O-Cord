@@ -15,6 +15,7 @@ export class AuthService implements IAuthService {
     async validateUser(userCredentials: ValidateUserCredentials) {
         const user = await this.usersService.findUser({ email: userCredentials.email })
         if (!user) throw new HttpException("Invalid Email", HttpStatus.BAD_REQUEST)
-        return compareHashedPassword(userCredentials.password, user.password)
+        const isValidPassw = await compareHashedPassword(userCredentials.password, user.password)
+        return isValidPassw ? user : null
     }
 }
