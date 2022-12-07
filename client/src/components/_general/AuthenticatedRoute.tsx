@@ -22,6 +22,7 @@ const AuthenticatedRoute: React.FC<UseAuthProps> = ({ children }) => {
         console.log(err);
         setTimeout(() => setLoading(false), 1000)
       });
+      
     return () => {
       controller.abort();
     };

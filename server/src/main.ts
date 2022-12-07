@@ -24,10 +24,10 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api/v1")
   app.useGlobalPipes(new ValidationPipe())
-  app.enableCors({ origin: ["http://localhost:3000", "http://192.168.29.213:3000"], credentials: true })
+  app.enableCors({ origin: ["http://localhost:3000"], credentials: true })
   app.use(session({
     secret: COOKIE_SECRET,
-    saveUninitialized: false,
+    saveUninitialized: true,
     resave: false,
     cookie: {
       maxAge: 86400000, // to ensure that the cookie expires after a day (in miliseconds)

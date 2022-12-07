@@ -19,13 +19,13 @@ export class UsersService implements IUserService {
         if (existingUser) throw new HttpException("User already exists!", HttpStatus.CONFLICT);
 
         const password = await hashPassword(userDetails.password)
-        const newUser = this.userRepository.create({ 
+        const newUser = await this.userRepository.create({ 
             ...userDetails,
             userName: `@${userDetails.firstName.toLowerCase().replace(" ", "")}_${userDetails.lastName.toLowerCase().replace(" ", "")}`, 
             password 
         })
         
-        return this.userRepository.save(newUser)
+        return await this.userRepository.save(newUser)
     }
 
     async findUser(findUser: FindUserParams): Promise<User> {
