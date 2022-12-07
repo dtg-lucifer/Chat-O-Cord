@@ -32,7 +32,8 @@ const LogInForm = () => {
     */
     const onSubmit = async (data: LoginData) => {
         try{
-            await LoginUser(data)
+            const res = await LoginUser(data)
+            console.log(res)
             navigate("/conversations")
         } catch(err) {
             console.log(err)

@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import AuthenticatedRoute from "./components/_general/AuthenticatedRoute";
 import LogInPage from "./pages/Auth/LogInPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import ConversationPage from "./pages/conversation/ConversationPage";
 import GetStartedPage from "./pages/GetStartedPage";
 import SettingsPage from "./pages/SettingsPage";
 import PageNotFound from "./pages/_PageNotFound";
-import { UseAuthProps, User } from "./types/Utils/Authentication";
-import { GetAuthDetails } from "./utils/api";
 
 function App() {
   return (
@@ -20,26 +18,26 @@ function App() {
       <Route
         path="/settings"
         element={
-          <RequireAuth>
+          <AuthenticatedRoute>
             <SettingsPage />
-          </RequireAuth>
+          </AuthenticatedRoute>
         }
       />
       <Route path="/conversations">
         <Route
           index
           element={
-            <RequireAuth>
+            <AuthenticatedRoute>
               <ConversationPage channelActive={false} />
-            </RequireAuth>
+            </AuthenticatedRoute>
           }
         />
         <Route
           path=":id"
           element={
-            <RequireAuth>
+            <AuthenticatedRoute>
               <ConversationPage channelActive />
-            </RequireAuth>
+            </AuthenticatedRoute>
           }
         />
       </Route>
@@ -47,41 +45,5 @@ function App() {
     </Routes>
   );
 }
-
-const RequireAuth: React.FC<UseAuthProps> = ({ children }) => {
-  const [user, setUser] = useState<User | undefined>();
-  const [loading, setLoading] = useState(true);
-  const location = useLocation();
-  const controller = new AbortController();
-
-  useEffect(() => {
-    setLoading(true);
-    GetAuthDetails()
-      .then(({ data }) => {
-        console.log("UseAuth", data);
-        setUser(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  if (loading)
-    return (
-      <main className="loading__wrapper">
-        <div>
-          <span className="loader"></span>
-          <div>Getting your session details...</div>
-        </div>
-      </main>
-    );
-  if (user) return <>{children}</>;
-  return <Navigate to="/auth/login" state={{ from: location }} replace />;
-};
 
 export default App;

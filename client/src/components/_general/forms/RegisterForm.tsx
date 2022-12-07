@@ -9,6 +9,7 @@ import styles from "../../../styles/AuthenticationPage/RegisterPage.module.scss"
 import { useForm } from "react-hook-form";
 import { RegisterUser } from "../../../utils/api";
 import { CreateUserParams } from "../../../types/Utils/Authentication";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
   const {
@@ -16,6 +17,8 @@ const RegisterForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateUserParams>();
+
+  const navigate = useNavigate()
 
   /* 
     @it will be needed when we use only typical submit finctions where we have to worry about the events 
@@ -29,7 +32,10 @@ const RegisterForm = () => {
 
   const onSubmit = async (data: CreateUserParams) => {
     try {
-      await RegisterUser(data);
+      const res = await RegisterUser(data);
+      console.log(res)
+      navigate("/conversations")
+      
     } catch (err) {
       console.log(err);
     }
