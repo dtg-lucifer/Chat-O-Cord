@@ -10,11 +10,6 @@ export interface LoginUserParams {
     readonly password: string
 }
 
-export interface UseAuthProps {
-    name?: string
-    children?: React.ReactNode
-}
-
 export interface User {
     readonly _id: number
     readonly email: string
