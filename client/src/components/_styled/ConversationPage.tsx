@@ -72,6 +72,19 @@ const InputBottomLineAnimation = keyframes`
     }
 `;
 
+export const OverlayStyle = styled.div`
+  height: 100%;
+  width: 100vw;
+  background-color: #000000aa;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  z-index: 10;
+`;
+
 export const Wrapper = styled.div<SIdeBarProps>`
   width: 100%;
   position: relative;
@@ -109,7 +122,7 @@ export const Wrapper = styled.div<SIdeBarProps>`
   }
 `;
 
-export const SearhBar = styled.input`
+export const ShowmodalButton = styled.button`
   width: 100%;
   padding: 1rem 1rem;
   font-size: 1.2rem;
@@ -325,11 +338,11 @@ export const ProfileListContainer = styled.aside`
   gap: 2rem;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  scrollbar-color: rgb(0 0 0 /.8) rgb(0 0 0 / .3) !important;
+  scrollbar-color: rgb(0 0 0 /0.8) rgb(0 0 0 / 0.3) !important;
   scrollbar-width: thin !important;
   & > header {
     background-color: #101010;
-    border-bottom: 1px solid rgb(255 255 255 / .1) !important;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1) !important;
   }
   & > section > header {
     font-size: 2rem !important;
@@ -349,8 +362,8 @@ export const CardWrapper = styled.div`
   gap: 1rem;
   margin-block: 1rem;
   padding-inline: 1rem;
-  padding-block: .3rem;
-  border-radius: .5rem;
+  padding-block: 0.3rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   & img {
     aspect-ratio: 1 / 1;
@@ -365,10 +378,46 @@ export const CardWrapper = styled.div`
     }
     & > span {
       font-size: 1rem;
-      color: rgb(255 255 255 / .3);
+      color: rgb(255 255 255 / 0.3);
     }
   }
   &:hover {
     background-color: #080808;
+  }
+`;
+
+// Modal styled components
+
+export const ModalHeaderStyle = styled.header`
+  font-size: 2rem;
+`;
+
+export const ModalContentStyle = styled.main``;
+
+export const ModalContainerStyle = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  width: 30vw;
+  padding: 3rem 4rem;
+  background-color: #121212;
+  border-radius: .5rem;
+  box-shadow: 2px 2px 10px 1px rgb(0 0 0 / 0.3);
+  & > svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    translate: -25% 25%;
+    font-size: 2.8rem;
+    cursor: pointer;
+    transition: scale .14s;
+    &:hover {
+    }
+    & > path {
+      padding: 1.5rem;
+    }
   }
 `;
