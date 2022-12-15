@@ -16,7 +16,7 @@ const ConversationTopPanel = () => {
 
   return (
     <>
-      {showModal && <CreateConversationModal />}
+      {showModal && <CreateConversationModal showModal={true} setShowModal={setShowModal} />}
       <Wrapper bottomLine={true}>
         <ShowmodalButton onClick={clickHandler}>Search</ShowmodalButton>
       </Wrapper>

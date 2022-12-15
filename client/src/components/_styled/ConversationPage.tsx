@@ -75,7 +75,7 @@ const InputBottomLineAnimation = keyframes`
 export const OverlayStyle = styled.div`
   height: 100%;
   width: 100vw;
-  background-color: #000000aa;
+  background-color: #000000dd;
   position: fixed;
   display: flex;
   align-items: center;
@@ -132,6 +132,7 @@ export const ShowmodalButton = styled.button`
   color: white;
   box-shadow: 2px 2px 10px 1px rgb(0 0 0 / 0.3);
   border-radius: 0.3rem;
+  cursor: pointer;
 `;
 
 export const ChatFilterButtonsContainer = styled.div`
@@ -389,7 +390,20 @@ export const CardWrapper = styled.div`
 // Modal styled components
 
 export const ModalHeaderStyle = styled.header`
-  font-size: 2rem;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  svg {
+    font-size: 2.8rem;
+    cursor: pointer;
+    transition: scale 0.14s;
+    &:hover {
+    }
+    & > path {
+      padding: 1.5rem;
+    }
+  }
 `;
 
 export const ModalContentStyle = styled.main``;
@@ -402,22 +416,17 @@ export const ModalContainerStyle = styled.div`
   justify-content: center;
   gap: 1rem;
   width: 30vw;
-  padding: 3rem 4rem;
-  background-color: #121212;
-  border-radius: .5rem;
+  padding: 1rem 3rem;
+  background-color: #101010;
+  border-radius: 0.5rem;
   box-shadow: 2px 2px 10px 1px rgb(0 0 0 / 0.3);
-  & > svg {
-    position: absolute;
-    top: 0;
-    right: 0;
-    translate: -25% 25%;
-    font-size: 2.8rem;
-    cursor: pointer;
-    transition: scale .14s;
-    &:hover {
-    }
-    & > path {
-      padding: 1.5rem;
-    }
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: ceneter;
+    justify-content: space-between;
+    gap: 1.2rem;
+    margin-bottom: 1rem;
   }
 `;
