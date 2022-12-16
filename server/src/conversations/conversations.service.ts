@@ -47,6 +47,10 @@ export class ConversationService implements IConversationsService {
     return await this.conversationsRepository.save(conversation)
   }
 
+  async find(id: number): Promise<Conversation[]> {
+    return await this.participantsService.findParticipantsConversations(id)
+  }
+
   private async createParticipantAndSaveUser(user: User, id: number) {
     const participant = await this.participantsService.createParticipant({
       id,

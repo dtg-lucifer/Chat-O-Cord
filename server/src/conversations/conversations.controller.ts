@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Body, Inject, Post, UseGuards } from '@nestjs/common/decorators';
+import { Body, Get, Inject, Post, UseGuards } from '@nestjs/common/decorators';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decorators';
@@ -21,5 +21,10 @@ export class ConversationController {
     @Body() createConversationPayload: CreateConversationDto,
   ) {
     return this.conversationService.createConversation(user, createConversationPayload)
+  }
+
+  @Get()
+  async getConversations(@AuthUser() user: User) {
+    return await this.conversationService.find(user._id)
   }
 }
