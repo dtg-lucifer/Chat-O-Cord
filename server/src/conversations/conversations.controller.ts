@@ -10,12 +10,16 @@ import { CreateConversationDto } from './dto/CreateConversation.dto';
 @Controller(Routes.CONVERSATIONS)
 @UseGuards(AuthenticatedGuard)
 export class ConversationController {
+  constructor(
+    @Inject(Services.CONVERSATIONS)
+    private readonly conversationService: IConversationsService,
+  ) {}
 
-    constructor(@Inject(Services.CONVERSATIONS) private readonly conversationService: IConversationsService){}
-
-    @Post()
-    createConversation(@AuthUser() user: User, @Body() createConversationPayload: CreateConversationDto) {
-        console.log(user)
-        this.conversationService.createConversation(createConversationPayload)
-    }
+  @Post()
+  async createConversation(
+    @AuthUser() user: User,
+    @Body() createConversationPayload: CreateConversationDto,
+  ) {
+    return this.conversationService.createConversation(user, createConversationPayload)
+  }
 }

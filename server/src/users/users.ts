@@ -4,6 +4,7 @@ import { User as UserEntity } from "src/utils/typeorm";
 export interface IUserService {
     createUser(userDetails: CreateUserDetails): Promise<UserEntity>;
     findUser(findUser: FindUserParams): Promise<UserEntity>;
+    saveUser(user: UserEntity): Promise<UserEntity>
 }
 
 export interface User {

@@ -31,3 +31,7 @@ export interface FindParticipantsParams {
 export interface AuthenticatedRequest extends Request {
     user: User
 }
+
+export interface CreateParticipantParams {
+    id: number
+}
