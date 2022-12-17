@@ -18,10 +18,18 @@ export class ConversationService implements IConversationsService {
     @Inject(Services.USERS) private readonly userService: IUserService,
   ) {}
 
+  async find(id: number): Promise<ChatParticipant> {
+    return await this.participantsService.findParticipantsConversations(id)
+  }
+
+  findConversationByID(id: number): Promise<Conversation> {
+    return this.conversationsRepository.findOne(id, { relations: ["participants", "participants.user"] })
+  }
+
   async createConversation(
     user: User,
     createConversationPayload: CreateConversationParams,
-  ) {
+  ): Promise<Conversation> {
     const userDB = await this.userService.findUser({ _id: user._id });
     const { authorID, recipientID } = createConversationPayload;
     const participants: ChatParticipant[] = []
@@ -47,9 +55,6 @@ export class ConversationService implements IConversationsService {
     return await this.conversationsRepository.save(conversation)
   }
 
-  async find(id: number): Promise<Conversation[]> {
-    return await this.participantsService.findParticipantsConversations(id)
-  }
 
   private async createParticipantAndSaveUser(user: User, id: number) {
     const participant = await this.participantsService.createParticipant({

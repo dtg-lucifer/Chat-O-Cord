@@ -22,6 +22,7 @@ import entities from './utils/typeorm';
       password: "",
       database: process.env.MYSQL_DB_NAME,
       synchronize: true,
+      logging: true,
       entities,
     }),
     ConversationsModule,

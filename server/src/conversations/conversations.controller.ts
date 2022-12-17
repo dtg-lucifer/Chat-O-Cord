@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Body, Get, Inject, Post, UseGuards } from '@nestjs/common/decorators';
+import { Body, Get, Inject, Param, Post, UseGuards } from '@nestjs/common/decorators';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decorators';
@@ -25,6 +25,15 @@ export class ConversationController {
 
   @Get()
   async getConversations(@AuthUser() user: User) {
-    return await this.conversationService.find(user._id)
+    const participant = await this.conversationService.find(user.participant.id)
+    return participant.conversations.map((c) => ({
+      ...c,
+      recipient: c.participants.find((p) => p.user._id !== user._id)
+    }))
+  }
+
+  @Get(":id")
+  async getConversationByID(@Param("id") id: number) {
+    return await this.conversationService.findConversationByID(id)
   }
 }

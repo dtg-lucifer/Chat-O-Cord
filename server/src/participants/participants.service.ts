@@ -31,6 +31,15 @@ export class ParticipantsService implements IParticipants {
       .createQueryBuilder('chat_participant')
       .leftJoinAndSelect('chat_participant.conversations', 'conversations')
       .where('chat_participant.id = :id', { id: id })
+      .leftJoinAndSelect('conversations.participants', 'participants')
+      .leftJoin('participants.user', 'user')
+      .addSelect('user._id')
+      .addSelect([
+        'user.email',
+        'user.firstName',
+        'user.lastName',
+        'user.userName',
+      ])
       .getOne();
   }
 }
