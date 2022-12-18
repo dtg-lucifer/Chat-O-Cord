@@ -13,7 +13,7 @@ export interface SIdeBarProps {
 export interface MiniChatCardProps {
     readonly img: string;
     readonly name: string;
-    readonly lastMsg?: string | undefined;
+    readonly lastMsg?: string;
     readonly id: number;
 }
 

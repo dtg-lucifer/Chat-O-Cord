@@ -27,6 +27,7 @@ export class ConversationService implements IConversationsService {
         'creator._id',
         'creator.firstName',
         'creator.lastName',
+        'creator.userName',
         'creator.email',
       ])
       .leftJoin('conversations.recipient', 'recipient')
@@ -34,6 +35,7 @@ export class ConversationService implements IConversationsService {
         'recipient._id',
         'recipient.firstName',
         'recipient.lastName',
+        'recipient.userName',
         'recipient.email',
       ])
       .where('creator._id = :id', { id })
