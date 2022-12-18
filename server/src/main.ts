@@ -40,7 +40,7 @@ async function bootstrap() {
 
   try {
     await app.listen(PORT, () => {
-      console.info(`[Debug] 8998  - ${month}/${day}/${year}, ${hour}:${min}:${sec} ${hour < 12 && `PM`}     LOG [Info] Server started to listening on https://localhost:${PORT}/api/v1`);
+      console.info(`[Debug] 8998  - ${month}/${day}/${year}, ${hour}:${min}:${sec} ${hour < 12 ? `PM` : `AM`}     LOG [Info] Server started to listening on https://localhost:${PORT}/api/v1`);
     });
   } catch (err) {
     console.error(err);

@@ -27,9 +27,9 @@ export class AuthController {
 
     @Get("status")
     @UseGuards(AuthenticatedGuard)
-    getUserStatus(@Req() req: Request, @Res() res: Response) {
+    getUserStatus(@Req() req: Request) {
         console.log("API GetAuthStatus", req.user)
-        res.send(req.user)
+        return req.user
     }
 
     @Post("logout")

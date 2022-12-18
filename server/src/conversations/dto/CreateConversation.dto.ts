@@ -3,10 +3,6 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class CreateConversationDto {
     @IsNumber()
     @IsNotEmpty()
-    authorID: number;
-
-    @IsNumber()
-    @IsNotEmpty()
     recipientID: number;
 
     @IsString()

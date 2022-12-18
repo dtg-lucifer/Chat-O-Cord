@@ -15,11 +15,11 @@ export interface ValidateUserCredentials {
 export interface FindUserParams {
     _id?: number;
     email?: string;
+    username?: string
     // password?: string;
 }
 
 export interface CreateConversationParams {
-    authorID: number
     recipientID: number
     message: string
 }

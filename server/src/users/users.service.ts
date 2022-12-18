@@ -29,7 +29,7 @@ export class UsersService implements IUserService {
     }
 
     async findUser(findUser: FindUserParams): Promise<User> {
-        return await this.userRepository.findOne(findUser, { relations: ["participant"] })        
+        return await this.userRepository.findOne(findUser)        
     }
 
     async saveUser(user: User) {

@@ -1,11 +1,20 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import { ChatParticipant } from "./ChatParticipant";
+import { CreateDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./User";
 
 @Entity({ name: "conversations" })
+@Index(["creator._id", "recipient._id"], { unique: true })
 export class Conversation {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToMany(() => ChatParticipant, chatParticipant => chatParticipant.conversations)
-    participants: ChatParticipant[]
+    @OneToOne(() => User, { createForeignKeyConstraints: false })
+    @JoinColumn()
+    creator: User;
+
+    @OneToOne(() => User, { createForeignKeyConstraints: false })
+    @JoinColumn()
+    recipient: User;
+
+    @CreateDateColumn({ name: "created_at" })
+    createdAt: number;
 }

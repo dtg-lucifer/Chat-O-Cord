@@ -24,16 +24,12 @@ export class ConversationController {
   }
 
   @Get()
-  async getConversations(@AuthUser() user: User) {
-    const participant = await this.conversationService.find(user.participant.id)
-    return participant.conversations.map((c) => ({
-      ...c,
-      recipient: c.participants.find((p) => p.user._id !== user._id)
-    }))
+  async getConversations(@AuthUser() { _id }: User) {
+    return this.conversationService.getConversations(_id)
   }
 
   @Get(":id")
   async getConversationByID(@Param("id") id: number) {
-    return await this.conversationService.findConversationByID(id)
+    return await this.conversationService.findByID(id)
   }
 }
