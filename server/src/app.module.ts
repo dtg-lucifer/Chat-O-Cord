@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConversationsModule } from './conversations/conversations.module';
+import { MessagesModule } from './messages/messages.module';
 import entities from './utils/typeorm';
 
 @Module({
@@ -21,10 +22,11 @@ import entities from './utils/typeorm';
       password: "",
       database: process.env.MYSQL_DB_NAME,
       synchronize: true,
-      logging: true,
+      logging: false,
       entities,
     }),
     ConversationsModule,
+    MessagesModule,
   ],
   controllers: [],
   providers: [],
