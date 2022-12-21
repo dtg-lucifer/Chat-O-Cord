@@ -39,14 +39,17 @@ export class MessageService implements IMessageService {
         HttpStatus.FORBIDDEN,
       );
     }
-    conversation.creator = instanceToPlain(conversation.creator) as User
-    conversation.recipient = instanceToPlain(conversation.recipient) as User
+    conversation.creator = instanceToPlain(conversation.creator) as User;
+    conversation.recipient = instanceToPlain(conversation.recipient) as User;
     const newMessage = this.messageRepository.create({
-        content,
-        conversation,
-        author: instanceToPlain(user),
-    })
-      
-    return await this.messageRepository.save(newMessage)
+      content,
+      conversation,
+      author: instanceToPlain(user),
+    });
+
+    const savedMessage = await this.messageRepository.save(newMessage);
+    conversation.lastMessageSent = savedMessage;
+    await this.conversationRepository.save(conversation);
+    return savedMessage;
   }
 }
