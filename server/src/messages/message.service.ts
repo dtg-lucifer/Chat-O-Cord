@@ -52,4 +52,11 @@ export class MessageService implements IMessageService {
     await this.conversationRepository.save(conversation);
     return savedMessage;
   }
+
+  async getMessagesByConvId(id: number): Promise<Message[]> {
+    return this.messageRepository.find({
+      where: { conversation: { id } },
+      order: { createdAt: "DESC" }
+    })
+  }
 }

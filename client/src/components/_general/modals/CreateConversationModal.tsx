@@ -22,7 +22,7 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
 }) => {
   const ref = createRef<HTMLDivElement>();
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key == "Escape") setShowModal(prev => !prev);
+    if (e.key === "Escape") setShowModal(prev => !prev);
   };
 
   useEffect(() => {

@@ -77,9 +77,8 @@ export const OverlayStyle = styled.div`
   width: 100vw;
   background-color: #000000dd;
   position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   top: 0;
   left: 0;
   z-index: 10;
@@ -87,7 +86,6 @@ export const OverlayStyle = styled.div`
 
 export const Wrapper = styled.div<SIdeBarProps>`
   width: 100%;
-  position: relative;
   padding: 0 0 calc(1.5rem - 1px) 0;
   overflow-y: auto;
   scroll-behavior: smooth;

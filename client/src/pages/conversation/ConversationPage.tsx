@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ComversationsPageNoChannel from "../../components/_general/conversation/ComversationPageNoChannel";
+import ConversationPageNoAvtiveChat from "../../components/_general/conversation/ConversationPageNoAvtiveChat";
 import ConversationPageActiveChat from "../../components/_general/conversation/_panel/ConversationPageActiveChat";
 import ConversationSidebar from "../../components/_general/conversation/ConversationSidebar";
 import ProfileList from "../../components/_general/conversation/_profile/ProfileList";
@@ -37,7 +37,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = ({
           id={parseInt(id)}
         />
       ) : (
-        <ComversationsPageNoChannel />
+        <ConversationPageNoAvtiveChat />
       )}
       <ProfileList />
     </PageWrapper>
