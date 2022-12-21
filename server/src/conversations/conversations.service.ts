@@ -77,7 +77,7 @@ export class ConversationService implements IConversationsService {
     if (!recipient)
       throw new HttpException('Recipient not found', HttpStatus.BAD_REQUEST);
 
-    const conversation = await this.conversationsRepository.create({
+    const conversation = this.conversationsRepository.create({
       creator: user,
       recipient: recipient,
     });

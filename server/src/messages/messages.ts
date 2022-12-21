@@ -1,5 +1,6 @@
-import { Message } from "src/utils/typeorm";
+import { Message } from 'src/utils/typeorm';
+import { CreateMessageParams } from 'src/utils/types';
 
 export interface IMessageService {
-    createMessage(): Promise<Message>
+  createMessage(params: CreateMessageParams): Promise<Message>;
 }

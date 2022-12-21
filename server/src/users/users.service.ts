@@ -10,29 +10,37 @@ import { IUserService } from './users';
 
 @Injectable()
 export class UsersService implements IUserService {
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
 
-    constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
+  async createUser(userDetails: CreateUserDetails) {
+    const existingUser = await this.userRepository.findOne({
+      email: userDetails.email,
+    });
 
-    async createUser(userDetails: CreateUserDetails) {
-        const existingUser = await this.userRepository.findOne({ email: userDetails.email })
+    if (existingUser)
+      throw new HttpException('User already exists!', HttpStatus.CONFLICT);
 
-        if (existingUser) throw new HttpException("User already exists!", HttpStatus.CONFLICT);
+    const password = await hashPassword(userDetails.password);
+    const newUser = await this.userRepository.create({
+      ...userDetails,
+      userName: `@${userDetails.firstName
+        .toLowerCase()
+        .replace(' ', '')}_${userDetails.lastName
+        .toLowerCase()
+        .replace(' ', '')}`,
+      password,
+    });
 
-        const password = await hashPassword(userDetails.password)
-        const newUser = await this.userRepository.create({ 
-            ...userDetails,
-            userName: `@${userDetails.firstName.toLowerCase().replace(" ", "")}_${userDetails.lastName.toLowerCase().replace(" ", "")}`, 
-            password 
-        })
-        
-        return await this.userRepository.save(newUser)
-    }
+    return await this.userRepository.save(newUser);
+  }
 
-    async findUser(findUser: FindUserParams): Promise<User> {
-        return await this.userRepository.findOne(findUser)        
-    }
+  async findUser(findUser: FindUserParams): Promise<User> {
+    return await this.userRepository.findOne(findUser);
+  }
 
-    async saveUser(user: User) {
-        return this.userRepository.save(user)
-    }
+  async saveUser(user: User) {
+    return this.userRepository.save(user);
+  }
 }

@@ -7,10 +7,7 @@ import { ConversationController } from './conversations.controller';
 import { ConversationService } from './conversations.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Conversation]),
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Conversation]), UsersModule],
   controllers: [ConversationController],
   providers: [
     { provide: Services.CONVERSATIONS, useClass: ConversationService },

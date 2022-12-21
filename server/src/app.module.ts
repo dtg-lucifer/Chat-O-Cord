@@ -12,14 +12,14 @@ import entities from './utils/typeorm';
   imports: [
     AuthModule,
     UsersModule,
-    ConfigModule.forRoot({ envFilePath: ".env" }),
+    ConfigModule.forRoot({ envFilePath: '.env' }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRoot({
-      type: "mysql",
+      type: 'mysql',
       host: process.env.MYSQL_DB_HOST,
       port: parseInt(process.env.MYSQL_DB_PORT),
       username: process.env.MYSQL_DB_USERNAME,
-      password: "",
+      password: '',
       database: process.env.MYSQL_DB_NAME,
       synchronize: true,
       logging: false,
