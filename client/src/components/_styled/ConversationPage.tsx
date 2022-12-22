@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import styled, { css, keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import {
   ChatCardOuterProps,
   PageWrapperProps,
