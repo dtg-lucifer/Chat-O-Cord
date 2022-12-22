@@ -10,17 +10,16 @@ const ConversationInput: React.FC<MessageInputProps> = ({ name, id }) => {
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log(msg);
     }
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMsg(e.target.value)
-        console.log(msg)
     }
 
     const keyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             setMsg(inputRef.current?.value)
-            console.log(msg);
         }
     }
 

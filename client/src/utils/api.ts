@@ -4,7 +4,7 @@ import {
   LoginUserParams,
   User,
 } from "../types/Utils/Authentication";
-import { Conversation } from "../types/ComponentProps/Conversation";
+import { Conversation, Message } from "../types/ComponentProps/Conversation";
 
 const { REACT_APP_API_BASE_URL } = process.env;
 const axiosConfig: AxiosRequestConfig = { withCredentials: true };
@@ -33,3 +33,11 @@ export const getConversations = () =>
     `${REACT_APP_API_BASE_URL}/conversations`,
     axiosConfig
   );
+
+export const getConversationByID = (id: number) => {
+  return axios.get<Conversation>(`${REACT_APP_API_BASE_URL}/conversations/${id}`, axiosConfig)
+}
+
+export const getConversationMessages = (id: number) => {
+  return axios.get<Message[]>(`${REACT_APP_API_BASE_URL}/messages/${id}`, axiosConfig)
+}

@@ -9,7 +9,7 @@ import {
 } from "../../_styled/ConversationPage";
 import { ChatlistProps } from "../../../types/ComponentProps/ConversationPanel";
 import myPic from "../../../assets/my_pic.jpg";
-import ChatCard from "./ChatCard";
+import ChatCard from "../conversation/ChatCard";
 import CreateConversationModal from "../modals/CreateConversationModal";
 import { AuthContext } from "../../../utils/context/AuthContext";
 import { Conversation } from "../../../types/ComponentProps/Conversation";
@@ -43,13 +43,13 @@ const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
         </ChatFilterButtonsContainer>
       </Wrapper>
       <Wrapper bottomLine={false}>
-        {conversations.map(({ id, creator, recipient }) => {
+        {conversations.map(({ id, creator, recipient, createdAt }) => {
           return (
             <ChatOuter key={id} arrLength={conversations.length}>
               <ChatCard
                 img={myPic}
                 name={
-                  `${displayUser({id, creator, recipient}).firstName} ${displayUser({id, creator, recipient}).lastName}`
+                  `${displayUser({id, creator, recipient, createdAt }).firstName} ${displayUser({id, creator, recipient, createdAt}).lastName}`
                 }
                 lastMsg={"Hello"}
                 id={id}

@@ -27,6 +27,10 @@ export interface ConversationPageStateProps {
 }
 
 export interface MessageInputProps {
-    readonly name: string;
+    readonly name: string | undefined;
     readonly id?: number;
+}
+
+export interface MessageProps {
+    isSameTimeStamp?: boolean;
 }

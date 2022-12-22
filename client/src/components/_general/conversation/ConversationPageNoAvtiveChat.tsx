@@ -1,6 +1,6 @@
 import { NoChatHeader, NotFoundWrapper } from "../../_styled/ConversationPage"
 
-const ConversationPageNoAvtiveChat = () => {
+const ConversationPageNoActiveChat = () => {
   return (
     <NotFoundWrapper>
         <NoChatHeader>Don't know where to start? Try finding some friends and start chatting with them</NoChatHeader>
@@ -8,4 +8,4 @@ const ConversationPageNoAvtiveChat = () => {
   )
 }
 
-export default ConversationPageNoAvtiveChat
+export default ConversationPageNoActiveChat

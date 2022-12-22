@@ -30,6 +30,7 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+    // eslint-disable-next-line
   }, []);
 
   if (showModal) {

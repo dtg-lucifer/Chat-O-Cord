@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import {
   ChatCardOuterProps,
   PageWrapperProps,
   SIdeBarProps,
 } from "../../types/StyledComponentProps/ConversationPage";
+import { MessageProps } from "../../types/StyledComponentProps/ConversationPage";
 
 export const PageWrapper = styled.div<PageWrapperProps>`
   height: 100vh;
@@ -19,12 +20,12 @@ export const PageWrapper = styled.div<PageWrapperProps>`
 export const SideBarWrapper = styled.aside`
   background-color: #121212;
   height: 100%;
-  width: 18%;
+  width: 15%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
-  padding: 1rem 2rem;
+  justify-content: flex-start;
+  padding: 1rem;
   gap: 2rem;
   & > div:last-child {
     flex: 1;
@@ -86,6 +87,7 @@ export const OverlayStyle = styled.div`
 
 export const Wrapper = styled.div<SIdeBarProps>`
   width: 100%;
+  position: relative;
   padding: 0 0 calc(1.5rem - 1px) 0;
   overflow-y: auto;
   scroll-behavior: smooth;
@@ -286,12 +288,50 @@ export const HeaderIconContainer = styled.div`
 
 export const ConversationWrapper = styled.main`
   width: 100%;
-  padding: 0.5rem 2rem;
+  padding: 1rem 2rem;
   flex: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-color: rgb(0 0 0 /0.8) rgb(0 0 0 / 0) !important;
+  scrollbar-width: thin !important;
 `;
 
+export const MessageContainer = styled.div<MessageProps>`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-block: .5rem;
+`
+
+export const MessageHeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+`
+
+export const MessageAuthorAvatar = styled.img`
+  height: 3.5rem;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+`
+
+export const MessageContent = styled.div``
+
+export const MessageAuthorName = styled.h3``
+
+export const MessageCreatedAt = styled.span`
+  font-weight: 200;
+  opacity: .5;
+`
+
 export const ConversationInputWrapper = styled.form`
-  margin: 1rem 2rem 4rem 2rem;
+  margin: 1rem 2rem;
   padding: 0.5rem 2rem;
   display: flex;
   align-items: center;

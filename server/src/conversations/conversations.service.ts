@@ -15,8 +15,11 @@ export class ConversationService implements IConversationsService {
     @Inject(Services.USERS) private readonly userService: IUserService,
   ) {}
 
-  findByID(id: number): Promise<Conversation> {
-    return this.conversationsRepository.findOne(id);
+  async findByID(id: number): Promise<Conversation> {
+    return await this.conversationsRepository.findOne({
+      where: { id },
+      relations: ["creator", "recipient"]
+    });
   }
 
   async getConversations(id: number): Promise<Conversation[]> {
