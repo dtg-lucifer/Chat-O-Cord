@@ -1,5 +1,33 @@
 .main__wrapper {
     min-height: 100vh;
-    display: grid;
-    place-items: center;
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    img {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    form {
+        z-index: 10;
+        height: 100%;
+        width: 100%;
+    }
+    .secondery__wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        & > div {
+            flex: 1;
+            z-index: 10;
+            font-size: 6rem;
+        }
+    }
 }
