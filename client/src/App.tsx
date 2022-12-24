@@ -9,6 +9,8 @@ import SettingsPage from "./pages/SettingsPage";
 import PageNotFound from "./pages/_PageNotFound";
 import { User } from "./types/Utils/Authentication";
 import { AuthContext } from "./utils/context/AuthContext";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [ user, setUser ] = useState<User>()
@@ -48,6 +50,7 @@ function App() {
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+      <ToastContainer theme="dark" />
     </AuthContext.Provider>
   );
 }

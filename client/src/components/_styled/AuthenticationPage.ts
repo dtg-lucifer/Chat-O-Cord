@@ -47,7 +47,7 @@ export const SignInLink = styled(Link)`
 export const Button = styled.button`
   color: white;
   background-color: #2b19fd;
-  width: 100%;
+  width: calc(100% - 2 * .5rem);
   border: none;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -74,7 +74,7 @@ export const InputContainer = styled.div<InputContainerProps>`
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: .5rem;
   border-radius: 0.5rem;
-  box-shadow: 2px 2px 5px 1px rgb(0 0 0 / 0.3);
+  box-shadow: $(({shadow}) => shadow ? "2px 2px 5px 1px rgb(0 0 0 / 0.3)" : "none");
 `;

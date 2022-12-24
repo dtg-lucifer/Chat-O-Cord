@@ -1,33 +1,105 @@
+@import "../_variables";
+
 .main__wrapper {
-    min-height: 100vh;
-    min-width: 100%;
+  min-height: 100vh;
+  min-width: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  & > img {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+  .innerWrapper {
+    z-index: 10;
+    border-radius: 1rem;
+    background-color: $primary-bg-dark-theme;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    img {
-        position: absolute;
-        z-index: 0;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
+    gap: 6rem;
+    height: 60vh;
+    overflow: hidden;
+    padding: 1rem 3rem;
+    box-shadow: 2px 2px 20px 10px rgb(0 0 0 / 0.3);   
+    & img {
+      z-index: 10;
+      aspect-ratio: 1/1;
+      object-fit: contain;
+      height: calc(60vh - 2 * 1rem);
+      margin-left: 3rem;
     }
-    form {
-        z-index: 10;
-        height: 100%;
+    & > form.form {
+      position: relative;
+      padding: 3rem 6rem;
+      font-size: 2rem;
+      width: 30vw;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      flex-direction: column;
+      gap: 2rem;
+      z-index: 10;
+      & > div.login__heading {
         width: 100%;
-    }
-    .secondery__wrapper {
+        padding: 2rem;
+        display: grid;
+        place-items: center;
+        & > strong {
+            font-family: $primary-poppins;
+            font-size: 4rem;
+            font-weight: 400;
+            & > span {
+                color: #2b19fd;
+            }
+        }
+      }
+      & > div.innerFormContainer {
+        width: 100%;
         display: flex;
+        gap: 2rem;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        & > div {
-            flex: 1;
-            z-index: 10;
-            font-size: 6rem;
+      }
+      & div.login__link {
+        font-size: 1rem;
+        color: rgb(255 255 255 / 0.4);
+        display: flex;
+        gap: 2rem;
+        & a {
+          color: rgb(157, 149, 247);
+          text-decoration: none;
         }
+      }
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        translate: 0 -50%;
+        left: 0;
+        display: block;
+        height: 60%;
+        width: 1px;
+        background-color: rgb(255 255 255 / 0.1);
+      }
+      .innerFormContainer {
+        width: 100%;
+        padding: 1rem;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        & > .field__wrapper {
+          width: 100%;
+        }
+      }
     }
+  }
 }

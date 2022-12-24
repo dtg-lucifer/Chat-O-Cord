@@ -20,7 +20,7 @@ export const PageWrapper = styled.div<PageWrapperProps>`
 export const SideBarWrapper = styled.aside`
   background-color: #121212;
   height: 100%;
-  width: 15%;
+  width: 18%;
   display: flex;
   flex-direction: column;
   align-items: center;

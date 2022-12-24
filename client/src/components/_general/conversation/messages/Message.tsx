@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { MessageProps } from "../../../../types/ComponentProps/Message";
+import { formatRelative } from "date-fns";
 import {
   MessageAuthorAvatar,
   MessageAuthorName,
@@ -39,7 +40,7 @@ const Message: React.FC<MessageProps> = ({
           <MessageAuthorName>
             {author?.firstName} {author?.lastName}
           </MessageAuthorName>
-          <MessageCreatedAt>{createdAt}</MessageCreatedAt>
+          <MessageCreatedAt>{formatRelative(new Date(createdAt), new Date())}</MessageCreatedAt>
         </MessageHeaderContainer>
         <MessageContent>{content}</MessageContent>
       </div>

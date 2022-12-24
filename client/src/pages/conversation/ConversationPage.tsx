@@ -32,7 +32,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
       ) : (
         <ConversationPageNoActiveChat />
       )}
-      <ProfileList />
+      {id && <ProfileList />}
     </PageWrapper>
   );
 };
