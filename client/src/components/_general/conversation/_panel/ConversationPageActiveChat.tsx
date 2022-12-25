@@ -48,8 +48,8 @@ const ConversationPageActiveChat: React.FC = () => {
         <HeaderAvatar src={myPic} alt="user-avatar" />
         <div style={{ flex: "1" }}>
           <div style={{ fontWeight: "400", fontSize: "2rem" }}>
-            {isActiveChatRecipient(activeChat) ? activeChat?.creator.firstName : activeChat?.recipient?.firstName}{" "}
-            {isActiveChatRecipient(activeChat) ? activeChat?.creator.lastName : activeChat?.recipient?.lastName}
+            {isActiveChatRecipient(activeChat) ? activeChat?.recipient?.firstName : user?.firstName}{" "}
+            {isActiveChatRecipient(activeChat) ? activeChat?.recipient?.lastName : user?.lastName}
           </div>
         </div>
         <HeaderIconContainer>

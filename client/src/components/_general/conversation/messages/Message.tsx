@@ -10,6 +10,7 @@ import {
   MessageHeaderContainer,
 } from "../../../_styled/ConversationPage";
 import myPic from "../../../../assets/my_pic.jpg";
+import { AuthContext } from "../../../../utils/context/AuthContext";
 
 const Message: React.FC<MessageProps> = ({
   id,
@@ -17,19 +18,24 @@ const Message: React.FC<MessageProps> = ({
   content,
   createdAt,
   // recipient,
-  // currentIndex,
-  // messages
+  currentIndex,
+  messages
 }) => {
-  // const isSameTimeStamp = (t1: string, t2: string) => {
-  //   const newT1 = t1.slice(-10, -8)
-  //   const newT2 = t2.slice(-10, -8)
 
-  //   return newT1 === newT2
-  // }
+  const { user } = useContext(AuthContext)
+
+  const isSameTimeStamp = () => {
+    if (!currentIndex) return false
+    if (!messages) return false
+    if (currentIndex === messages.length - 1) return false
+    const index = currentIndex === messages.length - 1 ? currentIndex : currentIndex + 1
+    return formatRelative(new Date(createdAt), new Date()) === formatRelative(new Date(messages[index].createdAt), new Date()) &&
+      author._id === messages[index].author._id
+  }
 
   return (
-    <MessageContainer key={id}>
-      <MessageAuthorAvatar src={myPic} alt="author_avatar" />
+    <MessageContainer isSameTimeStamp={isSameTimeStamp()}>
+      <MessageAuthorAvatar src={myPic} alt="author_avatar" isSameTimeStamp={isSameTimeStamp()} />
       <div
         style={{
           display: "flex",
@@ -37,12 +43,14 @@ const Message: React.FC<MessageProps> = ({
         }}
       >
         <MessageHeaderContainer>
-          <MessageAuthorName>
+          <MessageAuthorName isSameTimeStamp={isSameTimeStamp()} style={{
+            color: `${author._id === user?._id && "#6c63ff"}`,
+          }}>
             {author?.firstName} {author?.lastName}
           </MessageAuthorName>
-          <MessageCreatedAt>{formatRelative(new Date(createdAt), new Date())}</MessageCreatedAt>
+          <MessageCreatedAt isSameTimeStamp={isSameTimeStamp()}>{formatRelative(new Date(createdAt), new Date())}</MessageCreatedAt>
         </MessageHeaderContainer>
-        <MessageContent>{content}</MessageContent>
+        <MessageContent isSameTimeStamp={isSameTimeStamp()}>{content}</MessageContent>
       </div>
     </MessageContainer>
   );

@@ -14,6 +14,7 @@ import { LoginData } from "../../types/ComponentProps/Authentication";
 import { LoginUser } from "../../utils/api";
 import { useToast } from "../../utils/hooks/useToast";
 import { useState } from "react";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md"
 
 const LogInPage = () => {
   const {
@@ -34,14 +35,14 @@ const LogInPage = () => {
   });
   const navigate = useNavigate();
   const onSubmit = async (data: LoginData) => {
-    setLoading(true)
     try {
+      setLoading(true)
       const { data: response } = await LoginUser(data);
-      if(response) setLoading(false)
+      setLoading(false)
       success("Successfully logged in")
       navigate("/conversations");
     } catch (err) {
-      if(err) setLoading(false)
+      setLoading(false)
       error("Oops, something is wrong!")
     }
   };
@@ -88,7 +89,7 @@ const LogInPage = () => {
 
             <div className={styles.login__link}>
               <span>Need an account?</span>
-              <SignInLink to="/auth/register">Create account.</SignInLink>
+              <SignInLink to="/auth/register">Create account<MdOutlineKeyboardArrowRight /></SignInLink>
             </div>
           </div>
         </form>

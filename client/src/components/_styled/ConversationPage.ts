@@ -303,32 +303,48 @@ export const ConversationWrapper = styled.main`
 export const MessageContainer = styled.div<MessageProps>`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-around;
   gap: 1rem;
-  margin-block: .5rem;
-`
+  max-width: 90%;
+  white-space: wrap;
+  margin-top: ${({ isSameTimeStamp }) =>
+    isSameTimeStamp === true ? "none" : "1rem"};
+  margin-bottom: ${({ isSameTimeStamp }) =>
+    isSameTimeStamp === true ? "none" : "0"};
+`;
 
 export const MessageHeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
-`
+`;
 
-export const MessageAuthorAvatar = styled.img`
-  height: 3.5rem;
+export const MessageAuthorAvatar = styled.img<MessageProps>`
+  display: ${({ isSameTimeStamp }) =>
+    isSameTimeStamp === true ? "none" : ""};
+  height: 4rem;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-`
+`;
 
-export const MessageContent = styled.div``
+export const MessageContent = styled.div<MessageProps>`
+  margin-left: ${({ isSameTimeStamp }) =>
+    isSameTimeStamp === true ? "5rem" : "none"};
+`;
 
-export const MessageAuthorName = styled.h3``
+export const MessageAuthorName = styled.h3<MessageProps>`
+  display: ${({ isSameTimeStamp }) =>
+  isSameTimeStamp === true ? "none" : "block"};
+  font-size: 1.6rem;
+`;
 
-export const MessageCreatedAt = styled.span`
+export const MessageCreatedAt = styled.span<MessageProps>`
+  display: ${({ isSameTimeStamp }) =>
+    isSameTimeStamp === true ? "none" : "inline"};
   font-weight: 200;
-  opacity: .5;
-`
+  opacity: 0.5;
+`;
 
 export const ConversationInputWrapper = styled.form`
   margin: 1rem 2rem;

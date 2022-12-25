@@ -26,7 +26,7 @@ const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
   const displayUser = (conversation: Conversation) => {
     return conversation.creator._id === user?._id
       ? conversation.recipient
-      : conversation.creator;
+      : user;
   } 
 
   return (
@@ -43,13 +43,13 @@ const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
         </ChatFilterButtonsContainer>
       </Wrapper>
       <Wrapper bottomLine={false}>
-        {conversations.map(({ id, creator, recipient, createdAt }) => {
+        {conversations.map(({ id }, i, conv) => {
           return (
             <ChatOuter key={id} arrLength={conversations.length}>
               <ChatCard
                 img={myPic}
                 name={
-                  `${displayUser({id, creator, recipient, createdAt }).firstName} ${displayUser({id, creator, recipient, createdAt}).lastName}`
+                  `${displayUser(conv[i])?.firstName} ${displayUser(conv[i])?.lastName}`
                 }
                 lastMsg={"Hello"}
                 id={id}
