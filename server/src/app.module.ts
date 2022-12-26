@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConversationsModule } from './conversations/conversations.module';
 import { MessagesModule } from './messages/messages.module';
+import { GatewayModule } from './gateway/gateway.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import entities from './utils/typeorm';
 
 @Module({
@@ -14,6 +16,7 @@ import entities from './utils/typeorm';
     UsersModule,
     ConfigModule.forRoot({ envFilePath: '.env' }),
     PassportModule.register({ session: true }),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.MYSQL_DB_HOST,
@@ -27,6 +30,7 @@ import entities from './utils/typeorm';
     }),
     ConversationsModule,
     MessagesModule,
+    GatewayModule,
   ],
   controllers: [],
   providers: [],

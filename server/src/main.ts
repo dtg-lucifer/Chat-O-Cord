@@ -9,7 +9,7 @@ import { Session } from './utils/typeorm';
 import { TypeormStore } from 'connect-typeorm/out';
 
 async function bootstrap() {
-  const { PORT, COOKIE_SECRET } = process.env;
+  const { PORT, COOKIE_SECRET, CORS_ORIGIN } = process.env;
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.getMonth() + 1;
@@ -32,7 +32,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({ origin: ['http://localhost:3000'], credentials: true });
+  app.enableCors({ origin: [CORS_ORIGIN], credentials: true });
   app.use(
     session({
       secret: COOKIE_SECRET,

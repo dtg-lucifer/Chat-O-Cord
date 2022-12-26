@@ -5,8 +5,8 @@ import imgSrc from "../../../../assets/my_pic.jpg"
 
 const ProfileList = () => {
 
-  const onlineCount: number = 5;
-  const offlineCount: number = 27;
+  const onlineCount: number = 1;
+  const offlineCount: number = 1;
 
   return (
     <ProfileListContainer>

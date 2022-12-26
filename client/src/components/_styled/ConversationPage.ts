@@ -296,7 +296,7 @@ export const ConversationWrapper = styled.main`
   justify-content: flex-start;
   overflow-y: scroll;
   scroll-behavior: smooth;
-  scrollbar-color: rgb(0 0 0 /0.8) rgb(0 0 0 / 0) !important;
+  scrollbar-color: rgb(0 0 0 / 0.8) rgb(0 0 0 / 0) !important;
   scrollbar-width: thin !important;
 `;
 
@@ -383,7 +383,7 @@ export const MsgInput = styled.input`
 export const ProfileListContainer = styled.aside`
   position: relative;
   width: 16%;
-  max-height: 100%;
+  height: 100%;
   background-color: #101010;
   padding: 1rem 2rem;
   display: flex;

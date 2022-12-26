@@ -39,7 +39,7 @@ const ConversationPageActiveChat: React.FC = () => {
   }, [id]);
 
   const isActiveChatRecipient = (activeChat: Conversation | undefined) => {
-    return activeChat?.recipient._id === user?._id;
+    return activeChat?.creator._id === user?._id;
   };
 
   return (
