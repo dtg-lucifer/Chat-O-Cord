@@ -1,3 +1,4 @@
+import { OnModuleInit } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
   MessageBody,
@@ -9,20 +10,22 @@ import {
 import { ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-const { CORS_ORIGIN } = process.env;
-
 @WebSocketGateway({
   cors: {
-    origin: [CORS_ORIGIN, 'https://hoppscotch.io/realtime/socketio'],
+    origin: ["http://localhost:3000"],
   },
 })
-export class MessageGateway implements OnGatewayConnection {
+export class MessageGateway implements OnGatewayConnection, OnModuleInit {
   @WebSocketServer()
   server: Server;
 
-  handleConnection(client: any, ...args: any[]) {
-    console.log(client);
+  onModuleInit() {}
+  
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log(client.id);
+    client.emit("createMessage", { msg: "Hello i am coming from server" })
   }
+
 
   @SubscribeMessage('createMessage')
   handleCreateMessage(
@@ -30,12 +33,12 @@ export class MessageGateway implements OnGatewayConnection {
     @ConnectedSocket() client: Socket,
   ) {
     console.log('Create Message', data);
-    console.log(client);
+    client.broadcast.emit("createMessage", data)
   }
 
-    @OnEvent("message.create")
-    handleMessageCreateEvent(payload: any) {
-      console.log("Event message.create", payload);
-      this.server.emit("onMessage", payload)
-    }
+  @OnEvent('message.create')
+  handleMessageCreateEvent(payload: any) {
+    console.log('Event message.create', payload);
+    this.server.emit('createMessage', payload);
+  }
 }

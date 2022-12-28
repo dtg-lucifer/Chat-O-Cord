@@ -275,11 +275,12 @@ export const HeaderAvatar = styled.img`
 `;
 
 export const HeaderIconContainer = styled.div`
-  width: 10%;
+  gap: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
+  margin-right: 4rem;
   & svg {
     font-size: 2rem;
     cursor: pointer;

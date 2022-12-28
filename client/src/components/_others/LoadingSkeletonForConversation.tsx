@@ -41,8 +41,7 @@ const LoadingSkeleton = styled.span`
   }
 `;
 
-const LoadingSkeletonForConversation = () => {
-  return <LoadingSkeleton />;
-};
+const LoadingSkeletonForConversation = () => <LoadingSkeleton />;
+
 
 export default LoadingSkeletonForConversation;

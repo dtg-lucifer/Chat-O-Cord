@@ -15,7 +15,6 @@ import { AuthContext } from "../../../utils/context/AuthContext";
 import { Conversation } from "../../../types/ComponentProps/Conversation";
 
 const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
-
   const { user } = useContext(AuthContext);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -24,10 +23,13 @@ const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
     setShowModal((prev) => !prev);
   };
   const displayUser = (conversation: Conversation) => {
-    return conversation.creator._id === user?._id
-      ? conversation.recipient
-      : conversation.creator;
-  } 
+    if (conversation.creator._id === user?._id) {
+      return conversation.recipient._id === user?._id
+        ? conversation.creator
+        : conversation.recipient;
+    }
+    return conversation.creator;
+  };
 
   return (
     <SideBarWrapper>
@@ -48,9 +50,9 @@ const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
             <ChatOuter key={conv.id} arrLength={conversations.length}>
               <ChatCard
                 img={myPic}
-                name={
-                  `${displayUser(conv).firstName} ${displayUser(conv).lastName}`
-                }
+                name={`${displayUser(conv).firstName} ${
+                  displayUser(conv).lastName
+                }`}
                 lastMsg={"Hello"}
                 id={conv.id}
               />

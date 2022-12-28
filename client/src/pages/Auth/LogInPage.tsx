@@ -13,18 +13,17 @@ import { useNavigate } from "react-router-dom";
 import { LoginData } from "../../types/ComponentProps/Authentication";
 import { LoginUser } from "../../utils/api";
 import { useToast } from "../../utils/hooks/useToast";
-import { useState } from "react";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md"
 
 const LogInPage = () => {
   const {
     register,
     handleSubmit,
+    // eslint-disable-next-line
     formState: { errors },
   } = useForm<LoginData>();
-  const [loading, setLoading] = useState<boolean>(false)
   const { success, error } = useToast({
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -36,13 +35,11 @@ const LogInPage = () => {
   const navigate = useNavigate();
   const onSubmit = async (data: LoginData) => {
     try {
-      setLoading(true)
+      // eslint-disable-next-line
       const { data: response } = await LoginUser(data);
-      setLoading(false)
       success("Successfully logged in")
       navigate("/conversations");
     } catch (err) {
-      setLoading(false)
       error("Oops, something is wrong!")
     }
   };
@@ -85,7 +82,7 @@ const LogInPage = () => {
               </InputContainer>
             </div>
 
-            <Button disabled={loading} type="submit">Log In</Button>
+            <Button type="submit">Log In</Button>
 
             <div className={styles.login__link}>
               <span>Need an account?</span>

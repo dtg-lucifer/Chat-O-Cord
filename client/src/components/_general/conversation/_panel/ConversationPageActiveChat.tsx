@@ -18,13 +18,16 @@ import myPic from "../../../../assets/my_pic.jpg";
 import { FaVideo } from "react-icons/fa";
 import {
   Conversation,
+  CreateMessagePayload,
   Message as MessageType,
 } from "../../../../types/ComponentProps/Conversation";
 import Message from "../messages/Message";
+import { SocketContext } from "../../../../utils/context/SocketContext";
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
+  const socket = useContext(SocketContext)
   const [activeChat, setActiveChat] = useState<Conversation | undefined>();
   const [messages, setMessages] = useState<MessageType[]>([]);
 
@@ -38,8 +41,27 @@ const ConversationPageActiveChat: React.FC = () => {
       .catch((err) => console.log(err));
   }, [id]);
 
-  const isActiveChatRecipient = (activeChat: Conversation | undefined) => {
-    return activeChat?.creator._id === user?._id;
+
+  useEffect(() => {
+    socket.on("connect", () => console.log("New connection"))
+    socket.on("createMessage", (payload: CreateMessagePayload) => {
+      const { conversation, ...message } = payload
+      setMessages(prev => [message, ...prev])
+      console.log("Message received")
+    })
+    return () => {
+      socket.off("connect")
+      socket.off("createMessage")
+    }
+  }, [socket])
+
+  const displayUser = (conversation: Conversation | undefined) => {
+    if (conversation?.creator._id === user?._id) {
+      return conversation?.recipient._id === user?._id
+        ? conversation?.creator
+        : conversation?.recipient;
+    }
+    return conversation?.creator;
   };
 
   return (
@@ -48,8 +70,8 @@ const ConversationPageActiveChat: React.FC = () => {
         <HeaderAvatar src={myPic} alt="user-avatar" />
         <div style={{ flex: "1" }}>
           <div style={{ fontWeight: "400", fontSize: "2rem" }}>
-            {isActiveChatRecipient(activeChat) ? activeChat?.recipient?.firstName : user?.firstName}{" "}
-            {isActiveChatRecipient(activeChat) ? activeChat?.recipient?.lastName : user?.lastName}
+            {displayUser(activeChat)?.firstName}{" "}
+            {displayUser(activeChat)?.lastName}
           </div>
         </div>
         <HeaderIconContainer>

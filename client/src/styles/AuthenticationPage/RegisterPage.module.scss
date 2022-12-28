@@ -1,26 +1,94 @@
 @import "../_variables";
 
-.form {
-    background-color: $primary-bg-dark-theme;
-    padding: 3rem 6rem;
-    font-size: 2rem;
-    max-width: 30vw;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 2rem;
-    & > div {
+.wrapper {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    display: grid;
+    place-items: center;
+    & > img{
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
         width: 100%;
+        object-fit:  cover;
+        z-index: -10;
+        
+    }
+    & > .inner__wrapper{
+        z-index: 10;
         display: flex;
-        gap: 2rem;
+        // height: 60vh;
         align-items: center;
         justify-content: center;
-    }
-    & > div:last-child {
-        font-size: 2.3rem;
-        & > a {
-            font-weight: 700;
+        background-color: $primary-bg-dark-theme;
+        gap: 6rem;
+        padding: 2rem 3rem;
+        border-radius: 1rem;
+        box-shadow: 2px 2px 20px 10px rgb(0 0 0 / 0.3);
+        & > img {
+            z-index: 10;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+            height: calc(60vh - 2 * 1rem);
+            margin-left: 3rem;
+        }
+        & > form.form{
+            height: 100%;
+            width: 40vw;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+            padding: 3rem 6rem;
+            justify-content: space-evenly;
+            & > .innerForm__wrapper{
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: center;
+                justify-content: space-evenly;
+                padding: 3rem 6rem;
+                width: 100%;
+                & > .field__wrapper {
+                    width: 100%;
+                    &:nth-child(2) {
+                        display: flex;
+                        // gap: .5rem;
+                    }
+                }
+                & > .login__link {
+                    margin-top: 2rem;
+                    font-size: 1rem;
+                    color: rgb(255 255 255 / 0.4);
+                    display: flex;
+                    gap: 2rem;
+                    & a {
+                      color: rgb(157, 149, 247);
+                      text-decoration: none;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      & > svg {
+                        font-size: 2rem;
+                      }
+                    }
+                }
+            }
+            & > .register__heading {
+                font-size: 4rem;
+                padding: 2rem;
+                display: grid;
+                place-items: center;
+                & > strong {
+                    font-weight: 400;
+                    font-family: $primary-poppins;
+                    & > span {
+                        color: #6c63ff;
+                    }
+                }
+            }
         }
     }
 }

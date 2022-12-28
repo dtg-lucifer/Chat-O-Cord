@@ -1,6 +1,4 @@
-import { ChatType } from "../types/Utils/ConversationsChatCard";
-
-export const ChatDetails: Array<ChatType> = [
+export const ChatDetails = [
     {
         id: 1,
         name: "Piush Bose",
