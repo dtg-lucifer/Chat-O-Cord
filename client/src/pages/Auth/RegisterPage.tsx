@@ -13,6 +13,7 @@ import { RegisterUser } from "../../utils/api";
 import imgSrc from "../../assets/registerSvg.svg";
 import bg from "../../assets/authenticationBG.svg";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { useToast } from "../../utils/hooks/useToast";
 
 const AuthenticationPage = () => {
   const {
@@ -22,13 +23,15 @@ const AuthenticationPage = () => {
     formState: { errors },
   } = useForm<CreateUserParams>();
   const navigate = useNavigate();
+  const { success, error } = useToast();
+
   const onSubmit = async (data: CreateUserParams) => {
     try {
       const res = await RegisterUser(data);
-      console.log(res);
+      success("Successfully registered your account!")
       navigate("/conversations");
     } catch (err) {
-      console.log(err);
+      error("Oops.. Something went wrong")
     }
   };
 

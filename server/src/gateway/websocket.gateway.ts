@@ -22,7 +22,7 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
   onModuleInit() {}
   
   handleConnection(client: Socket, ...args: any[]) {
-    console.log(client.id);
+    console.log("Incoming connection" ,client.id);
     client.emit("createMessage", { msg: "Hello i am coming from server" })
   }
 

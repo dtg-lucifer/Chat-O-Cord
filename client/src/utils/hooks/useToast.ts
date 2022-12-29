@@ -1,7 +1,16 @@
 import { toast, ToastOptions } from "react-toastify";
 
 export const useToast = (
-  defaultOptions: ToastOptions<{}> = { theme: "dark" }
+  defaultOptions: ToastOptions<{
+    position: "bottom-right";
+    autoClose: 5000;
+    hideProgressBar: false;
+    closeOnClick: true;
+    pauseOnHover: true;
+    draggable: true;
+    progress: undefined;
+    theme: "dark";
+  }> = { theme: "dark" }
 ) => {
   const success = (data: string) => {
     toast(data, { ...defaultOptions, type: "success" });

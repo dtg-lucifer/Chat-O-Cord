@@ -18,7 +18,7 @@ export class ConversationService implements IConversationsService {
   async findByID(id: number): Promise<Conversation> {
     return await this.conversationsRepository.findOne({
       where: { id },
-      relations: ["creator", "recipient"]
+      relations: ['creator', 'recipient'],
     });
   }
 
@@ -41,6 +41,9 @@ export class ConversationService implements IConversationsService {
         'recipient.userName',
         'recipient.email',
       ])
+      // .leftJoin('conversations.messages', 'messages')
+      // .addSelect('messages.content')
+      // .orderBy("messages.id", "DESC")
       .where('creator._id = :id', { id })
       .orWhere('recipient._id = :id', { id })
       .orderBy('conversations.id', 'DESC')

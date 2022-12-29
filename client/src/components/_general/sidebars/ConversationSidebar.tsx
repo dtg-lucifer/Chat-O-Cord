@@ -17,7 +17,6 @@ import { Conversation } from "../../../types/ComponentProps/Conversation";
 const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
   const { user } = useContext(AuthContext);
   const [showModal, setShowModal] = useState<boolean>(false);
-
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setShowModal((prev) => !prev);

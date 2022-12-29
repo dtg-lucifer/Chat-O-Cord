@@ -47,7 +47,6 @@ const ConversationPageActiveChat: React.FC = () => {
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload
       setMessages(prev => [message, ...prev])
-      console.log("Message received")
     })
     return () => {
       socket.off("connect")
@@ -94,7 +93,7 @@ const ConversationPageActiveChat: React.FC = () => {
       </ConversationWrapper>
       <ConversationInput
         name={activeChat?.recipient.userName}
-        id={activeChat?.recipient._id}
+        id={activeChat?.id}
       />
     </MainWrapper>
   );

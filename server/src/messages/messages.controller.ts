@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Inject, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
 import { IMessageService } from './messages';
 import { AuthUser } from 'src/utils/decorators';

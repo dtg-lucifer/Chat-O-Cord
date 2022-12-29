@@ -35,9 +35,26 @@ export const getConversations = () =>
   );
 
 export const getConversationByID = (id: number) => {
-  return axios.get<Conversation>(`${REACT_APP_API_BASE_URL}/conversations/${id}`, axiosConfig)
-}
+  return axios.get<Conversation>(
+    `${REACT_APP_API_BASE_URL}/conversations/${id}`,
+    axiosConfig
+  );
+};
 
 export const getConversationMessages = (id: number) => {
-  return axios.get<Message[]>(`${REACT_APP_API_BASE_URL}/messages/${id}`, axiosConfig)
-}
+  return axios.get<Message[]>(
+    `${REACT_APP_API_BASE_URL}/messages/${id}`,
+    axiosConfig
+  );
+};
+
+export const postNewMessage = (data: {
+  content: string;
+  conversationID: number;
+}) => {
+  return axios.post<Message>(
+    `${REACT_APP_API_BASE_URL}/messages`,
+    data,
+    axiosConfig
+  );
+};

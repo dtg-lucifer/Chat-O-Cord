@@ -5,6 +5,7 @@ export interface Conversation {
   createdAt: string;
   creator: User;
   recipient: User;
+  // messages?: Message[]
 }
 
 export interface Message {

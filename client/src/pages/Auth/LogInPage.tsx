@@ -22,16 +22,7 @@ const LogInPage = () => {
     // eslint-disable-next-line
     formState: { errors },
   } = useForm<LoginData>();
-  const { success, error } = useToast({
-    position: "bottom-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-  });
+  const { success, error } = useToast();
   const navigate = useNavigate();
   const onSubmit = async (data: LoginData) => {
     try {
@@ -40,7 +31,7 @@ const LogInPage = () => {
       success("Successfully logged in")
       navigate("/conversations");
     } catch (err) {
-      error("Oops, something is wrong!")
+      error("Oops, something went wrong!")
     }
   };
 
