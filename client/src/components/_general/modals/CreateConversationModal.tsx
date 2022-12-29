@@ -10,6 +10,8 @@ import {
 import { OverlayStyle } from "../../_styled/ConversationPage";
 import { VscClose } from "react-icons/vsc";
 import styles from "../../../styles/ConversationPage/ConversationPage.module.scss";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
 
 interface ConversationModalPropType {
   showModal: boolean;
@@ -24,6 +26,12 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") setShowModal(prev => !prev);
   };
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+  }
+
+  const conversation = useSelector((state: RootState) => state.conversation.conversations)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -60,7 +68,7 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
                 <InputTextField bottomLine={true} />
               </InputContainer>
             </section>
-            <Button onClick={(e) => e.preventDefault()} type="submit">
+            <Button onClick={handleSubmit} type="submit">
               Create Conversation
             </Button>
           </form>
