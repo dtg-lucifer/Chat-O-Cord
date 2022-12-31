@@ -10,17 +10,20 @@ import PageNotFound from "./pages/_PageNotFound";
 import { User } from "./types/Utils/Authentication";
 import { AuthContext } from "./utils/context/AuthContext";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { SocketContext, socket } from "./utils/context/SocketContext";
 import { Socket } from "socket.io-client";
 import { Provider as ReduxProvider} from "react-redux";
 import { store } from "./store";
+import { enableMapSet } from "immer"
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   user?: User;
   setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
   socket: Socket;
 }
+
+enableMapSet()
 
 function App() {
   const [user, setUser] = useState<User>();

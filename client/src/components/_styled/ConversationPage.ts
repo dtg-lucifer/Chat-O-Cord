@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import {
-  ChatCardOuterProps,
   PageWrapperProps,
   SIdeBarProps,
 } from "../../types/StyledComponentProps/ConversationPage";
@@ -160,7 +159,7 @@ export const SideBarChatButton = styled(NavLink)`
   }
 `;
 
-export const ChatOuter = styled.div<ChatCardOuterProps>`
+export const ChatOuter = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

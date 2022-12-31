@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ConversationPageNoActiveChat from "../../components/_general/conversation/ConversationPageNoAvtiveChat";
 import ConversationPageActiveChat from "../../components/_general/conversation/_panel/ConversationPageActiveChat";
 import ConversationSidebar from "../../components/_general/sidebars/ConversationSidebar";
@@ -6,19 +6,20 @@ import ConversationMiniSideBar from "../../components/_general/sidebars/Conversa
 import { PageWrapper } from "../../components/_styled/ConversationPage";
 import { ConversationPageStateProps } from "../../types/StyledComponentProps/ConversationPage";
 import { useParams } from "react-router-dom";
-import { Conversation } from "../../types/ComponentProps/Conversation";
-import { getConversations } from "../../utils/api";
-// import ProfileList from "../../components/_general/conversation/_profile/ProfileList";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { fetchConversationsThunk } from "../../store/slices/conversationSlice";
+import ProfileList from "../../components/_general/conversation/_profile/ProfileList";
 
 const ConversationPage: React.FC<ConversationPageStateProps> = () => {
   const { id } = useParams();
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    getConversations()
+    dispatch(fetchConversationsThunk())
+      .unwrap()
       .then(({ data }) => {
-        console.log(data);
-        setConversations(data);
+        console.log("Fetch Conversations From REDUX-THUNK", data)
       })
       .catch((err) => console.log(err));
   }, []);
@@ -26,12 +27,8 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
   return (
     <PageWrapper display="flex" fdirection="row" alignItems="center" gap={0}>
       <ConversationMiniSideBar />
-      <ConversationSidebar conversations={conversations} />
-      {id ? (
-        <ConversationPageActiveChat />
-      ) : (
-        <ConversationPageNoActiveChat />
-      )}
+      <ConversationSidebar />
+      {id ? <ConversationPageActiveChat /> : <ConversationPageNoActiveChat />}
       {/* {id && <ProfileList />} */}
     </PageWrapper>
   );

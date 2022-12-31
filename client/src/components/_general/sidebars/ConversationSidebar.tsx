@@ -7,17 +7,20 @@ import {
   SideBarWrapper,
   Wrapper,
 } from "../../_styled/ConversationPage";
-import { ChatlistProps } from "../../../types/ComponentProps/ConversationPanel";
 import myPic from "../../../assets/my_pic.jpg";
 import ChatCard from "../conversation/ChatCard";
 import CreateConversationModal from "../modals/CreateConversationModal";
 import { AuthContext } from "../../../utils/context/AuthContext";
 import { Conversation } from "../../../types/ComponentProps/Conversation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
-const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
+const ConversationSidebar: React.FC<{}> = () => {
   const { user } = useContext(AuthContext);
   const [showModal, setShowModal] = useState<boolean>(false);
-
+  const conversations = useSelector((state: RootState) => {
+    return state.conversation.conversations;
+  });
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setShowModal((prev) => !prev);
@@ -45,16 +48,16 @@ const ConversationSidebar: React.FC<ChatlistProps> = ({ conversations }) => {
         </ChatFilterButtonsContainer>
       </Wrapper>
       <Wrapper bottomLine={false}>
-        {conversations.map((conv) => {
+        {Array.from(conversations, ([_, conversations]) => conversations).map((conversations) => {
           return (
-            <ChatOuter key={conv.id} arrLength={conversations.length}>
+            <ChatOuter key={conversations.id}>
               <ChatCard
                 img={myPic}
-                name={`${displayUser(conv).firstName} ${
-                  displayUser(conv).lastName
+                name={`${displayUser(conversations).firstName} ${
+                  displayUser(conversations).lastName
                 }`}
                 lastMsg={"Hello"}
-                id={conv.id}
+                id={conversations.id}
               />
             </ChatOuter>
           );
