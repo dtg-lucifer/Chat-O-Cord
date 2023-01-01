@@ -1,4 +1,12 @@
-import { Controller, Inject, Post, Body, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Inject,
+  Post,
+  Body,
+  Get,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
 import { IMessageService } from './messages';
 import { AuthUser } from 'src/utils/decorators';
@@ -18,16 +26,20 @@ export class MessagesController {
     @AuthUser() user: User,
     @Body() createMessageDto: CreateMessageDto,
   ) {
-    const msg = await this.messageService.createMessage({ ...createMessageDto, user });
-    this.eventEmitter.emit("message.create", msg)
-    return msg
+    const msg = await this.messageService.createMessage({
+      ...createMessageDto,
+      user,
+    });
+    this.eventEmitter.emit('message.create', msg);
+    return msg;
   }
 
   @Get(':conversationID')
-  getMessagesByConvsersationID(
+  async getMessagesByConvsersationID(
     @AuthUser() user: User,
-    @Param('conversationID') conversationID: number,
+    @Param('conversationID', ParseIntPipe) conversationID: number,
   ) {
-    return this.messageService.getMessagesByConvId(conversationID)
+    const messages = await this.messageService.getMessagesByConvId(conversationID);
+    return { id: conversationID, messages };
   }
 }

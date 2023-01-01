@@ -16,15 +16,19 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
 const ConversationSidebar: React.FC<{}> = () => {
+  
   const { user } = useContext(AuthContext);
   const [showModal, setShowModal] = useState<boolean>(false);
+
   const conversations = useSelector((state: RootState) => {
     return state.conversation.conversations;
   });
+
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setShowModal((prev) => !prev);
   };
+
   const displayUser = (conversation: Conversation) => {
     if (conversation.creator._id === user?._id) {
       return conversation.recipient._id === user?._id
@@ -48,16 +52,16 @@ const ConversationSidebar: React.FC<{}> = () => {
         </ChatFilterButtonsContainer>
       </Wrapper>
       <Wrapper bottomLine={false}>
-        {Array.from(conversations, ([_, conversations]) => conversations).map((conversations) => {
+        {conversations.map((conv) => {
           return (
-            <ChatOuter key={conversations.id}>
+            <ChatOuter key={conv.id}>
               <ChatCard
                 img={myPic}
-                name={`${displayUser(conversations).firstName} ${
-                  displayUser(conversations).lastName
+                name={`${displayUser(conv).firstName} ${
+                  displayUser(conv).lastName
                 }`}
                 lastMsg={"Hello"}
-                id={conversations.id}
+                id={conv.id}
               />
             </ChatOuter>
           );

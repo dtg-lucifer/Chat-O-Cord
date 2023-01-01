@@ -331,6 +331,8 @@ export const MessageAuthorAvatar = styled.img<MessageProps>`
 export const MessageContent = styled.div<MessageProps>`
   margin-left: ${({ isSameTimeStamp }) =>
     isSameTimeStamp === true ? "5rem" : "none"};
+  line-height: 1.6rem;
+  color: rgb(255 255 255 / .8);
 `;
 
 export const MessageAuthorName = styled.h3<MessageProps>`
@@ -343,7 +345,7 @@ export const MessageCreatedAt = styled.span<MessageProps>`
   display: ${({ isSameTimeStamp }) =>
     isSameTimeStamp === true ? "none" : "inline"};
   font-weight: 200;
-  opacity: 0.5;
+  opacity: 0.2;
 `;
 
 export const ConversationInputWrapper = styled.form`

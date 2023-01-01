@@ -42,7 +42,7 @@ export const getConversationByID = (id: number) => {
 };
 
 export const getConversationMessages = (id: number) => {
-  return axios.get<Message[]>(
+  return axios.get<{ id: number; messages: Message[] }>(
     `${REACT_APP_API_BASE_URL}/messages/${id}`,
     axiosConfig
   );

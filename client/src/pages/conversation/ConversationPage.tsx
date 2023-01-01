@@ -17,11 +17,6 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
 
   useEffect(() => {
     dispatch(fetchConversationsThunk())
-      .unwrap()
-      .then(({ data }) => {
-        console.log("Fetch Conversations From REDUX-THUNK", data)
-      })
-      .catch((err) => console.log(err));
   }, []);
 
   return (

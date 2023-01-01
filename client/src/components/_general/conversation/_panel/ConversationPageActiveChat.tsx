@@ -9,10 +9,7 @@ import {
 } from "../../../_styled/ConversationPage";
 import ConversationInput from "../../inputs/ConversationInput";
 import { AuthContext } from "../../../../utils/context/AuthContext";
-import {
-  getConversationByID,
-  getConversationMessages,
-} from "../../../../utils/api";
+import { getConversationByID } from "../../../../utils/api";
 import { BiPhoneCall } from "react-icons/bi";
 import myPic from "../../../../assets/my_pic.jpg";
 import { FaVideo } from "react-icons/fa";
@@ -23,36 +20,42 @@ import {
 } from "../../../../types/ComponentProps/Conversation";
 import Message from "../messages/Message";
 import { SocketContext } from "../../../../utils/context/SocketContext";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../store";
+import { fetchMessagesThunk } from "../../../../store/slices/conversationSlice";
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
-  const socket = useContext(SocketContext)
+  const socket = useContext(SocketContext);
+  const dispatch = useDispatch<AppDispatch>();
+  const messagesState = useSelector(
+    (state: RootState) => state.conversation.messages
+  );
   const [activeChat, setActiveChat] = useState<Conversation | undefined>();
   const [messages, setMessages] = useState<MessageType[]>([]);
 
   useEffect(() => {
-    getConversationMessages(parseInt(id!))
-      .then(({ data }) => setMessages(data))
-      .catch((err) => console.log(err));
+    dispatch(fetchMessagesThunk(parseInt(id!)))
+      .unwrap()
+      .then(({ data }) => setMessages(data.messages));
 
     getConversationByID(parseInt(id!))
       .then(({ data }) => setActiveChat(data))
       .catch((err) => console.log(err));
   }, [id]);
 
-
   useEffect(() => {
-    socket.on("connect", () => console.log("New connection"))
+    socket.on("connect", () => console.log("New connection"));
     socket.on("createMessage", (payload: CreateMessagePayload) => {
-      const { conversation, ...message } = payload
-      setMessages(prev => [message, ...prev])
-    })
+      const { conversation, ...message } = payload;
+      setMessages((prev) => [message, ...prev]);
+    });
     return () => {
-      socket.off("connect")
-      socket.off("createMessage")
-    }
-  }, [socket])
+      socket.off("connect");
+      socket.off("createMessage");
+    };
+  }, [socket]);
 
   const displayUser = (conversation: Conversation | undefined) => {
     if (conversation?.creator._id === user?._id) {
@@ -62,6 +65,8 @@ const ConversationPageActiveChat: React.FC = () => {
     }
     return conversation?.creator;
   };
+
+  const convMessages = messagesState.find((msg) => msg.id === parseInt(id!));
 
   return (
     <MainWrapper>
@@ -79,17 +84,18 @@ const ConversationPageActiveChat: React.FC = () => {
         </HeaderIconContainer>
       </ChatHeader>
       <ConversationWrapper>
-        {messages.map((msg, i, msgs) => {
-          return (
-            <Message
-              key={msg.id}
-              recipient={activeChat?.recipient}
-              currentIndex={i}
-              messages={msgs}
-              {...msg}
-            />
-          );
-        })}
+        {convMessages &&
+          convMessages.messages.map((msg, i, msgs) => {
+            return (
+              <Message
+                key={msg.id}
+                recipient={activeChat?.recipient}
+                currentIndex={i}
+                messages={msgs}
+                {...msg}
+              />
+            );
+          })}
       </ConversationWrapper>
       <ConversationInput
         name={activeChat?.recipient.userName}
