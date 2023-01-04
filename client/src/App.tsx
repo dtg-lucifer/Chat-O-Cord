@@ -12,23 +12,33 @@ import { AuthContext } from "./utils/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import { SocketContext, socket } from "./utils/context/SocketContext";
 import { Socket } from "socket.io-client";
-import { Provider as ReduxProvider} from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./store";
-import { enableMapSet } from "immer"
 import "react-toastify/dist/ReactToastify.css";
+import { Conversation } from "./types/ComponentProps/Conversation";
+import { ActivechatContext } from "./utils/context/ActivechatContext";
 
 interface Props {
   user?: User;
   setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
   socket: Socket;
+  activeConversation?: Conversation;
+  setActiveConversation: React.Dispatch<
+    React.SetStateAction<Conversation | undefined>
+  >;
 }
-
-enableMapSet()
 
 function App() {
   const [user, setUser] = useState<User>();
+  const [activeConversation, setActiveConversation] = useState<Conversation>();
   return (
-    <AppWithProviders user={user} setUser={setUser} socket={socket}>
+    <AppWithProviders
+      user={user}
+      setUser={setUser}
+      socket={socket}
+      activeConversation={activeConversation}
+      setActiveConversation={setActiveConversation}
+    >
       <Routes>
         <Route path="/" element={<GetStartedPage />} />
         <Route path="/auth">
@@ -73,12 +83,18 @@ function AppWithProviders({
   user,
   setUser,
   socket,
+  activeConversation,
+  setActiveConversation,
 }: PropsWithChildren & Props) {
   return (
     <ReduxProvider store={store}>
       <AuthContext.Provider value={{ user, updateUser: setUser }}>
         <SocketContext.Provider value={socket}>
-          {children}
+          <ActivechatContext.Provider
+            value={{ activeConversation, setActiveConversation }}
+          >
+            {children}
+          </ActivechatContext.Provider>
         </SocketContext.Provider>
       </AuthContext.Provider>
     </ReduxProvider>

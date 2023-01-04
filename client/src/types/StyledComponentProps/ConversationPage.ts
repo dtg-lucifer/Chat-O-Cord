@@ -1,3 +1,5 @@
+import { Conversation } from "../ComponentProps/Conversation";
+
 export type PageWrapperProps = Partial<{
     readonly display: string;
     readonly fdirection: "column" | "row";
@@ -15,6 +17,7 @@ export interface MiniChatCardProps {
     readonly name: string;
     readonly lastMsg?: string;
     readonly id: number;
+    readonly conversation: Conversation
 }
 
 export interface ChatCardOuterProps {

@@ -9,7 +9,6 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { fetchConversationsThunk } from "../../store/slices/conversationSlice";
-import ProfileList from "../../components/_general/conversation/_profile/ProfileList";
 
 const ConversationPage: React.FC<ConversationPageStateProps> = () => {
   const { id } = useParams();

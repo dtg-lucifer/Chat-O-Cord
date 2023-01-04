@@ -19,7 +19,7 @@ export const PageWrapper = styled.div<PageWrapperProps>`
 export const SideBarWrapper = styled.aside`
   background-color: #121212;
   height: 100%;
-  width: 18%;
+  min-width: 18%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,7 +42,7 @@ const MiniSideBarRightBorderAnimation = keyframes`
 export const ConversationMiniSideBarWrapper = styled.div`
   background-color: #101010;
   height: 100%;
-  width: 7rem;
+  min-width: 7rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -333,6 +333,9 @@ export const MessageContent = styled.div<MessageProps>`
     isSameTimeStamp === true ? "5rem" : "none"};
   line-height: 1.6rem;
   color: rgb(255 255 255 / .8);
+  max-width: 90%;
+  white-space: wrap;
+  word-break: break-all;
 `;
 
 export const MessageAuthorName = styled.h3<MessageProps>`

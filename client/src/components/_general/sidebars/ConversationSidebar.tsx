@@ -62,6 +62,7 @@ const ConversationSidebar: React.FC<{}> = () => {
                 }`}
                 lastMsg={"Hello"}
                 id={conv.id}
+                conversation={conv}
               />
             </ChatOuter>
           );

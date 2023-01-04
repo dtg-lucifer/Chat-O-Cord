@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   ChatHeader,
@@ -9,47 +9,42 @@ import {
 } from "../../../_styled/ConversationPage";
 import ConversationInput from "../../inputs/ConversationInput";
 import { AuthContext } from "../../../../utils/context/AuthContext";
-import { getConversationByID } from "../../../../utils/api";
 import { BiPhoneCall } from "react-icons/bi";
 import myPic from "../../../../assets/my_pic.jpg";
 import { FaVideo } from "react-icons/fa";
 import {
   Conversation,
-  CreateMessagePayload,
-  Message as MessageType,
+  CreateMessagePayload
 } from "../../../../types/ComponentProps/Conversation";
 import Message from "../messages/Message";
 import { SocketContext } from "../../../../utils/context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../store";
-import { fetchMessagesThunk } from "../../../../store/slices/conversationSlice";
+import { addMessage, fetchMessagesThunk } from "../../../../store/slices/messageSlice";
+import { ActivechatContext } from "../../../../utils/context/ActivechatContext";
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const socket = useContext(SocketContext);
+  const { activeConversation } = useContext(ActivechatContext)
   const dispatch = useDispatch<AppDispatch>();
-  const messagesState = useSelector(
-    (state: RootState) => state.conversation.messages
-  );
-  const [activeChat, setActiveChat] = useState<Conversation | undefined>();
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const conversationMessages = useSelector((state: RootState) => {
+    return state.messages.messages
+  })
 
   useEffect(() => {
-    dispatch(fetchMessagesThunk(parseInt(id!)))
-      .unwrap()
-      .then(({ data }) => setMessages(data.messages));
-
-    getConversationByID(parseInt(id!))
-      .then(({ data }) => setActiveChat(data))
-      .catch((err) => console.log(err));
+    dispatch(fetchMessagesThunk(parseInt(id!)))    
   }, [id]);
 
   useEffect(() => {
     socket.on("connect", () => console.log("New connection"));
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload;
-      setMessages((prev) => [message, ...prev]);
+      dispatch(addMessage({
+        id: conversation.id,
+        message: message
+      }))
     });
     return () => {
       socket.off("connect");
@@ -66,7 +61,7 @@ const ConversationPageActiveChat: React.FC = () => {
     return conversation?.creator;
   };
 
-  const convMessages = messagesState.find((msg) => msg.id === parseInt(id!));
+  const activeChatMessages = conversationMessages.find((cm) => cm.id === parseInt(id!))
 
   return (
     <MainWrapper>
@@ -74,8 +69,8 @@ const ConversationPageActiveChat: React.FC = () => {
         <HeaderAvatar src={myPic} alt="user-avatar" />
         <div style={{ flex: "1" }}>
           <div style={{ fontWeight: "400", fontSize: "2rem" }}>
-            {displayUser(activeChat)?.firstName}{" "}
-            {displayUser(activeChat)?.lastName}
+            {displayUser(activeConversation)?.firstName}{" "}
+            {displayUser(activeConversation)?.lastName}
           </div>
         </div>
         <HeaderIconContainer>
@@ -84,12 +79,11 @@ const ConversationPageActiveChat: React.FC = () => {
         </HeaderIconContainer>
       </ChatHeader>
       <ConversationWrapper>
-        {convMessages &&
-          convMessages.messages.map((msg, i, msgs) => {
+        {activeChatMessages?.messages.map((msg, i, msgs) => {
             return (
               <Message
                 key={msg.id}
-                recipient={activeChat?.recipient}
+                recipient={activeConversation?.recipient}
                 currentIndex={i}
                 messages={msgs}
                 {...msg}
@@ -98,8 +92,8 @@ const ConversationPageActiveChat: React.FC = () => {
           })}
       </ConversationWrapper>
       <ConversationInput
-        name={activeChat?.recipient.userName}
-        id={activeChat?.id}
+        name={activeConversation?.recipient.userName}
+        id={activeConversation?.id}
       />
     </MainWrapper>
   );
