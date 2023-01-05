@@ -39,7 +39,6 @@ export class AuthController {
   @Get('status')
   @UseGuards(AuthenticatedGuard)
   getUserStatus(@Req() req: Request) {
-    console.log('API GetAuthStatus', req.user);
     return req.user;
   }
 

@@ -1,4 +1,5 @@
 import { User } from './typeorm';
+import { Socket } from "socket.io"
 
 export interface CreateUserDetails {
   email: string;
@@ -16,7 +17,6 @@ export interface FindUserParams {
   _id?: number;
   email?: string;
   username?: string;
-  // password?: string;
 }
 
 export interface CreateConversationParams {
@@ -36,4 +36,8 @@ export interface CreateMessageParams {
   content: string;
   conversationID: number;
   user: User;
+}
+
+export interface AuthenticatedSocket extends Socket {
+  user?: User
 }
