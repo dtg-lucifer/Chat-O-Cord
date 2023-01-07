@@ -60,7 +60,7 @@ const ConversationSidebar: React.FC<{}> = () => {
                 name={`${displayUser(conv).firstName} ${
                   displayUser(conv).lastName
                 }`}
-                lastMsg={"Hello"}
+                lastMsg={conv.lastMessageSent?.content}
                 id={conv.id}
                 conversation={conv}
               />

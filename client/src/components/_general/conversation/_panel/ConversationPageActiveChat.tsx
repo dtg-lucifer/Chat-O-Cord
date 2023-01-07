@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../store";
 import { addMessage, fetchMessagesThunk } from "../../../../store/slices/messageSlice";
 import { ActivechatContext } from "../../../../utils/context/ActivechatContext";
+import { updateLastMessage } from "../../../../store/slices/conversationSlice";
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
@@ -41,10 +42,12 @@ const ConversationPageActiveChat: React.FC = () => {
     socket.on("connect", () => console.log("New connection"));
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload;
+      console.log(payload)
       dispatch(addMessage({
         id: conversation.id,
         message: message
       }))
+      dispatch(updateLastMessage(payload))
     });
     return () => {
       socket.off("connect");

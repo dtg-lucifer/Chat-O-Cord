@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Conversation } from "../../types/ComponentProps/Conversation";
+import { Conversation, CreateMessagePayload } from "../../types/ComponentProps/Conversation";
 import { getConversations } from "../../utils/api";
 
 export interface ConversationState {
@@ -27,6 +27,14 @@ export const conversationSlice = createSlice({
     addConversation: (state, action: PayloadAction<Conversation>) => {
       state.conversations.push(action.payload);
     },
+    updateLastMessage: (state, action: PayloadAction<CreateMessagePayload>) => {
+      console.log(action.payload)
+      const { conversation, ...message } = action.payload
+      const index = state.conversations.findIndex(c => c.id === conversation.id)
+      state.conversations[index].lastMessageSent = message
+      const c = state.conversations.splice(index, 1)
+      state.conversations.unshift(c[0])
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -40,6 +48,6 @@ export const conversationSlice = createSlice({
   },
 });
 
-export const { addConversation } = conversationSlice.actions;
+export const { addConversation, updateLastMessage } = conversationSlice.actions;
 
 export default conversationSlice.reducer;

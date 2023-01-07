@@ -32,6 +32,7 @@ export const messageSlice = createSlice({
       );
       conversationMessage &&
         conversationMessage.messages.unshift(action.payload.message);
+      console.log(action);
     },
   },
   extraReducers: (builder) => {

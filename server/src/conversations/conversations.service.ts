@@ -18,13 +18,14 @@ export class ConversationService implements IConversationsService {
   async findByID(id: number): Promise<Conversation> {
     return await this.conversationsRepository.findOne({
       where: { id },
-      relations: ['creator', 'recipient'],
+      relations: ['creator', 'recipient', 'lastMessageSent'],
     });
   }
 
   async getConversations(id: number): Promise<Conversation[]> {
     return await this.conversationsRepository
       .createQueryBuilder('conversations')
+      .leftJoinAndSelect("conversations.lastMessageSent", "lastMessageSent")
       .leftJoin('conversations.creator', 'creator')
       .addSelect([
         'creator._id',

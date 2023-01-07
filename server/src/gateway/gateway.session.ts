@@ -16,8 +16,8 @@ export class GatewaySessionManager implements IGatewaySession {
     return this.sessions.get(id);
   }
 
-  setSocket(useerId: number, socket: AuthenticatedSocket) {
-    this.sessions.set(useerId, socket);
+  setSocket(userId: number, socket: AuthenticatedSocket) {
+    this.sessions.set(userId, socket);
   }
 
   removeSocket(id: number) {

@@ -18,13 +18,13 @@ import { Message } from 'src/utils/typeorm';
 @WebSocketGateway({
   cors: {
     origin: ['http://localhost:3000'],
-    credentials: true
+    credentials: true,
   },
 })
 export class MessageGateway implements OnGatewayConnection, OnModuleInit {
-
   constructor(
-    @Inject(Services.GATEWAY_SESSION_MANAGER) private readonly sessionManager: IGatewaySession
+    @Inject(Services.GATEWAY_SESSION_MANAGER)
+    private readonly sessionManager: IGatewaySession,
   ) {}
 
   @WebSocketServer()
@@ -34,8 +34,8 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
 
   handleConnection(client: AuthenticatedSocket, ...args: any[]) {
     console.log('Incoming connection', client.id);
-    this.sessionManager.setSocket(client.user._id, client)
-    client.emit('createMessage', { msg: 'Hello i am coming from server' });
+    this.sessionManager.setSocket(client.user._id, client);
+    console.log(this.sessionManager.getSockets().keys());
   }
 
   @SubscribeMessage('createMessage')
@@ -49,7 +49,20 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
 
   @OnEvent('message.create')
   handleMessageCreateEvent(payload: Message) {
-    console.log('Event message.create', payload.content);
-    this.server.emit('createMessage', payload);
+    console.log('Event message.create', payload);
+    const {
+      author,
+      conversation: { creator, recipient },
+    } = payload;
+
+    const authorSocket = this.sessionManager.getSocket(author._id);
+
+    const recipientSocket =
+      author._id === creator._id
+        ? this.sessionManager.getSocket(recipient._id)
+        : this.sessionManager.getSocket(creator._id);
+
+    if(authorSocket) authorSocket.emit('createMessage', payload);
+    if(recipientSocket) recipientSocket.emit('createMessage', payload);
   }
 }
