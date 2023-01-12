@@ -54,3 +54,22 @@
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 1);
   }
 }
+
+// active chat page
+
+.typingContainer {
+  padding: 0 3rem;
+  animation: popUp .5s ease;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: .2rem;
+  color: rgb(255 255 255 / .6);
+}
+
+@keyframes popUp {
+  from {
+    translate: 0 100%;
+  } to {
+    translate: 0 0;
+  }
+}

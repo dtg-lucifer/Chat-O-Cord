@@ -352,7 +352,7 @@ export const MessageCreatedAt = styled.span<MessageProps>`
 `;
 
 export const ConversationInputWrapper = styled.form`
-  margin: 1rem 2rem;
+  margin: 0 2rem 1rem 2rem;
   padding: 0.5rem 2rem;
   display: flex;
   align-items: center;
@@ -360,6 +360,7 @@ export const ConversationInputWrapper = styled.form`
   gap: 1.5rem;
   background-color: #101010;
   border-radius: 1rem;
+  z-index: 2;
   & div {
     height: 2rem;
     aspect-ratio: 1 / 1;

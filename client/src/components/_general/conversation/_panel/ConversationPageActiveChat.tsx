@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   ChatHeader,
@@ -23,6 +23,7 @@ import { AppDispatch, RootState } from "../../../../store";
 import { addMessage, fetchMessagesThunk } from "../../../../store/slices/messageSlice";
 import { ActivechatContext } from "../../../../utils/context/ActivechatContext";
 import { updateLastMessage } from "../../../../store/slices/conversationSlice";
+import styles from "../../../../styles/ConversationPage/ConversationPage.module.scss"
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ const ConversationPageActiveChat: React.FC = () => {
   const socket = useContext(SocketContext);
   const { activeConversation } = useContext(ActivechatContext)
   const dispatch = useDispatch<AppDispatch>();
+  const [ isTyping, setIsTyping ] = useState<boolean>(false)
   const conversationMessages = useSelector((state: RootState) => {
     return state.messages.messages
   })
@@ -67,6 +69,10 @@ const ConversationPageActiveChat: React.FC = () => {
 
   const activeChatMessages = conversationMessages.find((cm) => cm.id === parseInt(id!))
 
+  const sendTypingSts = () => {
+    socket.emit("onTyping", { conversationId: parseInt(id!) })
+  }
+  
   return (
     <MainWrapper>
       <ChatHeader>
@@ -95,9 +101,13 @@ const ConversationPageActiveChat: React.FC = () => {
             );
           })}
       </ConversationWrapper>
+      <div style={{
+        display: isTyping ? "block" : "none"
+      }} className={styles.typingContainer}>Typing...</div>
       <ConversationInput
         name={activeConversation?.recipient.userName}
         id={activeConversation?.id}
+        typingSts={sendTypingSts}
       />
     </MainWrapper>
   );

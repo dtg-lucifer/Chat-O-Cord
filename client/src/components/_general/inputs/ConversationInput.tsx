@@ -5,7 +5,7 @@ import { BsPlusCircleFill, BsEmojiSmileFill } from "react-icons/bs"
 import { useParams } from 'react-router-dom'
 import { postNewMessage } from '../../../utils/api'
 
-const ConversationInput: React.FC<MessageInputProps> = ({ name }) => {
+const ConversationInput: React.FC<MessageInputProps> = ({ name, typingSts }) => {
 
     const [msg, setMsg] = useState<string | undefined>("")
     const inputRef = useRef<HTMLInputElement>(null)
@@ -29,7 +29,7 @@ const ConversationInput: React.FC<MessageInputProps> = ({ name }) => {
   return (
     <ConversationInputWrapper onSubmit={submitHandler}>
         <div><BsPlusCircleFill /></div>
-        <MsgInput name='msg' id='msg' placeholder={`Message ${name}`} value={msg} ref={inputRef} onChange={changeHandler} />
+        <MsgInput name='msg' id='msg' placeholder={`Message ${name}`} value={msg} ref={inputRef} onChange={changeHandler} onKeyDown={typingSts} />
         <div><BsEmojiSmileFill /></div>
     </ConversationInputWrapper>
   )

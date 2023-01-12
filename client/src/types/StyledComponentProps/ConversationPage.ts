@@ -32,6 +32,7 @@ export interface ConversationPageStateProps {
 export interface MessageInputProps {
     readonly name: string | undefined;
     readonly id?: number;
+    readonly typingSts: () => void
 }
 
 export interface MessageProps {

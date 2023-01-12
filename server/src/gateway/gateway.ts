@@ -13,6 +13,7 @@ import { Services } from 'src/utils/constants';
 import { AuthenticatedSocket } from 'src/utils/types';
 import { IGatewaySession } from './gateway.session';
 import { Message } from 'src/utils/typeorm';
+import { ConversationService } from 'src/conversations/conversations.service';
 
 @WebSocketGateway({
   cors: {
@@ -24,6 +25,8 @@ export class MessageGateway implements OnGatewayConnection {
   constructor(
     @Inject(Services.GATEWAY_SESSION_MANAGER)
     private readonly sessionManager: IGatewaySession,
+    @Inject(Services.CONVERSATIONS)
+    private readonly conversationService: ConversationService,
   ) {}
 
   @WebSocketServer()
@@ -45,6 +48,12 @@ export class MessageGateway implements OnGatewayConnection {
       author: data.author.email,
     });
     client.broadcast.emit('createMessage', data);
+  }
+
+  @SubscribeMessage('onTyping')
+  async handleOnTyping(@MessageBody() { conversationId }: { conversationId: number }) {
+    const conversation = await this.conversationService.findByID(conversationId);
+    console.log(conversation)
   }
 
   @OnEvent('message.create')

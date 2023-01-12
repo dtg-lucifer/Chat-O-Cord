@@ -1,4 +1,3 @@
-import React from 'react'
 import SocialIcons from '../components/_general/social/SocialIcons'
 import { QuickLink } from '../components/_styled/PageNotFound'
 import styles from "../styles/PageNotFound/NotFound.module.scss"
