@@ -42,7 +42,6 @@ const ConversationPageActiveChat: React.FC = () => {
     socket.on("connect", () => console.log("New connection"));
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload;
-      console.log(payload)
       dispatch(addMessage({
         id: conversation.id,
         message: message

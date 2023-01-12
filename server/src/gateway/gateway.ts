@@ -1,4 +1,3 @@
-import { OnModuleInit } from '@nestjs/common';
 import { Inject } from '@nestjs/common/decorators';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
@@ -21,7 +20,7 @@ import { Message } from 'src/utils/typeorm';
     credentials: true,
   },
 })
-export class MessageGateway implements OnGatewayConnection, OnModuleInit {
+export class MessageGateway implements OnGatewayConnection {
   constructor(
     @Inject(Services.GATEWAY_SESSION_MANAGER)
     private readonly sessionManager: IGatewaySession,
@@ -29,8 +28,6 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
 
   @WebSocketServer()
   server: Server;
-
-  onModuleInit() {}
 
   handleConnection(client: AuthenticatedSocket, ...args: any[]) {
     console.log('Incoming connection', client.id);
@@ -43,13 +40,19 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
     @MessageBody() data: Message,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('Create Message', data);
+    console.log('Create Message', {
+      content: data.content,
+      author: data.author.email,
+    });
     client.broadcast.emit('createMessage', data);
   }
 
   @OnEvent('message.create')
   handleMessageCreateEvent(payload: Message) {
-    console.log('Event message.create', payload);
+    console.log('Event message.create', {
+      payloadContent: payload.content,
+      author: payload.author.email,
+    });
     const {
       author,
       conversation: { creator, recipient },
@@ -62,7 +65,7 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
         ? this.sessionManager.getSocket(recipient._id)
         : this.sessionManager.getSocket(creator._id);
 
-    if(authorSocket) authorSocket.emit('createMessage', payload);
-    if(recipientSocket) recipientSocket.emit('createMessage', payload);
+    if (authorSocket) authorSocket.emit('createMessage', payload);
+    if (recipientSocket) recipientSocket.emit('createMessage', payload);
   }
 }

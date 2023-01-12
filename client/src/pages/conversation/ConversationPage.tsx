@@ -25,14 +25,13 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
         console.log(c);
       })
       .catch((err) => console.log("ConversationPage", err));
-  }, []);
+  }, [id]);
 
   return (
     <PageWrapper display="flex" fdirection="row" alignItems="center" gap={0}>
       <ConversationMiniSideBar />
       <ConversationSidebar />
       {id ? <ConversationPageActiveChat /> : <ConversationPageNoActiveChat />}
-      {/* {id && <ProfileList />} */}
     </PageWrapper>
   );
 };
