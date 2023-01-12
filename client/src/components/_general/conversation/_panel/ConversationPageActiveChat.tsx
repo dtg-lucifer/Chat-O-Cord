@@ -35,7 +35,8 @@ const ConversationPageActiveChat: React.FC = () => {
   })
 
   useEffect(() => {
-    dispatch(fetchMessagesThunk(parseInt(id!)))    
+    dispatch(fetchMessagesThunk(parseInt(id!)))
+    // eslint-disable-next-line
   }, [id]);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ const ConversationPageActiveChat: React.FC = () => {
       socket.off("connect");
       socket.off("createMessage");
     };
+    // eslint-disable-next-line
   }, [socket]);
 
   const displayUser = (conversation: Conversation | undefined) => {

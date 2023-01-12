@@ -25,6 +25,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
         console.log(c);
       })
       .catch((err) => console.log("ConversationPage", err));
+    // eslint-disable-next-line
   }, [id]);
 
   return (
