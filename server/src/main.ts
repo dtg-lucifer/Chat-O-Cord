@@ -32,7 +32,6 @@ async function bootstrap() {
   const sessionRepository = getRepository(Session);
   const adapter = new WebsocketAdapter(app)
 
-  app.useWebSocketAdapter(adapter)
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({ origin: [CORS_ORIGIN], credentials: true });
@@ -47,8 +46,9 @@ async function bootstrap() {
       },
       store: new TypeormStore().connect(sessionRepository),
     }),
-  );
-
+    );
+    
+  app.useWebSocketAdapter(adapter)
   app.use(passport.initialize());
   app.use(passport.session());
 

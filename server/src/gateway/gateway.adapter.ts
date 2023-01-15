@@ -13,14 +13,14 @@ export class WebsocketAdapter extends IoAdapter {
 
     server.use(async (socket: AuthenticatedSocket, next) => {
       const { cookie: clientCookie } = socket.handshake.headers;
-      if (!clientCookie) {
+      if (clientCookie === undefined || !clientCookie) {
         console.log('No cookie found!');
         return next(new Error('No cookies found..!'));
       }
 
       const { CHATAPP_SESSION_ID } = cookie.parse(clientCookie);
 
-      if (!CHATAPP_SESSION_ID) {
+      if (CHATAPP_SESSION_ID === undefined || !CHATAPP_SESSION_ID) {
         console.log('CHATAPP_SESSION_ID does not exists..!');
         return next(new Error('Not authenticated'));
       }

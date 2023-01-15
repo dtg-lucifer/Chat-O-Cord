@@ -14,30 +14,33 @@ import myPic from "../../../../assets/my_pic.jpg";
 import { FaVideo } from "react-icons/fa";
 import {
   Conversation,
-  CreateMessagePayload
+  CreateMessagePayload,
 } from "../../../../types/ComponentProps/Conversation";
 import Message from "../messages/Message";
 import { SocketContext } from "../../../../utils/context/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../store";
-import { addMessage, fetchMessagesThunk } from "../../../../store/slices/messageSlice";
+import {
+  addMessage,
+  fetchMessagesThunk,
+} from "../../../../store/slices/messageSlice";
 import { ActivechatContext } from "../../../../utils/context/ActivechatContext";
 import { updateLastMessage } from "../../../../store/slices/conversationSlice";
-import styles from "../../../../styles/ConversationPage/ConversationPage.module.scss"
+import styles from "../../../../styles/ConversationPage/ConversationPage.module.scss";
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const socket = useContext(SocketContext);
-  const { activeConversation } = useContext(ActivechatContext)
+  const { activeConversation } = useContext(ActivechatContext);
   const dispatch = useDispatch<AppDispatch>();
-  const [ isTyping, setIsTyping ] = useState<boolean>(false)
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const conversationMessages = useSelector((state: RootState) => {
-    return state.messages.messages
-  })
+    return state.messages.messages;
+  });
 
   useEffect(() => {
-    dispatch(fetchMessagesThunk(parseInt(id!)))
+    dispatch(fetchMessagesThunk(parseInt(id!)));
     // eslint-disable-next-line
   }, [id]);
 
@@ -45,15 +48,25 @@ const ConversationPageActiveChat: React.FC = () => {
     socket.on("connect", () => console.log("New connection"));
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload;
-      dispatch(addMessage({
-        id: conversation.id,
-        message: message
-      }))
-      dispatch(updateLastMessage(payload))
+      dispatch(
+        addMessage({
+          id: conversation.id,
+          message: message,
+        })
+      );
+      dispatch(updateLastMessage(payload));
     });
+    socket.on("onTypingStart", (payload: { conversationId: number }) => {
+      if (payload.conversationId === parseInt(id!)) setIsTyping(true);
+    });
+    // socket.on("onTypingEnd", (payload: { conversationId: number }) => {
+    //   if (payload.conversationId === parseInt(id!)) setIsTyping(false);
+    // });
     return () => {
       socket.off("connect");
       socket.off("createMessage");
+      socket.off("onTypingStart");
+      // socket.off("onTypingEnd");
     };
     // eslint-disable-next-line
   }, [socket]);
@@ -67,12 +80,17 @@ const ConversationPageActiveChat: React.FC = () => {
     return conversation?.creator;
   };
 
-  const activeChatMessages = conversationMessages.find((cm) => cm.id === parseInt(id!))
+  const activeChatMessages = conversationMessages.find(
+    (cm) => cm.id === parseInt(id!)
+  );
 
   const sendTypingSts = () => {
-    socket.emit("onTyping", { conversationId: parseInt(id!) })
-  }
-  
+    socket.emit("onTypingStart", { conversationId: parseInt(id!) });
+  };
+  const sendTypingEnd = () => {
+    socket.emit("onTypingEnd", { conversationId: parseInt(id!) });
+  };
+
   return (
     <MainWrapper>
       <ChatHeader>
@@ -90,24 +108,30 @@ const ConversationPageActiveChat: React.FC = () => {
       </ChatHeader>
       <ConversationWrapper>
         {activeChatMessages?.messages.map((msg, i, msgs) => {
-            return (
-              <Message
-                key={msg.id}
-                recipient={activeConversation?.recipient}
-                currentIndex={i}
-                messages={msgs}
-                {...msg}
-              />
-            );
-          })}
+          return (
+            <Message
+              key={msg.id}
+              recipient={activeConversation?.recipient}
+              currentIndex={i}
+              messages={msgs}
+              {...msg}
+            />
+          );
+        })}
       </ConversationWrapper>
-      <div style={{
-        display: isTyping ? "block" : "none"
-      }} className={styles.typingContainer}>Typing...</div>
+      <div
+        style={{
+          display: isTyping ? "block" : "none",
+        }}
+        className={styles.typingContainer}
+      >
+        {displayUser(activeConversation)?.userName} Is Typing...
+      </div>
       <ConversationInput
         name={activeConversation?.recipient.userName}
         id={activeConversation?.id}
         typingSts={sendTypingSts}
+        sendTypingEnd={sendTypingEnd}
       />
     </MainWrapper>
   );

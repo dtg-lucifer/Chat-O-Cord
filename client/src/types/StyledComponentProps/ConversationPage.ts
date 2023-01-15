@@ -33,6 +33,7 @@ export interface MessageInputProps {
     readonly name: string | undefined;
     readonly id?: number;
     readonly typingSts: () => void
+    readonly sendTypingEnd: () => void;
 }
 
 export interface MessageProps {
