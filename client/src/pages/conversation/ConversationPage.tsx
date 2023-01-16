@@ -22,7 +22,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
       .then(({ data }) => {
         const c = data.find((c) => c.id === parseInt(id!));
         c && setActiveConversation(c);
-        console.log(c);
+        console.log("Active Chat",c);
       })
       .catch((err) => console.log("ConversationPage", err));
     // eslint-disable-next-line

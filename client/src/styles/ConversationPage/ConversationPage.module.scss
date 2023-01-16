@@ -1,6 +1,7 @@
 @import "../variables";
 
 .main__wrapper {
+  position: relative;
   & > .middle:nth-child(2) {
     display: flex;
     flex-direction: column;
@@ -58,6 +59,9 @@
 // active chat page
 
 .typingContainer {
+  position: sticky;
+  bottom: 0;
+  left: 0; 
   padding: 0 3rem;
   animation: popUp .5s ease;
   z-index: 1;

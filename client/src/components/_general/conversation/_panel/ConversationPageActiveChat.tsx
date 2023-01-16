@@ -41,11 +41,13 @@ const ConversationPageActiveChat: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchMessagesThunk(parseInt(id!)));
+    socket.emit("onClientConnect", { conversationID: parseInt(id!) });
     // eslint-disable-next-line
   }, [id]);
 
   useEffect(() => {
-    socket.on("connect", () => console.log("New connection"));
+    socket.emit("onClientConnect", { conversationID: parseInt(id!) });
+
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload;
       dispatch(
@@ -59,14 +61,13 @@ const ConversationPageActiveChat: React.FC = () => {
     socket.on("onTypingStart", (payload: { conversationId: number }) => {
       if (payload.conversationId === parseInt(id!)) setIsTyping(true);
     });
-    // socket.on("onTypingEnd", (payload: { conversationId: number }) => {
-    //   if (payload.conversationId === parseInt(id!)) setIsTyping(false);
-    // });
+    socket.on("onTypingEnd", (payload: { conversationId: number }) => {
+      if (payload.conversationId === parseInt(id!)) setIsTyping(false);
+    });
     return () => {
       socket.off("connect");
       socket.off("createMessage");
       socket.off("onTypingStart");
-      // socket.off("onTypingEnd");
     };
     // eslint-disable-next-line
   }, [socket]);

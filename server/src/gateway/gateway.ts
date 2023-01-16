@@ -1,20 +1,20 @@
 import { Inject } from '@nestjs/common/decorators';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
+  ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  OnGatewayConnection,
-  OnGatewayInit,
 } from '@nestjs/websockets';
-import { ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { ConversationService } from 'src/conversations/conversations.service';
 import { Services } from 'src/utils/constants';
+import { Message } from 'src/utils/typeorm';
 import { AuthenticatedSocket } from 'src/utils/types';
 import { IGatewaySession } from './gateway.session';
-import { Message } from 'src/utils/typeorm';
-import { ConversationService } from 'src/conversations/conversations.service';
 
 @WebSocketGateway({
   cors: {
@@ -44,6 +44,14 @@ export class MessageGateway implements OnGatewayConnection, OnGatewayInit {
     console.log('Gateway initialized', { sockets: server.sockets.name });
   }
 
+  @SubscribeMessage('onClientConnect')
+  onClientConnect(
+    @MessageBody() data: { conversationId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    console.log('Client connected', { data, connectedUser: client.user.email });
+  }
+
   @SubscribeMessage('createMessage')
   handleCreateMessage(
     @MessageBody() data: Message,
@@ -57,20 +65,36 @@ export class MessageGateway implements OnGatewayConnection, OnGatewayInit {
   }
 
   @SubscribeMessage('onTypingStart')
-  async handleOnTypingStart(@MessageBody() { conversationId }: { conversationId: number }, @ConnectedSocket() client: AuthenticatedSocket) {
-    const conversation = await this.conversationService.findByID(conversationId);
-    const recipient = conversation.creator._id === client.user._id ? conversation.recipient : conversation.creator;
+  async handleOnTypingStart(
+    @MessageBody() { conversationId }: { conversationId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    const conversation = await this.conversationService.findByID(
+      conversationId,
+    );
+    const recipient =
+      conversation.creator._id === client.user._id
+        ? conversation.recipient
+        : conversation.creator;
     const recipientSocket = this.sessionManager.getSocket(recipient._id);
-    console.log("Typing start", { conversationdID: conversation.id });
-    recipientSocket && recipientSocket.emit('onTyping', { conversationId });
+    console.log('Typing start', { conversationdID: conversation.id });
+    recipientSocket && recipientSocket.emit('onTypingStart', { conversationId });
   }
 
   @SubscribeMessage('onTypingEnd')
-  async handleOnTypingEnd(@MessageBody() { conversationId }: { conversationId: number }, @ConnectedSocket() client: AuthenticatedSocket) { 
-    const conversation = await this.conversationService.findByID(conversationId);
-    const recipient = conversation.creator._id === client.user._id ? conversation.recipient : conversation.creator;
+  async handleOnTypingEnd(
+    @MessageBody() { conversationId }: { conversationId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    const conversation = await this.conversationService.findByID(
+      conversationId,
+    );
+    const recipient =
+      conversation.creator._id === client.user._id
+        ? conversation.recipient
+        : conversation.creator;
     const recipientSocket = this.sessionManager.getSocket(recipient._id);
-    console.log("Typing end", { conversationdID: conversation.id });
+    console.log('Typing end', { conversationdID: conversation.id });
     recipientSocket && recipientSocket.emit('onTypingEnd', { conversationId });
   }
 
