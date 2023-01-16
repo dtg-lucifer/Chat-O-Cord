@@ -46,8 +46,6 @@ const ConversationPageActiveChat: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    socket.emit("onClientConnect", { conversationID: parseInt(id!) });
-
     socket.on("createMessage", (payload: CreateMessagePayload) => {
       const { conversation, ...message } = payload;
       dispatch(
@@ -68,6 +66,7 @@ const ConversationPageActiveChat: React.FC = () => {
       socket.off("connect");
       socket.off("createMessage");
       socket.off("onTypingStart");
+      socket.off("onTypingEnd");
     };
     // eslint-disable-next-line
   }, [socket]);
