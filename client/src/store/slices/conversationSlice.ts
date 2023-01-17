@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { Conversation, CreateMessagePayload } from "../../types/ComponentProps/Conversation";
-import { getConversations } from "../../utils/api";
+import { createConversation, getConversations } from "../../utils/api";
 
 export interface ConversationState {
   conversations: Conversation[];
@@ -17,6 +17,13 @@ export const fetchConversationsThunk = createAsyncThunk(
   "conversations/fetch",
   async () => {
     return getConversations();
+  }
+);
+
+export const createConversationThunk = createAsyncThunk(
+  "conversations/create",
+  async (payload: {email: string, message: string}) => {
+    return createConversation(payload)
   }
 );
 
@@ -43,7 +50,14 @@ export const conversationSlice = createSlice({
       })
       .addCase(fetchConversationsThunk.pending, (state) => {
         state.loading = true;
-      });
+      })
+      .addCase(createConversationThunk.fulfilled, (state, action) => {
+        state.conversations.unshift(action.payload.data);
+        state.loading = false;
+      })
+      .addCase(createConversationThunk.pending, (state) => {
+        state.loading = true;
+      })
   },
 });
 

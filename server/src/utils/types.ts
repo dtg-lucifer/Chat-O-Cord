@@ -20,7 +20,7 @@ export interface FindUserParams {
 }
 
 export interface CreateConversationParams {
-  recipientID: number;
+  email: string;
   message: string;
 }
 

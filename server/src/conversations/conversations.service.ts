@@ -41,7 +41,7 @@ export class ConversationService implements IConversationsService {
         'recipient.userName',
         'recipient.email',
       ])
-      .leftJoinAndSelect("conversations.lastMessageSent", "lastMessageSent")
+      .leftJoinAndSelect('conversations.lastMessageSent', 'lastMessageSent')
       .where('creator._id = :id', { id })
       .orWhere('recipient._id = :id', { id })
       .orderBy('conversations.updatedAt', 'DESC')
@@ -52,8 +52,13 @@ export class ConversationService implements IConversationsService {
     user: User,
     payload: CreateConversationParams,
   ): Promise<Conversation> {
-    const { recipientID } = payload;
-    if (user._id === recipientID)
+    const { email } = payload;
+    const recipient = await this.userService.findUser({ email });
+
+    if (!recipient)
+      throw new HttpException('Recipient not found', HttpStatus.BAD_REQUEST);
+
+    if (user._id === recipient._id)
       throw new HttpException(
         'Cannot create conversation.',
         HttpStatus.BAD_REQUEST,
@@ -62,12 +67,12 @@ export class ConversationService implements IConversationsService {
     const existingConversation = await this.conversationsRepository.findOne({
       where: [
         {
-          creator: { _id: user._id },
-          recipient: { _id: recipientID },
+          creator: { id: user._id },
+          recipient: { id: recipient._id },
         },
         {
-          creator: { _id: recipientID },
-          recipient: { _id: user._id },
+          creator: { id: recipient._id },
+          recipient: { id: user._id },
         },
       ],
     });
@@ -76,10 +81,6 @@ export class ConversationService implements IConversationsService {
         'Conversation already exists',
         HttpStatus.CONFLICT,
       );
-
-    const recipient = await this.userService.findUser({ _id: recipientID });
-    if (!recipient)
-      throw new HttpException('Recipient not found', HttpStatus.BAD_REQUEST);
 
     const conversation = this.conversationsRepository.create({
       creator: user,

@@ -1,5 +1,8 @@
 import React, { createRef, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { VscClose } from "react-icons/vsc";
 import { ModalContainer, ModalHeader } from ".";
+import styles from "../../../styles/ConversationPage/ConversationPage.module.scss";
 import {
   Button,
   InputContainer,
@@ -8,10 +11,9 @@ import {
   InputTextField,
 } from "../../_styled/AuthenticationPage";
 import { OverlayStyle } from "../../_styled/ConversationPage";
-import { VscClose } from "react-icons/vsc";
-import styles from "../../../styles/ConversationPage/ConversationPage.module.scss";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../../store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store";
+import { createConversationThunk } from "../../../store/slices/conversationSlice";
 
 interface ConversationModalPropType {
   showModal: boolean;
@@ -23,22 +25,29 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
   setShowModal,
 }) => {
   const ref = createRef<HTMLDivElement>();
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    register,
+    handleSubmit: formSubmitHandler,
+    formState: { errors },
+  } = useForm<{
+    email: string;
+    message: string;
+  }>({})
+
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") setShowModal(prev => !prev);
   };
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-  }
 
-  const conversation = useSelector((state: RootState) => state.conversation.conversations)
-  const dispatch = useDispatch()
+  const handleSubmit = (data: { email: string, message: string }) => {
+    dispatch(createConversationThunk(data))
+  }
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-    // eslint-disable-next-line
   }, []);
 
   if (showModal) {
@@ -55,20 +64,34 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
             <h1>Create a conversation</h1>
             <VscClose onClick={() => setShowModal(prev => !prev)} />
           </ModalHeader>
-          <form className={styles.modalForm}>
+          <form className={styles.modalForm} onSubmit={formSubmitHandler(handleSubmit)}>
             <section>
               <InputContainer backGroundcolor="#171717">
-                <InputLabel>Recipients</InputLabel>
-                <InputField bottomLine={true} />
+                <InputLabel>Email</InputLabel>
+                <InputField
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address",
+                    },
+                  })}
+                  bottomLine={true}
+                />
               </InputContainer>
             </section>
             <section>
               <InputContainer backGroundcolor="#171717">
                 <InputLabel>Message (optional)</InputLabel>
-                <InputTextField bottomLine={true} />
+                <InputTextField
+                  {...register("message", {
+                    required: "Message is required",
+                  })}
+                  bottomLine={true}
+                />
               </InputContainer>
             </section>
-            <Button onClick={handleSubmit} type="submit">
+            <Button type="submit">
               Create Conversation
             </Button>
           </form>

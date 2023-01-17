@@ -63,7 +63,6 @@ const ConversationPageActiveChat: React.FC = () => {
       if (payload.conversationId === parseInt(id!)) setIsTyping(false);
     });
     return () => {
-      socket.off("connect");
       socket.off("createMessage");
       socket.off("onTypingStart");
       socket.off("onTypingEnd");

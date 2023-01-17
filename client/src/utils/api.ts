@@ -34,6 +34,17 @@ export const getConversations = () =>
     axiosConfig
   );
 
+export const createConversation = (data: {
+  email: string;
+  message: string;
+}) => {
+  return axios.post<Conversation>(
+    `${REACT_APP_API_BASE_URL}/conversations`,
+    data,
+    axiosConfig
+  );
+};
+
 export const getConversationByID = (id: number) => {
   return axios.get<Conversation>(
     `${REACT_APP_API_BASE_URL}/conversations/${id}`,
