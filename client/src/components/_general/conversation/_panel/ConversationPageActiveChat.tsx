@@ -1,5 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
+import { BiPhoneCall } from "react-icons/bi";
+import { FaVideo } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import myPic from "../../../../assets/my_pic.jpg";
+import { AppDispatch, RootState } from "../../../../store";
+import {
+  fetchMessagesThunk
+} from "../../../../store/slices/messageSlice";
+import styles from "../../../../styles/ConversationPage/ConversationPage.module.scss";
+import {
+  Conversation
+} from "../../../../types/ComponentProps/Conversation";
+import { ActivechatContext } from "../../../../utils/context/ActivechatContext";
+import { AuthContext } from "../../../../utils/context/AuthContext";
+import { SocketContext } from "../../../../utils/context/SocketContext";
 import {
   ChatHeader,
   ConversationWrapper,
@@ -8,25 +23,7 @@ import {
   MainWrapper,
 } from "../../../_styled/ConversationPage";
 import ConversationInput from "../../inputs/ConversationInput";
-import { AuthContext } from "../../../../utils/context/AuthContext";
-import { BiPhoneCall } from "react-icons/bi";
-import myPic from "../../../../assets/my_pic.jpg";
-import { FaVideo } from "react-icons/fa";
-import {
-  Conversation,
-  CreateMessagePayload,
-} from "../../../../types/ComponentProps/Conversation";
 import Message from "../messages/Message";
-import { SocketContext } from "../../../../utils/context/SocketContext";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../../store";
-import {
-  addMessage,
-  fetchMessagesThunk,
-} from "../../../../store/slices/messageSlice";
-import { ActivechatContext } from "../../../../utils/context/ActivechatContext";
-import { updateLastMessage } from "../../../../store/slices/conversationSlice";
-import styles from "../../../../styles/ConversationPage/ConversationPage.module.scss";
 
 const ConversationPageActiveChat: React.FC = () => {
   const { id } = useParams();
@@ -46,27 +43,12 @@ const ConversationPageActiveChat: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    socket.on("createMessage", (payload: CreateMessagePayload) => {
-      const { conversation, ...message } = payload;
-      dispatch(
-        addMessage({
-          id: conversation.id,
-          message: message,
-        })
-      );
-      dispatch(updateLastMessage(payload));
-    });
     socket.on("onTypingStart", (payload: { conversationId: number }) => {
       if (payload.conversationId === parseInt(id!)) setIsTyping(true);
     });
     socket.on("onTypingEnd", (payload: { conversationId: number }) => {
       if (payload.conversationId === parseInt(id!)) setIsTyping(false);
     });
-    return () => {
-      socket.off("createMessage");
-      socket.off("onTypingStart");
-      socket.off("onTypingEnd");
-    };
     // eslint-disable-next-line
   }, [socket]);
 
