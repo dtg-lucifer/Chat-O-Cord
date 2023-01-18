@@ -14,6 +14,7 @@ import { OverlayStyle } from "../../_styled/ConversationPage";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store";
 import { createConversationThunk } from "../../../store/slices/conversationSlice";
+import { useToast } from "../../../utils/hooks/useToast";
 
 interface ConversationModalPropType {
   showModal: boolean;
@@ -34,13 +35,16 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
     email: string;
     message: string;
   }>({})
-
+  const { success, error } = useToast()
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") setShowModal(prev => !prev);
   };
 
   const handleSubmit = (data: { email: string, message: string }) => {
     dispatch(createConversationThunk(data))
+    if (errors) error("Something went wrong!")
+    else success("Conversation created!")
+    setShowModal(prev => !prev)
   }
 
   useEffect(() => {
