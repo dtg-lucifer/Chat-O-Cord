@@ -47,8 +47,8 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
     dispatch(createConversationThunk(data))
       .unwrap()
       .then(async ({ data: { id } }) => {
+        // await postNewMessage({ conversationID: id, content: data.message });
         navigate(`/conversations/${id}`);
-        await postNewMessage({ conversationID: id, content: data.message })
       });
     if (errors) error("Something went wrong!");
     else success("Conversation created!");
@@ -60,6 +60,7 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (showModal) {

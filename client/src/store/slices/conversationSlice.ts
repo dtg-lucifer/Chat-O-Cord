@@ -34,10 +34,9 @@ export const conversationSlice = createSlice({
     addConversation: (state, action: PayloadAction<Conversation>) => {
       state.conversations.unshift(action.payload);
     },
-    updateLastMessage: (state, action: PayloadAction<CreateMessagePayload>) => {
+    updateConversation: (state, action: PayloadAction<CreateMessagePayload>) => {
       const { conversation, ...message } = action.payload
       const index = state.conversations.findIndex(c => c.id === conversation.id)
-      state.conversations[index].lastMessageSent = message
       const c = state.conversations.splice(index, 1)
       state.conversations.unshift(c[0])
     }
@@ -61,6 +60,6 @@ export const conversationSlice = createSlice({
   },
 });
 
-export const { addConversation, updateLastMessage } = conversationSlice.actions;
+export const { addConversation, updateConversation } = conversationSlice.actions;
 
 export default conversationSlice.reducer;
