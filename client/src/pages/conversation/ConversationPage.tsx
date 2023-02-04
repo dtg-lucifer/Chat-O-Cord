@@ -1,17 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ConversationPageNoActiveChat from "../../components/_general/conversation/ConversationPageNoAvtiveChat";
 import ConversationPageActiveChat from "../../components/_general/conversation/_panel/ConversationPageActiveChat";
 import ConversationMiniSideBar from "../../components/_general/sidebars/ConversationMiniSideBar";
 import ConversationSidebar from "../../components/_general/sidebars/ConversationSidebar";
 import { PageWrapper } from "../../components/_styled/ConversationPage";
 import { AppDispatch } from "../../store";
-import { fetchConversationsThunk, updateLastMessage } from "../../store/slices/conversationSlice";
+import { addConversation, fetchConversationsThunk, updateConversation } from "../../store/slices/conversationSlice";
+import { addMessage } from "../../store/slices/messageSlice";
+import { Conversation, CreateMessagePayload } from "../../types/ComponentProps/Conversation";
 import { ConversationPageStateProps } from "../../types/StyledComponentProps/ConversationPage";
 import { ActivechatContext } from "../../utils/context/ActivechatContext";
-import { addMessage } from "../../store/slices/messageSlice";
-import { CreateMessagePayload } from "../../types/ComponentProps/Conversation";
 import { SocketContext } from "../../utils/context/SocketContext";
 
 const ConversationPage: React.FC<ConversationPageStateProps> = () => {
@@ -19,6 +19,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
   const { setActiveConversation } = useContext(ActivechatContext);
   const dispatch = useDispatch<AppDispatch>();
   const socket = useContext(SocketContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("createMessage", (payload: CreateMessagePayload) => {
@@ -29,12 +30,17 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
           message: message,
         })
       );
-      dispatch(updateLastMessage(payload));
+      dispatch(updateConversation(payload));
     });
+    socket.on("onCreateConversation", (payload: Conversation) => {
+      dispatch(addConversation(payload));
+      console.log("onCreateConversation", payload);
+      navigate(`/conversations/${payload.id}`);
+    })
+
     return () => {
       socket.off("createMessage");
-      socket.off("onTypingStart");
-      socket.off("onTypingEnd");
+      socket.off("onCreateConversation");
     };
     // eslint-disable-next-line
   }, [socket]);
@@ -45,7 +51,7 @@ const ConversationPage: React.FC<ConversationPageStateProps> = () => {
       .then(({ data }) => {
         const c = data.find((c) => c.id === parseInt(id!));
         c && setActiveConversation(c);
-        console.log("Active Chat",c);
+        console.log("Active Chat", c);
       })
       .catch((err) => console.log("ConversationPage", err));
     // eslint-disable-next-line
