@@ -12,7 +12,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ConversationService } from 'src/conversations/conversations.service';
 import { Services } from 'src/utils/constants';
-import { Conversation, Message } from 'src/utils/typeorm';
+import { Message } from 'src/utils/typeorm';
 import { AuthenticatedSocket } from 'src/utils/types';
 import { IGatewaySession } from './gateway.session';
 
@@ -64,22 +64,6 @@ export class MessageGateway implements OnGatewayConnection, OnGatewayInit {
     client.broadcast.emit('createMessage', data);
   }
 
-  @SubscribeMessage("onCreateConversation")
-  async handleOnCreateConversation(
-    @MessageBody() conversation: Conversation,
-    @ConnectedSocket() client: AuthenticatedSocket,
-  ) {
-    const recipientSocket = this.sessionManager.getSocket(
-      conversation.recipient._id,
-    );
-    console.log('Conversation created', {
-      conversationId: conversation.id,
-      recipient: conversation.recipient.email,
-    });
-    recipientSocket &&
-      recipientSocket.emit('onCreateConversation', conversation);
-  }
-
   @SubscribeMessage('onTypingStart')
   async handleOnTypingStart(
     @MessageBody() { conversationId }: { conversationId: number },
@@ -94,8 +78,7 @@ export class MessageGateway implements OnGatewayConnection, OnGatewayInit {
         : conversation.creator;
     const recipientSocket = this.sessionManager.getSocket(recipient._id);
     console.log('Typing start', { conversationdID: conversation.id });
-    recipientSocket &&
-      recipientSocket.emit('onTypingStart', { conversationId });
+    recipientSocket && recipientSocket.emit('onTypingStart', { conversationId });
   }
 
   @SubscribeMessage('onTypingEnd')
@@ -135,15 +118,5 @@ export class MessageGateway implements OnGatewayConnection, OnGatewayInit {
 
     if (authorSocket) authorSocket.emit('createMessage', payload);
     if (recipientSocket) recipientSocket.emit('createMessage', payload);
-  }
-
-  @OnEvent('conversation.create')
-  handleConversationCreateEvent(payload: Conversation) {
-    console.log('Event conversation.create', {
-      payload,
-    });
-    const { recipient } = payload;
-    const recipientSocket = this.sessionManager.getSocket(recipient._id);
-    recipientSocket && recipientSocket.emit('onCreateConversation', payload);
   }
 }

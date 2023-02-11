@@ -14,9 +14,6 @@ import { OverlayStyle } from "../../_styled/ConversationPage";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store";
 import { createConversationThunk } from "../../../store/slices/conversationSlice";
-import { useToast } from "../../../utils/hooks/useToast";
-import { useNavigate } from "react-router-dom";
-import { postNewMessage } from "../../../utils/api";
 
 interface ConversationModalPropType {
   showModal: boolean;
@@ -36,31 +33,21 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
   } = useForm<{
     email: string;
     message: string;
-  }>({});
-  const { success, error } = useToast();
-  const navigate = useNavigate();
+  }>({})
+
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") setShowModal((prev) => !prev);
+    if (e.key === "Escape") setShowModal(prev => !prev);
   };
 
-  const handleSubmit = (data: { email: string; message: string }) => {
+  const handleSubmit = (data: { email: string, message: string }) => {
     dispatch(createConversationThunk(data))
-      .unwrap()
-      .then(async ({ data: { id } }) => {
-        // await postNewMessage({ conversationID: id, content: data.message });
-        navigate(`/conversations/${id}`);
-      });
-    if (errors) error("Something went wrong!");
-    else success("Conversation created!");
-    setShowModal((prev) => !prev);
-  };
+  }
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (showModal) {
@@ -69,18 +56,15 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
         ref={ref}
         onClick={(e) => {
           const { current } = ref;
-          if (current === e.target) setShowModal((prev) => !prev);
+          if (current === e.target) setShowModal(prev => !prev);
         }}
       >
         <ModalContainer>
           <ModalHeader>
             <h1>Create a conversation</h1>
-            <VscClose onClick={() => setShowModal((prev) => !prev)} />
+            <VscClose onClick={() => setShowModal(prev => !prev)} />
           </ModalHeader>
-          <form
-            className={styles.modalForm}
-            onSubmit={formSubmitHandler(handleSubmit)}
-          >
+          <form className={styles.modalForm} onSubmit={formSubmitHandler(handleSubmit)}>
             <section>
               <InputContainer backGroundcolor="#171717">
                 <InputLabel>Email</InputLabel>
@@ -107,7 +91,9 @@ const CreateConversationModal: React.FC<ConversationModalPropType> = ({
                 />
               </InputContainer>
             </section>
-            <Button type="submit">Create Conversation</Button>
+            <Button type="submit">
+              Create Conversation
+            </Button>
           </form>
         </ModalContainer>
       </OverlayStyle>

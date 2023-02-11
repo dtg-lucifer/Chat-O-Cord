@@ -67,15 +67,14 @@ export class ConversationService implements IConversationsService {
     const existingConversation = await this.conversationsRepository.findOne({
       where: [
         {
-          creator: { _id: user._id },
-          recipient: { _id: recipient._id },
+          creator: { id: user._id },
+          recipient: { id: recipient._id },
         },
         {
-          creator: { _id: recipient._id },
-          recipient: { _id: user._id },
+          creator: { id: recipient._id },
+          recipient: { id: user._id },
         },
       ],
-      relations: ['creator', 'recipient']
     });
     if (existingConversation)
       throw new HttpException(

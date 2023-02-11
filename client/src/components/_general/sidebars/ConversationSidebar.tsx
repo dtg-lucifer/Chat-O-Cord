@@ -1,9 +1,4 @@
 import React, { useContext, useState } from "react";
-import { useSelector } from "react-redux";
-import myPic from "../../../assets/my_pic.jpg";
-import { RootState } from "../../../store";
-import { Conversation } from "../../../types/ComponentProps/Conversation";
-import { AuthContext } from "../../../utils/context/AuthContext";
 import {
   ChatFilterButtonsContainer,
   ChatOuter,
@@ -12,8 +7,13 @@ import {
   SideBarWrapper,
   Wrapper,
 } from "../../_styled/ConversationPage";
+import myPic from "../../../assets/my_pic.jpg";
 import ChatCard from "../conversation/ChatCard";
 import CreateConversationModal from "../modals/CreateConversationModal";
+import { AuthContext } from "../../../utils/context/AuthContext";
+import { Conversation } from "../../../types/ComponentProps/Conversation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const ConversationSidebar: React.FC<{}> = () => {
   
@@ -22,10 +22,6 @@ const ConversationSidebar: React.FC<{}> = () => {
 
   const conversations = useSelector((state: RootState) => {
     return state.conversation.conversations;
-  });
-
-  const messages = useSelector((state: RootState) => {
-    return state.messages.messages;
   });
 
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -57,9 +53,6 @@ const ConversationSidebar: React.FC<{}> = () => {
       </Wrapper>
       <Wrapper bottomLine={false}>
         {conversations.map((conv) => {
-          const lastMsg = messages.find(
-            msg => msg.id === conv.id
-          );
           return (
             <ChatOuter key={conv.id}>
               <ChatCard
@@ -67,7 +60,7 @@ const ConversationSidebar: React.FC<{}> = () => {
                 name={`${displayUser(conv).firstName} ${
                   displayUser(conv).lastName
                 }`}
-                lastMsg={lastMsg?.messages[0].content ? lastMsg?.messages[0].content : "Click to see messages"}
+                lastMsg={conv.lastMessageSent?.content}
                 id={conv.id}
                 conversation={conv}
               />

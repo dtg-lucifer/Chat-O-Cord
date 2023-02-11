@@ -7,9 +7,6 @@ import {
 import { BsPlusCircleFill, BsEmojiSmileFill } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import { postNewMessage } from "../../../utils/api";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../store";
-import { addMessage } from "../../../store/slices/messageSlice";
 
 const ConversationInput: React.FC<MessageInputProps> = ({
   name,
@@ -19,17 +16,12 @@ const ConversationInput: React.FC<MessageInputProps> = ({
   const [msg, setMsg] = useState<string | undefined>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { id } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (msg === "" || msg === undefined || !id) return;
     try {
-      const { data } = await postNewMessage({ conversationID: parseInt(id!), content: msg });
-      dispatch(addMessage({
-        id: parseInt(id!),
-        message: data
-      }))
+      await postNewMessage({ conversationID: parseInt(id!), content: msg });
       setMsg("");
     } catch (error) {
       console.log(error);
