@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import { PropsWithChildren, useState } from "react";
 import AuthenticatedRoute from "./components/_others/AuthenticatedRoute";
-import LogInPage from "./pages/auth/LogInPage";
-import RegisterPage from "./pages/auth/RegisterPage";
+import LogInPage from "./pages/Auth/LogInPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
 import ConversationPage from "./pages/conversation/ConversationPage";
 import GetStartedPage from "./pages/GetStartedPage";
 import SettingsPage from "./pages/SettingsPage";
