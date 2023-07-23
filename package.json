@@ -1,0 +1,36 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.1.0",
+    "@prisma/client": "^5.0.0",
+    "@types/node": "20.2.3",
+    "@types/react": "18.2.7",
+    "@types/react-dom": "18.2.4",
+    "autoprefixer": "10.4.14",
+    "jose": "^4.14.4",
+    "next": "^13.4.4",
+    "postcss": "8.4.23",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
+    "react-icons": "^4.8.0",
+    "react-query": "^3.39.3",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.0.4",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "prisma": "^5.0.0",
+    "sass": "^1.62.1"
+  }
+}

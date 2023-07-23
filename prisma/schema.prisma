@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String         @id @default(uuid())
+  firstName             String
+  lastName              String
+  email                 String         @unique
+  password              String
+  userName              String         @unique
+  joinedOn              DateTime       @default(now())
+  profilePic          String
+  message               Message[]
+  createdConversation   Conversation[] @relation("Author")
+  createdConversationId String?
+  joinedConversation    Conversation[] @relation("Recipient")
+  joinedConversationId  String?
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  content        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  author         User         @relation(fields: [authorId], references: [id])
+  authorId       String
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+}
+
+model Conversation {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  author      User      @relation("Author", fields: [authorId], references: [id])
+  authorId    String
+  recipient   User      @relation("Recipient", fields: [recipientId], references: [id])
+  recipientId String
+  message     Message[]
+}

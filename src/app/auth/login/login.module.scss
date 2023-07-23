@@ -1,0 +1,204 @@
+main.mainBg {
+  height: 100vh;
+  background-image: url(/auth_bg.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > div.modal {
+    background-color: #121212;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-primary);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    & > div.left {
+      position: relative;
+      height: 100%;
+      border-radius: 1rem;
+      background-image: var(--clr-auth-gradient);
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &::before {
+        content: open-quote;
+        font-family: serif;
+        font-weight: 900;
+        color: #ffffff;
+        font-size: 10rem;
+        position: absolute;
+        top: -2rem;
+        left: 2rem;
+        filter: var(--shadow-drop-primary);
+      }
+
+      & > div.heading {
+        & > strong {
+          font-size: 4rem;
+          font-weight: 700;
+          filter: var(--shadow-drop-primary);
+
+          & > span {
+            text-align: left;
+            display: block;
+            color: #000000;
+          }
+        }
+      }
+    }
+
+    & > div.right {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.5rem;
+
+      & > form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        width: 100%;
+        padding: 1rem 1.5rem;
+
+        & > div.form__group {
+          width: 100%;
+          padding: 0.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          & label {
+            text-transform: uppercase;
+            font-size: 16px;
+            color: rgb(255 255 255 / 0.7);
+            letter-spacing: 1.5px;
+          }
+
+          & div.input__container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            width: 100%;
+            padding: 0.3rem 1rem;
+            background-color: #222222;
+            border-radius: 0.5rem;
+            outline: 1px solid var(--input-color);
+
+            & > input {
+              padding: 0.2rem 0.4rem;
+              background-color: transparent;
+              &:active,
+              &:focus {
+                outline: none;
+              }
+            }
+
+            & > svg {
+              font-size: 1.5rem;
+              color: #ffffff;
+            }
+          }
+        }
+      }
+
+      & > div.other__options__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+        width: 100%;
+        height: 100%;
+
+        & > div:first-child {
+          font-size: 15px;
+          font-weight: 600;
+        }
+
+        & > div:nth-child(2) {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 1rem;
+          & > span {
+            cursor: pointer;
+            & > svg {
+              box-sizing: content-box;
+              font-size: 1.7rem;
+              padding: 0.5rem 1.5rem;
+              border-radius: 0.5rem;
+              background-color: #303030;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.invalid__feedback {
+  color: red;
+  font-size: 12px;
+}
+
+@media screen and (max-width: 1200px) {
+  main.mainBg {
+    background: #001220;
+    height: 100vmax;
+    padding: 2rem 0;
+    & > div.modal {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      & > div.left {
+        &::before {
+          display: none;
+        }
+      } 
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  main.mainBg {
+    background: #001220;
+    height: auto;
+    padding: 0;
+    & > div.modal {
+      height: 100vmax;
+      width: 100%;
+      & > div.left,
+      & > div.right {
+        border-radius: 0;
+      }
+      & > div.left {
+        &::before {
+          display: none;
+        }
+        & > div.heading {
+          width: 100%;
+          text-align: left;
+          & > strong {
+            font-size: 3rem;
+            & > span {
+              display: block;
+              color: #000000;
+            }
+          }
+        }
+      }
+    }
+  }
+}
