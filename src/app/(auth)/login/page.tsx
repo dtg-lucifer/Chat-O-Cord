@@ -1,13 +1,12 @@
 "use client";
 
-import styles from "~/app/auth/login/login.module.scss";
+import styles from "~/app/(auth)/login/login.module.scss";
 import { useForm } from "react-hook-form";
 import { MdAlternateEmail, MdFingerprint } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { LoginData } from "~/types/authentication";
 import Link from "next/link";
-import { loginUserAction } from "~/app/_actions";
 
 const page = () => {
   const {
@@ -18,7 +17,6 @@ const page = () => {
 
   const submitHandler = async (data: LoginData) => {
     console.log(data);
-    await loginUserAction(data);
   };
  
   return (
@@ -123,7 +121,7 @@ const page = () => {
             </div>
             <div>
               Don{"'"}t Have An Account?{" "}
-              <Link className="text-blue-600" href={"/auth/register"}>
+              <Link className="text-blue-600" href={"/register"}>
                 Register
               </Link>
             </div>

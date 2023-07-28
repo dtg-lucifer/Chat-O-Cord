@@ -3,10 +3,8 @@
 import { useForm } from "react-hook-form";
 import { MdAlternateEmail, MdFingerprint } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { registerUserAction } from "~/app/_actions";
-import styles from "~/app/auth/register/register.module.scss";
-import { RegisterData, registerSchema } from "~/types/authentication";
-import { zodResolver } from "@hookform/resolvers/zod";
+import styles from "~/app/(auth)/register/register.module.scss";
+import { RegisterData } from "~/types/authentication";
 import Link from "next/link";
 
 const page = () => {
@@ -14,11 +12,19 @@ const page = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterData>({ resolver: zodResolver(registerSchema) });
+    getValues,
+  } = useForm<RegisterData>();
 
   const submitHandler = async (data: RegisterData) => {
     console.log(data);
-    await registerUserAction(data);
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
   };
 
   return (
@@ -26,7 +32,7 @@ const page = () => {
       <div className={styles.modal}>
         <div className={styles.left}>
           <div className={styles.heading}>
-            <span>Hey,{" "}</span>
+            <span>Hey, </span>
             <div>Start Your Journey</div>
           </div>
         </div>
@@ -54,7 +60,13 @@ const page = () => {
                         : ""
                     }`}
                     placeholder="First Name"
-                    {...register("firstName")}
+                    {...register("firstName", {
+                      minLength: {
+                        value: 2,
+                        message: "First Name must have at least 2 characters",
+                      },
+                      required: "First Name is required",
+                    })}
                   />
                 </div>
               </div>
@@ -79,7 +91,13 @@ const page = () => {
                         : ""
                     }`}
                     placeholder="Last Name"
-                    {...register("lastName")}
+                    {...register("lastName", {
+                      minLength: {
+                        value: 2,
+                        message: "Last Name must have at least 2 characters",
+                      },
+                      required: "Last Name is required",
+                    })}
                   />
                 </div>
               </div>
@@ -103,7 +121,13 @@ const page = () => {
                       : ""
                   }`}
                   placeholder="Enter your email"
-                  {...register("email")}
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: "Entered value does not match email format",
+                    },
+                  })}
                 />
               </div>
               {
@@ -134,7 +158,13 @@ const page = () => {
                     errors.password ? "is-invalid" : ""
                   }`}
                   placeholder="Enter your password"
-                  {...register("password")}
+                  {...register("password", {
+                    minLength: {
+                      value: 6,
+                      message: "Password must have at least 6 characters",
+                    },
+                    required: "Password is required",
+                  })}
                 />
               </div>
               {
@@ -165,7 +195,16 @@ const page = () => {
                     errors.confPassword ? "is-invalid" : ""
                   }`}
                   placeholder="Confirm password"
-                  {...register("confPassword")}
+                  {...register("confPassword", {
+                    minLength: {
+                      value: 6,
+                      message: "Password must have at least 6 characters",
+                    },
+                    required: "Confirm Password is required",
+                    validate: (value) =>
+                      value === getValues("password") ||
+                      "The passwords do not match",
+                  })}
                 />
               </div>
               {errors.confPassword && (
@@ -183,7 +222,7 @@ const page = () => {
           <div className="mb-4">
             <span>
               Already have an account?
-              <Link className="ml-2 text-blue-400" href={"/auth/login"}>
+              <Link className="ml-2 text-blue-400" href={"/login"}>
                 Login
               </Link>
             </span>
