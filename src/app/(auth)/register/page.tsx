@@ -6,6 +6,7 @@ import { FaUser } from "react-icons/fa";
 import styles from "~/app/(auth)/register/register.module.scss";
 import { RegisterData } from "~/types/authentication";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const {
@@ -15,8 +16,9 @@ const page = () => {
     getValues,
   } = useForm<RegisterData>();
 
+  const router = useRouter();
+
   const submitHandler = async (data: RegisterData) => {
-    console.log(data);
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
@@ -25,6 +27,8 @@ const page = () => {
       body: JSON.stringify(data),
       credentials: "include",
     });
+    response.ok && router.push("/");
+    console.log("Registration successful", response.headers.get("set-cookie"));
   };
 
   return (
