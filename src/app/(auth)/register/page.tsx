@@ -25,10 +25,11 @@ const page = () => {
         "Content-type": "application/json; charset=UTF-8",
       },
       body: JSON.stringify(data),
+      cache: "no-cache",
       credentials: "include",
     });
+    response.ok && console.log("Registration successful", response.headers.get("Set-Cookie"));
     response.ok && router.push("/");
-    console.log("Registration successful", response.headers.get("set-cookie"));
   };
 
   return (
