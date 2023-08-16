@@ -23,12 +23,12 @@ const page = () => {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
+        "Token": "secret-token"
       },
       body: JSON.stringify(data),
-      cache: "no-cache",
       credentials: "include",
     });
-    response.ok && console.log("Registration successful", response.headers.get("Set-Cookie"));
+    response.ok ? console.log("Registration successful", response.headers.get("Set-Cookie")) : response.statusText;
     response.ok && router.push("/");
   };
 
