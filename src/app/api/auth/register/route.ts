@@ -8,8 +8,9 @@ export async function POST(req: NextRequest) {
   const redirect = searchParams.get("redirect") || "/";
 
   const token = req.headers.get("Token");
+  const { AUTH_SECRET } = process.env
 
-  if ((token === "secret-token")) {
+  if ((token === AUTH_SECRET)) {
     return new Response("Successfully Reggistered", {
       status: 200,
       headers: {
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         "Set-Cookie": `token=${email}; path=/; HttpOnly; Secure; SameSite=Strict;`,
       },
+      statusText: "Successful Register"
     });
   } else {
     return new Response("Error", {
@@ -24,6 +26,7 @@ export async function POST(req: NextRequest) {
       headers: {
         "Content-Type": "application/json",
       },
+      statusText: "Cookie doesnt match!! Try Again."
     });
   }
 }

@@ -17,13 +17,14 @@ const page = () => {
   } = useForm<RegisterData>();
 
   const router = useRouter();
+  const { AUTH_SECRET } = process.env
 
   const submitHandler = async (data: RegisterData) => {
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
-        "Token": "secret-token"
+        "Token": AUTH_SECRET || ""
       },
       body: JSON.stringify(data),
       credentials: "include",
