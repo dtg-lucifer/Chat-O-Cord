@@ -17,19 +17,24 @@ const page = () => {
   } = useForm<RegisterData>();
 
   const router = useRouter();
-  const { AUTH_SECRET } = process.env
+  const { AUTH_SECRET } = process.env;
 
   const submitHandler = async (data: RegisterData) => {
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
-        "Token": AUTH_SECRET || ""
+        Token: AUTH_SECRET || "",
       },
       body: JSON.stringify(data),
       credentials: "include",
     });
-    response.ok ? console.log("Registration successful", response.headers.get("Set-Cookie")) : response.statusText;
+    response.ok
+      ? console.log(
+          "Registration successful",
+          response.headers.get("Set-Cookie")
+        )
+      : response.statusText;
     response.ok && router.push("/");
   };
 
