@@ -7,26 +7,15 @@ export async function POST(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const redirect = searchParams.get("redirect") || "/";
 
-  const token = req.headers.get("Token");
-  const { AUTH_SECRET } = process.env
-
-  if ((token === AUTH_SECRET)) {
+  if (true == true) {
     return new Response("Successfully Reggistered", {
       status: 200,
       headers: {
         Location: redirect,
         "Content-Type": "application/json",
-        "Set-Cookie": `token=${email}; path=/; HttpOnly; Secure; SameSite=Strict;`,
+        "Set-Cookie": `token=${email}; path=${redirect}; HttpOnly; Secure; SameSite=Strict;`,
       },
-      statusText: "Successful Register"
-    });
-  } else {
-    return new Response("Error", {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      statusText: "Cookie doesnt match!! Try Again."
+      statusText: "Successful Register",
     });
   }
 }

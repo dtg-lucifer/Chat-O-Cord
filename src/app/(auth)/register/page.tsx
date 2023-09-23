@@ -7,7 +7,6 @@ import styles from "~/app/(auth)/register/register.module.scss";
 import { RegisterData } from "~/types/authentication";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 const page = () => {
   const {
     register,
@@ -17,14 +16,14 @@ const page = () => {
   } = useForm<RegisterData>();
 
   const router = useRouter();
-  const { AUTH_SECRET } = process.env;
+
+  // TODO! implement if theres a valid cookie then it should redirect to home page instantly
 
   const submitHandler = async (data: RegisterData) => {
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
-        Token: AUTH_SECRET || "",
       },
       body: JSON.stringify(data),
       credentials: "include",
