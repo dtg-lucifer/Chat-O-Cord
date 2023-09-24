@@ -33,7 +33,7 @@ const page = () => {
     response.ok
       ? console.log(
           "Registration successful",
-          response.headers.get("Set-Cookie")
+          response.headers.get("Set-Cookie")?.split(";")[0].split("=")[1]
         )
       : response.statusText;
     response.ok && router.push("/");

@@ -7,15 +7,13 @@ export async function POST(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const redirect = searchParams.get("redirect") || "/";
 
-  if (true == true) {
-    return new Response("Successfully Reggistered", {
-      status: 200,
-      headers: {
-        Location: redirect,
-        "Content-Type": "application/json",
-        "Set-Cookie": `token=${email}; path=${redirect}; HttpOnly; Secure; SameSite=Strict;`,
-      },
-      statusText: "Successful Register",
-    });
-  }
+  return new Response("Successfully Reggistered", {
+    status: 200,
+    headers: {
+      Location: redirect,
+      "Content-Type": "application/json",
+      "Set-Cookie": `token=${email}; path=${redirect}; HttpOnly; Secure; SameSite=Strict;`,
+    },
+    statusText: "Successful Register",
+  });
 }
