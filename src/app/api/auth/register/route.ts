@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { email, firstName, lastName, confPassword, password } = await req.json();
@@ -7,13 +7,16 @@ export async function POST(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const redirect = searchParams.get("redirect") || "/";
 
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append(
+    "Set-Cookie",
+    `token=${email}; path=${redirect}; HttpOnly; Secure; SameSite=Strict;`
+  );
+
   return new Response("Successfully Reggistered", {
     status: 200,
-    headers: {
-      Location: redirect,
-      "Content-Type": "application/json",
-      "Set-Cookie": `token=${email}; path=${redirect}; HttpOnly; Secure; SameSite=Strict;`,
-    },
+    headers,
     statusText: "Successful Register",
   });
 }
