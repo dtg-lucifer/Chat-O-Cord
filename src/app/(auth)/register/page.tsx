@@ -7,6 +7,7 @@ import styles from "~/app/(auth)/register/register.module.scss";
 import { RegisterData } from "~/types/authentication";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 const page = () => {
   const {
     register,
@@ -17,7 +18,8 @@ const page = () => {
 
   const router = useRouter();
 
-  // TODO! implement if theres a valid cookie then it should redirect to home page instantly
+  // TODO! - implement if theres a valid cookie then it should redirect to home page instantly
+  // ? - the implementation of the above problem is ongoing in side of the middleware
 
   const submitHandler = async (data: RegisterData) => {
     const response = await fetch("/api/auth/register", {
