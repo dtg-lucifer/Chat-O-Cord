@@ -22,7 +22,7 @@ const page = () => {
   // ? - the implementation of the above problem is ongoing in side of the middleware
 
   const submitHandler = async (data: RegisterData) => {
-    const response = await fetch("/api/auth/register", {
+    const response = await fetch("/api/v1/auth/register", {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -33,7 +33,7 @@ const page = () => {
     response.ok
       ? console.log(
           "Registration successful",
-          response.headers.get("Set-Cookie")?.split(";")[0].split("=")[1]
+          response.headers.get("Set-Cookie")
         )
       : response.statusText;
     response.ok && router.push("/");
