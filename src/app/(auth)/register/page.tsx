@@ -7,6 +7,8 @@ import styles from "~/app/(auth)/register/register.module.scss";
 import { RegisterData } from "~/types/authentication";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { registerUser } from "~/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 const page = () => {
   const {
@@ -22,21 +24,13 @@ const page = () => {
   // ? - the implementation of the above problem is ongoing in side of the middleware
 
   const submitHandler = async (data: RegisterData) => {
-    const response = await fetch("/api/v1/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
+    const { data: response } = useQuery({
+      queryFn: () => registerUser(data),
     });
-    response.ok
-      ? console.log(
-          "Registration successful",
-          response.headers.get("Set-Cookie")
-        )
+    response.status === 200
+      ? console.log("Registration successful", response.data)
       : response.statusText;
-    response.ok && router.push("/");
+    response.status === 200 && router.push("/");
   };
 
   return (

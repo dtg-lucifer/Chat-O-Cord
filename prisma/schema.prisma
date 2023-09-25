@@ -17,7 +17,7 @@ model User {
   joinedOn              DateTime       @default(now())
   profilePic            String
   message               Message[]
-  createdConversation   Conversation[] @relation("Author")
+  createdConversation   Conversation[] @relation("Creator")
   createdConversationId String?
   joinedConversation    Conversation[] @relation("Recipient")
   joinedConversationId  String?
@@ -38,8 +38,8 @@ model Conversation {
   id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  author      User      @relation("Author", fields: [authorId], references: [id])
-  authorId    String
+  creator     User      @relation("Creator", fields: [creatorId], references: [id])
+  creatorId   String
   recipient   User      @relation("Recipient", fields: [recipientId], references: [id])
   recipientId String
   message     Message[]
