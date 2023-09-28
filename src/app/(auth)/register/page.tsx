@@ -27,10 +27,16 @@ const page = () => {
     const { data: response } = useQuery({
       queryFn: () => registerUser(data),
     });
-    response.status === 200
-      ? console.log("Registration successful", response.data)
-      : response.statusText;
-    response.status === 200 && router.push("/");
+
+    if (response) {
+      if (response.status === 200) {
+        console.log("Registration successful", response.data);
+        router.push("/");
+      } else {
+        console.log(response.statusText);
+      }
+    }
+    
   };
 
   return (
