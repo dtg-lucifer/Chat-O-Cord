@@ -15,7 +15,7 @@ model User {
   password              String
   userName              String         @unique
   joinedOn              DateTime       @default(now())
-  profilePic            String
+  profilePic            String?
   message               Message[]
   createdConversation   Conversation[] @relation("Creator")
   createdConversationId String?
