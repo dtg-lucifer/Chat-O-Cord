@@ -14,7 +14,7 @@ export const axiosConfig: AxiosRequestConfig = {
   withCredentials: true,
 };
 
-export const axiosInstance: AxiosInstance = axios.create(axiosConfig);
+const axiosInstance: AxiosInstance = axios.create(axiosConfig);
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use(
   },
   (error: any) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 axiosInstance.interceptors.response.use(
@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
   },
   (error: any) => {
     return Promise.reject(error);
-  }
+  },
 );
 
-export default axiosInstance;
+export { axiosInstance };

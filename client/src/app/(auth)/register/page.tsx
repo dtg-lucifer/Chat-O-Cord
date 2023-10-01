@@ -8,7 +8,8 @@ import { RegisterData } from "~/types/authentication";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerUser } from "~/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "react-query";
 
 const page = () => {
   const {
@@ -19,25 +20,21 @@ const page = () => {
   } = useForm<RegisterData>();
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  // TODO! - implement if theres a valid cookie then it should redirect to home page instantly
-  // ? - the implementation of the above problem is ongoing in side of the middleware
+  const { status, error, mutate } = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["register__user", data.data.id], data);
+      console.log("Registration successful", data);
+      router.push("/");
+    },
+    onError: (error) => {
+      console.log("Registration failed", error);
+    },
+  });
 
-  const submitHandler = async (data: RegisterData) => {
-    const { data: response } = useQuery({
-      queryFn: () => registerUser(data),
-    });
-
-    if (response) {
-      if (response.status === 200) {
-        console.log("Registration successful", response.data);
-        router.push("/");
-      } else {
-        console.log(response.statusText);
-      }
-    }
-    
-  };
+  const submitHandler = async (data: RegisterData) => mutate(data);
 
   return (
     <main className={styles.mainBG}>

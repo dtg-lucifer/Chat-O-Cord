@@ -23,7 +23,7 @@
       "~/*": ["./src/*"],
       "~/components/*": ["./src/components/*"],
       "~/lib/*": ["./src/lib/*"],
-      "~/util/*": ["./src/utils/*"],
+      "~/util/*": ["./src/utils/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

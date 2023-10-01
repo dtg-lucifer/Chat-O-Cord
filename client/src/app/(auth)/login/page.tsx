@@ -18,9 +18,10 @@ const page = () => {
   const submitHandler = async (data: LoginData) => {
     console.log(data);
   };
- 
+
   return (
-    <main className={styles.mainBg}>-
+    <main className={styles.mainBg}>
+      -
       <div className={styles.modal}>
         <div className={styles.left}>
           <div className={styles.heading}>

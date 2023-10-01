@@ -6,18 +6,13 @@ import { registerUser, loginUser } from "../auth/auth.service";
 
 export const authRouter = express.Router();
 
-authRouter.post("/login", async (req: Request, res: Response) => {
-    const errors = validationResult(req);
+authRouter.post("/register", async (req: Request, res: Response) => {
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-        return res.status(422).send(errors.array());
-    }
+  if (!errors.isEmpty()) return res.status(422).send(errors.array());
 
-    try {
-        const { email, password } = req.body;
-        const user = await loginUser({ email, password });
-        res.status(201).json(user);
-    } catch (err) {
-        res.status(500).send(err);
-    }
+  const { email, firstName, lastName, confPassword, password } = req.body;
+  registerUser({ email, password, firstName, lastName, confPassword })
+    .then((user) => res.status(201).json(user))
+    .catch((err) => res.status(500).json(err));
 });

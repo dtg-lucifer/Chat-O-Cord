@@ -10,7 +10,7 @@ export const useToast = (
     draggable: true;
     progress: undefined;
     theme: "dark";
-  }> = { theme: "dark" }
+  }> = { theme: "dark" },
 ) => {
   const success = (data: string) => {
     toast(data, { ...defaultOptions, type: "success" });

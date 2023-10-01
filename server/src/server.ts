@@ -1,14 +1,14 @@
-import * as dotenv from 'dotenv';
-import express from 'express';
-import cors from 'cors';
+import * as dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
 
-import { authRouter } from './auth/auth.router';
+import { authRouter } from "./auth/auth.router";
 
 dotenv.config();
 
-if(!process.env.PORT) process.exit(1);
+if (!process.env.PORT) process.exit(1);
 
-const PORT: number = parseInt(process.env.PORT as string, 10);
+const PORT: number = parseInt(process.env.PORT as string, 10) || 9999;
 const BASE_URL: string = process.env.BASE_URL as string;
 const app = express();
 
