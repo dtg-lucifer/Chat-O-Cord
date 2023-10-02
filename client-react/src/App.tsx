@@ -1,20 +1,32 @@
+import { Route, BrowserRouter, Routes } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "react-query";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<>Hello</>} />
+          <Route path="/auth">
+            <Route path="login" element={<>Login</>} />
+            <Route path="register" element={<>Register</>} />
+          </Route>
+          <Route path="/dashboard">
+            <Route path="profile" element={<>Profile</>} />
+            <Route path="settings" element={<>Settings</>} />
+          </Route>
+          <Route path="/conversations">
+            <Route path=":id" element={<>Conversation</>} />
+          </Route>
+          <Route path="*" element={<>Not Found</>} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer theme="dark"/>
+    </QueryClientProvider>
   );
 }
 
