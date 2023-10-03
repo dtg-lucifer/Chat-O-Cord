@@ -1,4 +1,4 @@
-@import "../_variables";
+@import "../../_variables";
 
 .main__wrapper {
   background-color: #121212;
@@ -27,10 +27,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-    font-size: 3rem;
+    font-size: 2rem;
     position: relative;
     & > div.top__heading {
-      font-size: 15rem;
+      font-size: 8rem;
       font-weight: 900;
       font-family: $notFound-font;
       transition: all 0.25s ease-in-out;
@@ -38,7 +38,7 @@
       padding: 2rem;
       transform-origin: left;
       &:hover {
-        rotate: 30deg;
+        letter-spacing: 1rem;
       }
     }
     & > div.top__text {
@@ -47,7 +47,7 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      padding: 2rem;
+      padding: 1rem;
       &::after {
         content: "";
         display: block;
@@ -72,7 +72,7 @@
     align-items: center;
     justify-content: space-around;
     gap: 2rem;
-    font-size: 2rem;
+    font-size: 1rem;
     font-family: $bold-font;
     letter-spacing: 2px;
     padding: 2rem;
@@ -81,7 +81,7 @@
       align-items: center;
       justify-content: space-around;
       gap: 2rem;
-      padding: 2rem 4rem;
+      padding: 2rem 1rem;
       width: 100%;
     }
   }

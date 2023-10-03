@@ -1,6 +1,6 @@
-import styles from "./PageNotFound.module.scss";
+import styles from "./index.module.scss";
 import { FaGithub, FaYoutube, FaInstagram, FaDiscord } from "react-icons/fa";
-import { QuickLink, SocialWrapper } from "./PageNotFound.styled";
+import { QuickLink, SocialWrapper } from "./index.styled";
 
 const PageNotFound = () => {
   return (

@@ -12,7 +12,10 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 9999;
 const BASE_URL: string = process.env.BASE_URL as string;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+	credentials: true,
+	origin: process.env.CLIENT_URL,	
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -21,10 +21,18 @@
     "jsx": "react-jsx"
   },
   "paths": {
-    "~/*": ["./src/*"],
-    "~/components/*": ["./src/components/*"],
-    "~/lib/*": ["./src/lib/*"],
-    "~/util/*": ["./src/utils/*"]
+    "~/*": [
+      "./src/*"
+    ],
+    "~/components/*": [
+      "./src/components/*"
+    ],
+    "~/lib/*": [
+      "./src/lib/*"
+    ],
+    "~/util/*": [
+      "./src/utils/*"
+    ]
   },
   "include": [
     "src"
