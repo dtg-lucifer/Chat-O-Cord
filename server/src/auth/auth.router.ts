@@ -12,7 +12,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
   if (!errors.isEmpty()) return res.status(422).send(errors.array());
 
   const { email, firstName, lastName, password } = req.body;
-  registerUser({ email, password, firstName, lastName })
+  return registerUser({ email, password, firstName, lastName })
     .then((user) => res.status(201).json(user))
     .catch((err) => res.status(500).json(err));
 });
