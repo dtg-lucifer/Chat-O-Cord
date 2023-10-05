@@ -13,6 +13,9 @@ authRouter.post("/register", async (req: Request, res: Response) => {
 
   const { email, firstName, lastName, password } = req.body;
   return registerUser({ email, password, firstName, lastName })
-    .then((user) => res.status(201).json(user))
+    .then((user) => {
+      req.session.user = user;
+      res.status(201).json(user);
+    })
     .catch((err) => res.status(500).json(err));
 });
