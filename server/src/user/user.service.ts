@@ -28,6 +28,9 @@ export async function createUser(data: CreateUserDetails) {
       email: true,
       userName: true,
       profilePic: true,
+      joinedOn: true,
+      createdConversationId: true,
+      joinedConversationId: true,
     },
   });
 
