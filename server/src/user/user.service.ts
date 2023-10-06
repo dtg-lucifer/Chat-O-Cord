@@ -19,7 +19,7 @@ export async function createUser(data: CreateUserDetails) {
       ...data,
       password: hashedPassword,
       profilePic: "",
-      userName: `@${data.firstName}_${data.lastName}`,
+      userName: `@${data.firstName.toLowerCase()}_${data.lastName.toLowerCase()}`,
     },
     select: {
       id: true,
@@ -29,8 +29,8 @@ export async function createUser(data: CreateUserDetails) {
       userName: true,
       profilePic: true,
       joinedOn: true,
-      createdConversationId: true,
       joinedConversationId: true,
+      createdConversationId: true,
     },
   });
 
@@ -48,7 +48,7 @@ export async function loginUser(data: LoginData) {
 
   const isPasswordCorrect = await comparePasswords(
     data.password,
-    user.password,
+    user.password
   );
 
   if (!isPasswordCorrect) throw new Error("Invalid password");
@@ -68,6 +68,9 @@ export async function getUserById(id: string) {
       email: true,
       userName: true,
       profilePic: true,
+      joinedOn: true,
+      joinedConversationId: true,
+      createdConversationId: true,
     },
   });
 
