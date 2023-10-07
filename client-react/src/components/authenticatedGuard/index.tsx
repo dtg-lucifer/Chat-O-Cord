@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, Navigate } from "react-router-dom";
+import { useAuth } from "../../utils/hooks/useAuth";
 
 const AuthenticatedGuard: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { user, isLoading } = useAuth();

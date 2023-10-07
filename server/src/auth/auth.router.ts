@@ -19,3 +19,8 @@ authRouter.post("/register", async (req: Request, res: Response) => {
     })
     .catch((err) => res.status(500).json(err));
 });
+
+authRouter.get("/me", async (req: Request, res: Response) => {
+  if (!req.session.user) return res.status(401).json({ message: "Unauthorized" });
+  return res.status(200).json(req.session.user);
+});
