@@ -14,3 +14,15 @@ export const registerUser = async (data: RegisterData) => {
     }
   );
 };
+
+export const getStatus = async () => {
+  return await axios.get<Omit<Omit<User, "password">, "confPassword">>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/auth/me`,
+    {
+      withCredentials: true,
+      params: {
+        redirect: "/",
+      },
+    }
+  );
+};

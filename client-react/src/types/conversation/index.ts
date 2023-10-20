@@ -1,12 +1,16 @@
 import { RegisterData } from "../authentication";
 
-export interface User extends RegisterData, Omit<RegisterData, "userName"> {
+export interface User extends RegisterData {
   id: string;
   userName: string;
   joinedOn: Date;
   profilePic: string;
   messages: Message[];
+  createdConversationId: string | null;
+  joinedConversationId: string | null;
 }
+
+export interface SafeUser extends Omit<Omit<User, "password">, "confPassword"> {}
 
 export interface Message {
   id: string;

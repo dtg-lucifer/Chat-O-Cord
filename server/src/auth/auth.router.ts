@@ -14,6 +14,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
   const { email, firstName, lastName, password } = req.body;
   return registerUser({ email, password, firstName, lastName })
     .then((user) => {
+      // @ts-ignore
       req.session.user = user;
       res.status(201).json(user);
     })
@@ -21,6 +22,8 @@ authRouter.post("/register", async (req: Request, res: Response) => {
 });
 
 authRouter.get("/me", async (req: Request, res: Response) => {
+  // @ts-ignore
   if (!req.session.user) return res.status(401).json({ message: "Unauthorized" });
+  // @ts-ignore
   return res.status(200).json(req.session.user);
 });

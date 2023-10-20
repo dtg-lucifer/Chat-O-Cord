@@ -1,37 +1,30 @@
 import { useEffect, useState } from "react";
+import { getStatus } from "../../lib/api";
+import { User } from "../../types/conversation";
 
 export const useAuth = () => {
-  const [user, setUser] = useState<{
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    userName: string;
-    profilePic: string;
-    joinedOn: Date;
-    joinedConversationId: string;
-    createdConversationId: string;
-  } | null>(null);
+  const [user, setUser] = useState<Omit<Omit<User, "password">, "confPassword"> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const controller = new AbortController();
 
   useEffect(() => {
-	const fetchUser = async () => {
-	  try {
-		const res = await fetch("/api/auth/me", {
-		  credentials: "include",
-		});
-		const data = await res.json();
-		if (res.ok) {
-		  setUser(data);
-		}
-	  } catch (err) {
-		console.log(err);
-	  } finally {
-		setIsLoading(false);
-	  }
-	};
-	fetchUser();
+    getStatus()
+      .then((res) => {
+        setUser(res.data);
+        console.log("Use Auth Success:", res.data)
+      })
+      .catch((err) => {
+        console.log("Use Auth Error:", err)
+        setError(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    return () => controller.abort();
   }, []);
 
-  return { user, isLoading };
+  return { user, isLoading, error };
 };
