@@ -6,6 +6,9 @@ import { RegisterData } from "../../../types/authentication";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../../lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
+import AuthContext from "../../../utils/context/authContext";
+import { SafeUser } from "../../../types/conversation";
 
 const RegisterPage = () => {
   const {
@@ -15,6 +18,7 @@ const RegisterPage = () => {
     getValues,
   } = useForm<RegisterData>();
 
+  const { setUser } = useContext(AuthContext)
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -23,7 +27,8 @@ const RegisterPage = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(["register__user", data.data.id], data);
       console.log("Registration successful", data);
-      navigate("/conversations");
+      setUser(data.data as SafeUser);
+      navigate("/conversations/");
     },
     onError: (error) => {
       console.log("Registration failed", error);
@@ -227,7 +232,7 @@ const RegisterPage = () => {
           <div className="mb-4">
             <span>
               Already have an account?
-              <Link className="ml-2 text-blue-400" to={"/login"}>
+              <Link className="ml-2 text-blue-400" to={"/auth/login"}>
                 Login
               </Link>
             </span>

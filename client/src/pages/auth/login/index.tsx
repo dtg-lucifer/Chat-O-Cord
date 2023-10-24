@@ -7,6 +7,9 @@ import { LoginData } from "../../../types/authentication";
 import styles from "./index.module.scss";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginUser } from "../../../lib/api";
+import { useContext } from "react";
+import AuthContext from "../../../utils/context/authContext";
+import { SafeUser } from "../../../types/conversation";
 
 const LoginPage = () => {
   const {
@@ -14,7 +17,8 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginData>();
-
+  
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -23,7 +27,8 @@ const LoginPage = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(["login__user", data.data.id], data);
       console.log("Login successful", data);
-      navigate("/conversations");
+      setUser(data.data as SafeUser);
+      navigate("/conversations/");
     },
     onError: (error) => {
       console.log("Login failed", error);
@@ -135,7 +140,7 @@ const LoginPage = () => {
             </div>
             <div>
               Don{"'"}t Have An Account?{" "}
-              <Link className="text-blue-600" to={"/register"}>
+              <Link className="text-blue-600" to={"/auth/register"}>
                 Register
               </Link>
             </div>
