@@ -44,7 +44,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24,
     },
     store: new RedisStore({
       client: redisClient,

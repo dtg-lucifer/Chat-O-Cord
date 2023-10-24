@@ -37,7 +37,7 @@ export async function createUser(data: CreateUserDetails) {
   return newUser;
 }
 
-export async function loginUser(data: LoginData) {
+export async function validateUser(data: LoginData) {
   const user = await db.user.findUnique({
     where: {
       email: data.email,

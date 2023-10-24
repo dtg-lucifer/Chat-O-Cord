@@ -1,0 +1,31 @@
+$primary-bg-dark-theme: #121212;
+$primary-color-dark-theme: #fff;
+$primary-button-color: #2b19fd;
+
+$dark-bg-dark-theme: #101010;
+$dark-color-dark-theme: #111111;
+
+$danger-bg-color: #ff0000;
+$danger-font-color: #ff0000;
+
+$online-n-other-sts-bg-color: #ffa800;
+$away-sts-bg-color: #00ff38;
+
+$primary-font: "Harmattan", sans-serif;
+$notFound-font: "Black Ops One", cursive;
+$bold-font: "Bebas Neue", cursive;
+$primary-poppins: "Poppins", sans-serif;
+
+$icons-bg-color-dark-theme: #060606;
+
+:root {
+  --clr-danger: #dc3545;
+  --clr-primary: #007bff;
+  --clr-dark-bg: #121212;
+  --clr-light-bg: #e4e4e4;
+
+  --clr-auth-gradient: linear-gradient(180deg, #0000ff 0%, #0000c0 100%);
+
+  --shadow-drop-primary: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  --shadow-primary: 0px 10px 15px -3px rgba(0, 0, 0, 0.5);
+}

@@ -1,18 +1,41 @@
-import { RegisterData } from "~/types/authentication";
+import { LoginData, RegisterData } from "../types/authentication";
 import axios from "axios";
-import { axiosConfig } from "~/util/axiosConfig";
-import { User } from "@prisma/client";
+import { User } from "../types/conversation";
 
 export const registerUser = async (data: RegisterData) => {
   return await axios.post<Partial<Omit<User, "password">>>(
-    "/auth/register",
+    `${process.env.REACT_APP_PUBLIC_API_URL}/auth/register`,
     data,
     {
-      ...axiosConfig,
+      withCredentials: true,
       params: {
-        ...axiosConfig.params,
         redirect: "/",
       },
-    },
+    }
+  );
+};
+
+export const loginUser = async (data: LoginData) => {
+  return await axios.post<Partial<Omit<User, "password">>>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/auth/login`,
+    data,
+    {
+      withCredentials: true,
+      params: {
+        redirect: "/",
+      },
+    }
+  );
+};
+
+export const getStatus = async () => {
+  return await axios.get<Omit<Omit<User, "password">, "confPassword">>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/auth/me`,
+    {
+      withCredentials: true,
+      params: {
+        redirect: "/",
+      },
+    }
   );
 };
