@@ -18,7 +18,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { mutate, error, status } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
       queryClient.setQueryData(["login__user", data.data.id], data);
