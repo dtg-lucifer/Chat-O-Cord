@@ -1,7 +1,5 @@
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import PageNotFound from "./pages/pageNotFound";
 import RegisterPage from "./pages/auth/register";
 import AuthenticatedGuard from "./components/authenticatedGuard";
@@ -9,6 +7,7 @@ import AuthContext from "./utils/context/authContext";
 import { useState } from "react";
 import { SafeUser } from "./types/conversation";
 import LoginPage from "./pages/auth/login";
+import { Toaster } from "sonner";
 
 function App() {
   const queryClient = new QueryClient();
@@ -62,7 +61,7 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>
-        <ToastContainer theme="dark" />
+        <Toaster richColors />
       </AuthContext.Provider>
     </QueryClientProvider>
   );

@@ -10,6 +10,8 @@ import { loginUser } from "../../../lib/api";
 import { useContext } from "react";
 import AuthContext from "../../../utils/context/authContext";
 import { SafeUser } from "../../../types/conversation";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const LoginPage = () => {
   const {
@@ -27,11 +29,21 @@ const LoginPage = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(["login__user", data.data.id], data);
       console.log("Login successful", data);
+      toast.success("Login successful !!", { invert: true });
       setUser(data.data as SafeUser);
       navigate("/conversations/");
     },
     onError: (error) => {
       console.log("Login failed", error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          return toast.error("Email or password is incorrect", { invert: true });
+        }
+        if (error.response?.status === 404) {
+          return toast.error("User not found", { invert: true });
+        }
+        return toast.error(error.response?.statusText, { invert: true })
+      }
     },
   });
 
@@ -39,7 +51,6 @@ const LoginPage = () => {
 
   return (
     <main className={styles.mainBg}>
-      -
       <div className={styles.modal}>
         <div className={styles.left}>
           <div className={styles.heading}>
