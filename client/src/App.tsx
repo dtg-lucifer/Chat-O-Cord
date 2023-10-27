@@ -8,6 +8,7 @@ import { useState } from "react";
 import { SafeUser } from "./types/conversation";
 import LoginPage from "./pages/auth/login";
 import { Toaster } from "sonner";
+import ConversationPage from "./pages/conversation";
 
 function App() {
   const queryClient = new QueryClient();
@@ -46,14 +47,14 @@ function App() {
             <Route path="/conversations">
               <Route index element={
                 <AuthenticatedGuard>
-                  <>Conversations</>
+                  <ConversationPage />
                 </AuthenticatedGuard>
               } />
               <Route
                 path=":id"
                 element={
                   <AuthenticatedGuard>
-                    <>Conversation</>
+                    <ConversationPage />
                   </AuthenticatedGuard>
                 }
               />
@@ -61,7 +62,7 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>
-        <Toaster richColors />
+        <Toaster richColors theme="dark" />
       </AuthContext.Provider>
     </QueryClientProvider>
   );

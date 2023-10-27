@@ -37,13 +37,14 @@ const LoginPage = () => {
       console.log("Login failed", error);
       if (error instanceof AxiosError) {
         if (error.response?.status === 409) {
-          return toast.error("Email or password is incorrect", { invert: true });
+          toast.error("Email or password is incorrect", { invert: true });
         }
         if (error.response?.status === 404) {
-          return toast.error("User not found", { invert: true });
+          toast.error("User not found", { invert: true });
         }
-        return toast.error(error.response?.statusText, { invert: true })
+        toast.error(error.response?.statusText, { invert: true })
       }
+      toast.error("Login failed !!", { invert: true });
     },
   });
 

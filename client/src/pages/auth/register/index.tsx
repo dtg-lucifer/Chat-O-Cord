@@ -9,6 +9,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import AuthContext from "../../../utils/context/authContext";
 import { SafeUser } from "../../../types/conversation";
+import { toast } from "sonner"
+import { AxiosError } from "axios";
 
 const RegisterPage = () => {
   const {
@@ -21,17 +23,29 @@ const RegisterPage = () => {
   const { setUser } = useContext(AuthContext)
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { success: succesToast, error: errorToast } = toast;
 
-  const { status, error, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
       queryClient.setQueryData(["register__user", data.data.id], data);
       console.log("Registration successful", data);
       setUser(data.data as SafeUser);
+      succesToast("Registration successful !!");
       navigate("/conversations/");
     },
     onError: (error) => {
       console.log("Registration failed", error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          errorToast("Email already exists");
+        }
+        if (error.response?.status === 400) {
+          errorToast("Invalid data");
+        }
+        errorToast(error.response?.statusText);
+      }
+      errorToast("Registration failed !!");
     },
   });
 
