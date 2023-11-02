@@ -51,7 +51,7 @@ function App() {
                 </AuthenticatedGuard>
               } />
               <Route
-                path=":id"
+                path="u/:id"
                 element={
                   <AuthenticatedGuard>
                     <ConversationPage />

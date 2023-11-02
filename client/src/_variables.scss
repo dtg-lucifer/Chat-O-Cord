@@ -5,7 +5,7 @@ $primary-button-color: #2b19fd;
 $dark-bg-dark-theme: #101010;
 $dark-color-dark-theme: #111111;
 
-$danger-bg-color: #ff0000;
+$danger-bg-color: #dc3545;
 $danger-font-color: #ff0000;
 
 $online-n-other-sts-bg-color: #ffa800;
@@ -22,8 +22,10 @@ $icons-bg-color-dark-theme: #060606;
   --clr-danger: #dc3545;
   --clr-primary: #007bff;
   --clr-dark-bg-faint: #1f1f1f;
-  --clr--dark-bg: #101010;
+  --clr-dark-bg: #101010;
   --clr-light-bg: #e4e4e4;
+  --clr-light-bg-faint: #3d3d3d;
+  --clr-light: #f8f9fa;
 
   --clr-auth-gradient: linear-gradient(180deg, #0000ff 0%, #0000c0 100%);
 
