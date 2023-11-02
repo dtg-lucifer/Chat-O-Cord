@@ -29,3 +29,8 @@ export interface Conversation {
   recipient: User;
   messages: Message[];
 }
+
+export interface SideBarProps {
+  activeConversationId?: string;
+  activeGroup: "g" | "u";
+}

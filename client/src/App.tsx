@@ -58,6 +58,14 @@ function App() {
                   </AuthenticatedGuard>
                 }
               />
+              <Route
+                path="g/:id"
+                element={
+                  <AuthenticatedGuard>
+                    <ConversationPage />
+                  </AuthenticatedGuard>
+                }
+              />
             </Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>
