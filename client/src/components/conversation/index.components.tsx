@@ -4,10 +4,16 @@ import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
 const inputCVA = cva("outline-none text-sm w-full", {
   variants: {
     variant: {
-      filled: ["px-4", "py-3", "bg-gray-200"],
-      outlined: ["border", "px-4", "py-3", "border-gray-200"],
-      sideBarSearch: [
+      base: [
         "bg-[#101010]",
+        "border-none",
+        "rounded-[0.5rem]",
+        "text-[#f8f9fa]",
+        "px-4",
+        "py-3",
+      ],
+      chat: [
+        "bg-[#1f1f1f]",
         "border-none",
         "rounded-[0.5rem]",
         "text-[#f8f9fa]",
@@ -16,9 +22,7 @@ const inputCVA = cva("outline-none text-sm w-full", {
       ],
     },
     size: {
-      sm: "px-2 py-1",
-      md: "px-3 py-2",
-      lg: "px-4 py-3",
+      lg: ["px-5", "py-4", "text-[15px]"],
     },
   },
 });
@@ -38,6 +42,16 @@ const buttonCVA = cva("outline-none text-sm", {
         "duration-200",
       ],
       sideBarFilter: [
+        "bg-[#101010]",
+        "px-3",
+        "py-2",
+        "hover:bg-[#444444]",
+        "transition",
+        "ease-in-out",
+        "duration-200",
+        "rounded-[3px]",
+      ],
+      active: [
         "bg-[#333333]",
         "px-3",
         "py-2",
@@ -48,14 +62,12 @@ const buttonCVA = cva("outline-none text-sm", {
         "rounded-[3px]",
       ],
     },
-  }
+  },
 });
 
 interface TextFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
-    VariantProps<typeof inputCVA> {
-  emojiPanel?: boolean;
-}
+    VariantProps<typeof inputCVA> {}
 
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -63,22 +75,8 @@ interface ButtonProps
   children: React.ReactNode;
 }
 
-export const TextField = ({
-  variant,
-  size,
-  emojiPanel,
-  ...props
-}: TextFieldProps) => {
-  if (!emojiPanel) {
-    return <input className={inputCVA({ variant, size })} {...props} />;
-  } else {
-    // TODO: Add emoji panel
-    return (
-      <span>
-        <input className={inputCVA({ variant, size })} {...props} />
-      </span>
-    );
-  }
+export const TextField = ({ variant, size, ...props }: TextFieldProps) => {
+  return <input className={inputCVA({ variant, size })} {...props} />;
 };
 
 export const Button = ({ variant, children, ...props }: ButtonProps) => {

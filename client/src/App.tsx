@@ -5,53 +5,66 @@ import RegisterPage from "./pages/auth/register";
 import AuthenticatedGuard from "./components/authenticatedGuard";
 import AuthContext from "./utils/context/authContext";
 import { useState } from "react";
-import { SafeUser } from "./types/conversation";
+import { Conversation, SafeUser } from "./types/conversation";
 import LoginPage from "./pages/auth/login";
 import { Toaster } from "sonner";
 import ConversationPage from "./pages/conversation";
+import { ActiveChatContext } from "./utils/context/activeChatContext";
 
 function App() {
-  const queryClient = new QueryClient();
-  const [user, setUser] = useState<SafeUser | null>(null);
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={{ user, setUser }}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<>Home</>} />
-            <Route path="/auth">
-              <Route path="login" element={
+    <AppWithProviders>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<>Home</>} />
+          <Route path="/auth">
+            <Route
+              path="login"
+              element={
                 <AuthenticatedGuard>
                   <LoginPage />
                 </AuthenticatedGuard>
-              } />
-              <Route path="register" element={
+              }
+            />
+            <Route
+              path="register"
+              element={
                 <AuthenticatedGuard>
                   <RegisterPage />
                 </AuthenticatedGuard>
-              } />
-            </Route>
-            <Route path="/dashboard">
-              <Route path="profile" element={
+              }
+            />
+          </Route>
+          <Route path="/dashboard">
+            <Route
+              path="profile"
+              element={
                 <AuthenticatedGuard>
                   <>Profile</>
                 </AuthenticatedGuard>
-              } />
-              <Route path="settings" element={
+              }
+            />
+            <Route
+              path="settings"
+              element={
                 <AuthenticatedGuard>
                   <>Settings</>
                 </AuthenticatedGuard>
-              } />
-            </Route>
-            <Route path="/conversations">
-              <Route index element={
+              }
+            />
+          </Route>
+          <Route path="/conversations">
+            <Route
+              index
+              element={
                 <AuthenticatedGuard>
                   <ConversationPage />
                 </AuthenticatedGuard>
-              } />
+              }
+            />
+            <Route path=":mode">
               <Route
-                path="u/:id"
+                index
                 element={
                   <AuthenticatedGuard>
                     <ConversationPage />
@@ -59,7 +72,7 @@ function App() {
                 }
               />
               <Route
-                path="g/:id"
+                path=":id"
                 element={
                   <AuthenticatedGuard>
                     <ConversationPage />
@@ -67,10 +80,25 @@ function App() {
                 }
               />
             </Route>
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster richColors theme="dark" />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
+      <Toaster richColors theme="dark" />
+    </AppWithProviders>
+  );
+}
+
+function AppWithProviders({ children }: { children: React.ReactNode }) {
+  const queryClient = new QueryClient();
+  const [user, setUser] = useState<SafeUser | null>(null);
+  const [activeChat, setActiveChat] = useState<Conversation | null>(null);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={{ user, setUser }}>
+        <ActiveChatContext.Provider value={{ activeChat, setActiveChat }}>
+          {children}
+        </ActiveChatContext.Provider>
       </AuthContext.Provider>
     </QueryClientProvider>
   );

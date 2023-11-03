@@ -4,7 +4,7 @@ import {
   TextField as TextFieldCVA,
 } from "../index.components";
 import {
-	ChatCard,
+  ChatCard,
   ChatWrapper,
   FilterWrapper,
   SideBarWrapper,
@@ -14,10 +14,13 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../../../utils/context/authContext";
 import { SideBarProps } from "../../../types/conversation";
 
-export default function SideBar({ activeGroup }: SideBarProps) {
+export default function SideBar({
+  activeGroup,
+  activeConversationId,
+}: SideBarProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-	const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
   return (
     <SideBarWrapper>
@@ -25,42 +28,59 @@ export default function SideBar({ activeGroup }: SideBarProps) {
         <TextFieldCVA
           placeholder="Search..."
           type="text"
-          variant="sideBarSearch"
+          variant="base"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </TopWrapper>
       <FilterWrapper>
         <ButtonCVA
-          variant="sideBarFilter"
+          variant={activeGroup === "u" ? "active" : "sideBarFilter"}
           onClick={() => {
             navigate("/conversations/u");
+          }}
+          style={{
+            boxShadow: activeGroup === "u" ? "var(--shadow-primary)" : "",
           }}
         >
           Direct
         </ButtonCVA>
         <ButtonCVA
-          variant="sideBarFilter"
+          variant={activeGroup === "g" ? "active" : "sideBarFilter"}
           onClick={() => {
             navigate("/conversations/g");
+          }}
+          style={{
+            boxShadow: activeGroup === "g" ? "var(--shadow-primary)" : "",
           }}
         >
           Group
         </ButtonCVA>
       </FilterWrapper>
       <ChatWrapper>
-				{new Array(10).fill(0).map((_, i) => {
-					return (
-						<ChatCard key={i}>
-							<img src={user?.profilePic || "/BLANK.jpeg"} alt="" />
-							<div className="details__wrapper">
-								<h4>{user?.userName || "UNKNOWN USER"}</h4>
-								<p>Some Message</p>
-							</div>
-						</ChatCard>
-					)
-				})}
-			</ChatWrapper>
+        {new Array(10).fill(0).map((_, i) => {
+          return (
+            <ChatCard
+              key={i}
+              onClick={() => {
+                navigate(`/conversations/${activeGroup}/${i}`);
+              }}
+              style={{
+                backgroundColor:
+                  activeConversationId === i.toString()
+                    ? "var(--clr-light-bg-faint)"
+                    : "",
+              }}
+            >
+              <img src={user?.profilePic || "/BLANK.jpeg"} alt="profile" />
+              <div className="details__wrapper">
+                <h4>@name</h4>
+                <p>Some message....</p>
+              </div>
+            </ChatCard>
+          );
+        })}
+      </ChatWrapper>
     </SideBarWrapper>
   );
 }

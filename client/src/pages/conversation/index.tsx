@@ -1,24 +1,32 @@
 import styles from "./index.module.scss"
 import { SideBar } from "../../components/conversation";
 import PrimaryBar from "../../components/primarybar";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import ChatSection from "../../components/conversation/chat";
+import { useEffect, useLayoutEffect } from "react";
 
 const ConversationPage = () => {
 
-	const { id } = useParams<{id: string}>()
-	console.log("Currently in this id:", id)
-	
-	const { pathname } = useLocation()
-	const isGroup = pathname.split("/")[2] === "g"
-	const isUser = pathname.split("/")[2] === "u"
+	const { id, mode } = useParams<{id: string, mode: string}>()
 
-	console.log("isGroup:", isGroup)
-	console.log("isUser:", isUser)
+	useLayoutEffect(() => {
+		if (mode !== "u" && mode !== "g") {
+			window.location.href = "/conversations/u"
+		}
+	}, [mode])
+
+	useEffect(() => {
+		// TODO: fetch conversations on mount
+		// TODO: by the id in the url
+		// TODO: then set that to a context
+		console.log("Fetching new conversation", { id, mode })
+	}, [id])
 
 	return (
 		<main className={styles.main__wrapper}>
 			<PrimaryBar />
-			<SideBar activeGroup={isGroup ? "g" : "u"}  />
+			<SideBar activeGroup={mode} activeConversationId={id} />
+			<ChatSection />
 		</main>
 	);
 };

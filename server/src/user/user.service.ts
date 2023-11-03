@@ -29,8 +29,8 @@ export async function createUser(data: CreateUserDetails) {
       userName: true,
       profilePic: true,
       joinedOn: true,
-      joinedConversationId: true,
-      createdConversationId: true,
+      createdConversations: true,
+      joinedConversations: true,
     },
   });
 
@@ -42,6 +42,10 @@ export async function validateUser(data: LoginData) {
     where: {
       email: data.email,
     },
+    include: {
+      createdConversations: true,
+      joinedConversations: true,
+    }
   });
 
   if (!user) throw new Error("User does not exist");
@@ -69,8 +73,8 @@ export async function getUserById(id: string) {
       userName: true,
       profilePic: true,
       joinedOn: true,
-      joinedConversationId: true,
-      createdConversationId: true,
+      createdConversations: true,
+      joinedConversations: true,
     },
   });
 

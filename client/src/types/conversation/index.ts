@@ -26,11 +26,11 @@ export interface Conversation {
   createdAt: Date;
   updatedAt: Date;
   creator: User;
-  recipient: User;
+  recipients: User[];
   messages: Message[];
 }
 
 export interface SideBarProps {
   activeConversationId?: string;
-  activeGroup: "g" | "u";
+  activeGroup?: string;
 }
