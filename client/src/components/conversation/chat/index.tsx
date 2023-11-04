@@ -7,12 +7,17 @@ import {
   ConversationWrapper,
 } from "../index.styled";
 import EmojiPicker, { SkinTones, Theme } from "emoji-picker-react";
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useDebounce } from "../../../utils/hooks/useDebounce";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string>("");
+
+  const actualMessage = useDebounce((msg: SetStateAction<string>) => {
+    setMessage(msg);
+  }, 1000)
 
   useEffect(() => {
     window.addEventListener("keydown", (e) => {
@@ -28,6 +33,12 @@ export default function ChatSection() {
     };
   }, []);
 
+  useEffect(() => {
+    if (message) {
+      console.log("Sending message:", message);
+    }
+  }, [message]);
+
   return (
     <ChatSectionMainWrapper>
       <ChatTopWrapper></ChatTopWrapper>
@@ -38,16 +49,14 @@ export default function ChatSection() {
           ref={fileInputRef}
           type="file"
           accept=".jpg,.jpeg,.png,.mkv,.mp4,.mp3,.m4a,.doc,.docx,.pdf,.ppt,.pptx,.txt"
-          capture
           hidden
         />
         <TextFieldCVA
           variant={"chat"}
           size={"lg"}
           placeholder="Send something"
-          value={message}
           autoFocus
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => actualMessage(e.target.value)}
         />
         <FaSmileWink
           size={20}
