@@ -38,6 +38,7 @@ export default function ChatSection() {
           size={"lg"}
           placeholder="Send something"
           value={message}
+          autoFocus
           onChange={(e) => setMessage(e.target.value)}
         />
         <FaSmileWink
@@ -55,6 +56,7 @@ export default function ChatSection() {
           <EmojiPicker
             theme={Theme.DARK}
             defaultSkinTone={SkinTones.NEUTRAL}
+            lazyLoadEmojis
             onEmojiClick={(e) => setMessage((prevMsg) => prevMsg + e.emoji)}
           />
         </div>

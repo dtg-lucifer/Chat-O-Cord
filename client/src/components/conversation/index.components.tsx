@@ -67,7 +67,9 @@ const buttonCVA = cva("outline-none text-sm", {
 
 interface TextFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
-    VariantProps<typeof inputCVA> {}
+    VariantProps<typeof inputCVA> {
+      ref?: React.Ref<HTMLInputElement>;
+    }
 
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
