@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
@@ -32,7 +33,14 @@ export default function ChatSection() {
       <ChatTopWrapper></ChatTopWrapper>
       <ConversationWrapper></ConversationWrapper>
       <ChatBottomWrapper>
-        <FaPlus size={20} />
+        <FaPlus size={20} onClick={() => fileInputRef.current?.click()} />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".jpg,.jpeg,.png,.mkv,.mp4,.mp3,.m4a,.doc,.docx,.pdf,.ppt,.pptx,.txt"
+          capture
+          hidden
+        />
         <TextFieldCVA
           variant={"chat"}
           size={"lg"}
