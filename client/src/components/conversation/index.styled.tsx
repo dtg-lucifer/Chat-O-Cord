@@ -177,16 +177,20 @@ export const ChatBottomWrapper = styled.div`
   }
 
   & > div.emoji__wrapper > aside.EmojiPickerReact {
-		display: none;
     position: absolute;
     bottom: 100%;
     right: calc(0% + 1rem);
     transform: translateX(100%);
     opacity: 0;
-		animation: ${EmojiPanelAnimation} 0.2s ease-in-out forwards;
+    transition: all 0.2s ease-in-out;
+    appearance: none;
+    visibility: hidden;
   }
 
   & > div.emoji__wrapper > aside.EmojiPickerReact.emoji__wrapper__active {
-		display: unset;
-	}
+    transform: translateX(0);
+    opacity: 100%;
+    appearance: none;
+    visibility: visible;
+  }
 `;

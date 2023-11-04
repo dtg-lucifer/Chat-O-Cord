@@ -38,6 +38,10 @@
   }
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   background-color: $primary-bg-dark-theme;
   color: $primary-color-dark-theme;

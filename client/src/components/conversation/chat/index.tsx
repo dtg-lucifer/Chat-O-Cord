@@ -55,7 +55,6 @@ export default function ChatSection() {
           <EmojiPicker
             theme={Theme.DARK}
             defaultSkinTone={SkinTones.NEUTRAL}
-            lazyLoadEmojis
             onEmojiClick={(e) => setMessage((prevMsg) => prevMsg + e.emoji)}
           />
         </div>
