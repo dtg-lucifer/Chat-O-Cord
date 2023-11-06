@@ -7,17 +7,15 @@ import {
   ConversationWrapper,
 } from "../index.styled";
 import EmojiPicker, { SkinTones, Theme } from "emoji-picker-react";
-import { SetStateAction, useEffect, useRef, useState } from "react";
-import { useDebounce } from "../../../utils/hooks/useDebounce";
+import { useEffect, useRef, useState } from "react";
+import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string>("");
 
-  const actualMessage = useDebounce((msg: SetStateAction<string>) => {
-    setMessage(msg);
-  }, 1000)
+  const { debouncedVal, isTyping } = useDebouncedTyping<string>(message, 2000);
 
   useEffect(() => {
     window.addEventListener("keydown", (e) => {
@@ -34,10 +32,12 @@ export default function ChatSection() {
   }, []);
 
   useEffect(() => {
-    if (message) {
-      console.log("Sending message:", message);
+    isTyping && console.log("Typing starts", debouncedVal);
+
+    if (message && !isTyping) {
+      console.log("Typing ends", debouncedVal);
     }
-  }, [message]);
+  }, [isTyping]);
 
   return (
     <ChatSectionMainWrapper>
@@ -56,7 +56,8 @@ export default function ChatSection() {
           size={"lg"}
           placeholder="Send something"
           autoFocus
-          onChange={(e) => actualMessage(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
         />
         <FaSmileWink
           size={20}
@@ -73,7 +74,7 @@ export default function ChatSection() {
           <EmojiPicker
             theme={Theme.DARK}
             defaultSkinTone={SkinTones.NEUTRAL}
-            lazyLoadEmojis
+            lazyLoadEmojis={true}
             onEmojiClick={(e) => setMessage((prevMsg) => prevMsg + e.emoji)}
           />
         </div>
