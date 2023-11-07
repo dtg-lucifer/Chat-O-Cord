@@ -55,7 +55,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 app.use(`${BASE_URL}/auth`, authRouter);
 app.use(`${BASE_URL}/user`, AuthGuard, userRouter);

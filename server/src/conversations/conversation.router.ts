@@ -9,12 +9,6 @@ conversationRouter
     res.send("Hello from conversation router!");
   })
   .post("/", (req, res) => {
-		// @ts-ignore
-    if (req.session.user) {
-			// @ts-ignore
-      const user = req.session.user as User;
-      return createConversation(user);
-    } else {
-      res.status(401).send("UNAUTHORIZED");
-    }
+    // @ts-ignore
+    return createConversation(req.session.user as User);
   });
