@@ -3,7 +3,7 @@ import { Session, SessionData } from "express-session";
 
 declare module "express-session" {
   interface SessionData {
-    user: Omit<User, "password">;
+    user: User;
   }
 }
 

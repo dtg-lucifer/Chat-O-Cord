@@ -1,5 +1,4 @@
 import * as bcrypt from "bcrypt";
-import { User } from "@prisma/client";
 
 export const hashPassword = async (password: string): Promise<string> => {
   const salt = bcrypt.genSaltSync();

@@ -7,6 +7,8 @@ import RedisStore from "connect-redis";
 
 import { authRouter } from "./auth/auth.router";
 import { userRouter } from "./user/user.router";
+import { conversationRouter } from "./conversations/conversation.router";
+import { AuthGuard } from "./lib/middleware.server";
 
 dotenv.config();
 
@@ -56,7 +58,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(`${BASE_URL}/auth`, authRouter);
-app.use(`${BASE_URL}/user`, userRouter);
+app.use(`${BASE_URL}/user`, AuthGuard, userRouter);
+app.use(`${BASE_URL}/conversation`, AuthGuard, conversationRouter);
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
