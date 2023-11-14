@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @default(uuid())
-  firstName             String
-  lastName              String
-  email                 String         @unique
-  password              String
-  userName              String         @unique
-  joinedOn              DateTime       @default(now())
-  profilePic            String?
-  message               Message[]
-  createdConversations  Conversation[] @relation("Creator")
-  joinedConversations   Conversation[]
+  id                   String         @id @default(uuid())
+  firstName            String
+  lastName             String
+  email                String         @unique
+  password             String
+  userName             String         @unique
+  joinedOn             DateTime       @default(now())
+  profilePic           String?
+  online               Boolean        @default(false)
+  messages             Message[]
+  createdConversations Conversation[] @relation("Creator")
+  joinedConversations  Conversation[] @relation("Recipient")
 }
 
 model Message {
@@ -26,10 +27,18 @@ model Message {
   content        String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  author         User         @relation(fields: [authorId], references: [id])
-  authorId       String
-  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  author         User         @relation(fields: [userId], references: [id])
+  userId         String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId String
+  attachments    Attachment[]
+}
+
+model Attachment {
+  id        String  @id @default(uuid())
+  url       String
+  message   Message @relation(fields: [messageId], references: [id])
+  messageId String
 }
 
 model Conversation {
@@ -38,6 +47,7 @@ model Conversation {
   updatedAt   DateTime  @updatedAt
   creator     User      @relation("Creator", fields: [creatorId], references: [id])
   creatorId   String
-  recipients  User[]
+  recipient   User      @relation("Recipient", fields: [recipientId], references: [id])
+  recipientId String
   messages    Message[]
 }

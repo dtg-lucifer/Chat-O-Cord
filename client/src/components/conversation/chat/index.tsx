@@ -6,7 +6,7 @@ import {
   ChatTopWrapper,
   ConversationWrapper,
 } from "../index.styled";
-import EmojiPicker, { SkinTones, Theme } from "emoji-picker-react";
+import EmojiPicker, { EmojiStyle, SkinTones, Theme } from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 
@@ -75,6 +75,7 @@ export default function ChatSection() {
             theme={Theme.DARK}
             defaultSkinTone={SkinTones.NEUTRAL}
             lazyLoadEmojis={true}
+            emojiStyle={EmojiStyle.APPLE}
             onEmojiClick={(e) => setMessage((prevMsg) => prevMsg + e.emoji)}
           />
         </div>
