@@ -13,6 +13,7 @@ const ConversationPage = () => {
 		if (mode !== "u" && mode !== "g") {
 			window.location.href = "/conversations/u"
 		}
+		
 	}, [mode])
 
 	useEffect(() => {

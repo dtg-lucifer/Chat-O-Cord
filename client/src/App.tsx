@@ -10,6 +10,8 @@ import LoginPage from "./pages/auth/login";
 import { Toaster } from "sonner";
 import ConversationPage from "./pages/conversation";
 import { ActiveChatContext } from "./utils/context/activeChatContext";
+import { Provider } from "react-redux";
+import { store } from "./utils/store";
 
 function App() {
   return (
@@ -95,11 +97,13 @@ function AppWithProviders({ children }: { children: React.ReactNode }) {
   const [activeChat, setActiveChat] = useState<Conversation | null>(null);
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={{ user, setUser }}>
-        <ActiveChatContext.Provider value={{ activeChat, setActiveChat }}>
-          {children}
-        </ActiveChatContext.Provider>
-      </AuthContext.Provider>
+      <Provider store={store}>
+        <AuthContext.Provider value={{ user, setUser }}>
+          <ActiveChatContext.Provider value={{ activeChat, setActiveChat }}>
+            {children}
+          </ActiveChatContext.Provider>
+        </AuthContext.Provider>
+      </Provider>
     </QueryClientProvider>
   );
 }
