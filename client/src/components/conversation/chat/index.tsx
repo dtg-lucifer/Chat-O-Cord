@@ -7,8 +7,10 @@ import {
   ConversationWrapper,
 } from "../index.styled";
 import EmojiPicker, { EmojiStyle, SkinTones, Theme } from "emoji-picker-react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
+import { ActiveChatContext } from "../../../utils/context/activeChatContext";
+import AuthContext from "../../../utils/context/authContext";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -16,6 +18,12 @@ export default function ChatSection() {
   const [message, setMessage] = useState<string>("");
 
   const { debouncedVal, isTyping } = useDebouncedTyping<string>(message, 2000);
+  const { activeChat } = useContext(ActiveChatContext);
+  const { user } = useContext(AuthContext);
+
+  const currentChatUser = activeChat?.recipient.id === user?.id
+    ? activeChat?.creator
+    : activeChat?.recipient;
 
   useEffect(() => {
     window.addEventListener("keydown", (e) => {
@@ -41,7 +49,10 @@ export default function ChatSection() {
 
   return (
     <ChatSectionMainWrapper>
-      <ChatTopWrapper></ChatTopWrapper>
+      <ChatTopWrapper>
+        <img src={currentChatUser?.profilePic || "/BLANK.jpeg"} alt="" />
+        {currentChatUser?.userName}
+      </ChatTopWrapper>
       <ConversationWrapper></ConversationWrapper>
       <ChatBottomWrapper>
         <FaPlus size={20} onClick={() => fileInputRef.current?.click()} />

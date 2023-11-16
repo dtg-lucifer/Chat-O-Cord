@@ -3,4 +3,6 @@ main.main__wrapper {
 	align-items: flex-start;
 	justify-content: flex-start;
 	height: 100dvh;
+	position: relative;
+	z-index: 1;
 }

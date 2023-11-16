@@ -13,14 +13,18 @@ import {
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../../utils/context/authContext";
 import { SideBarProps } from "../../../types/conversation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../utils/store";
+import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 
-export default function SideBar({
-  activeGroup,
-  activeConversationId,
-}: SideBarProps) {
+export default function SideBar({ activeGroup }: SideBarProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const { user } = useContext(AuthContext);
+  const { activeChat, setActiveChat } = useContext(ActiveChatContext);
+  const conversations = useSelector(
+    (state: RootState) => state.conversation.conversations
+  );
 
   return (
     <SideBarWrapper>
@@ -35,12 +39,12 @@ export default function SideBar({
       </TopWrapper>
       <FilterWrapper>
         <ButtonCVA
-          variant={activeGroup === "u" ? "active" : "sideBarFilter"}
+          variant={activeGroup === "d" ? "active" : "sideBarFilter"}
           onClick={() => {
-            navigate("/conversations/u");
+            navigate("/conversations/d");
           }}
           style={{
-            boxShadow: activeGroup === "u" ? "var(--shadow-primary)" : "",
+            boxShadow: activeGroup === "d" ? "var(--shadow-primary)" : "",
           }}
         >
           Direct
@@ -58,24 +62,30 @@ export default function SideBar({
         </ButtonCVA>
       </FilterWrapper>
       <ChatWrapper>
-        {new Array(10).fill(0).map((_, i) => {
+        {conversations.map((c, i) => {
           return (
             <ChatCard
-              key={i}
+              key={c.id}
               onClick={() => {
-                navigate(`/conversations/${activeGroup}/${i}`);
+                navigate(`/conversations/${activeGroup}/${c.id}`);
+                setActiveChat(c)
+                console.log("Active Chat: ", c);
               }}
               style={{
                 backgroundColor:
-                  activeConversationId === i.toString()
+                  activeChat?.id === c.id.toString()
                     ? "var(--clr-light-bg-faint)"
                     : "",
               }}
             >
               <img src={user?.profilePic || "/BLANK.jpeg"} alt="profile" />
               <div className="details__wrapper">
-                <h4>@name</h4>
-                <p>Some message....</p>
+                <h4>
+                  {c.creator.id === user?.id
+                    ? c.recipient.userName
+                    : c.creator.userName}
+                </h4>
+                <p>{c.messages[0]?.content ?? "No messages yet"}</p>
               </div>
             </ChatCard>
           );

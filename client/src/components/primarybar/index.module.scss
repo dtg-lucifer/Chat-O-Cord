@@ -7,8 +7,10 @@ aside.wrapper {
   justify-content: flex-start;
   height: 100dvh;
   width: 5rem;
+  position: relative;
   padding: 2rem 0.5rem;
   gap: 5rem;
+  z-index: 2;
 
   & > div.image__wrapper {
     cursor: pointer;

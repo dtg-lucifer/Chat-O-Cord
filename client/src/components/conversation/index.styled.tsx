@@ -111,11 +111,24 @@ export const ChatCardActive = styled(ChatCard)`
 
 // ! Chat Section
 
+const MainWrapperAnimation = keyframes`
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 100%;
+  }
+`;
+
 export const ChatSectionMainWrapper = styled.main`
   flex: 1;
   height: 100%;
   display: flex;
   flex-direction: column;
+  z-index: -1;
+  animation: ${MainWrapperAnimation} 0.2s ease-in-out;
 `;
 
 export const ChatTopWrapper = styled.header`
@@ -123,9 +136,10 @@ export const ChatTopWrapper = styled.header`
   background-color: var(--clr-dark-bg-faint);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 1rem;
   position: relative;
+  gap: 1.5rem;
 
   &::after {
     content: "";
@@ -146,13 +160,6 @@ export const ConversationWrapper = styled.div`
   background-color: var(--clr-dark-bg);
   border-radius: 0.5rem 0 0 0;
 `;
-
-const EmojiPanelAnimation = keyframes`
-	to {
-		transform: translateX(0);
-    opacity: 100%;
-	}
-`
 
 export const ChatBottomWrapper = styled.div`
   display: flex;

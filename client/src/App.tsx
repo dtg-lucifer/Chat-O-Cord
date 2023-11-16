@@ -1,16 +1,17 @@
-import { Route, BrowserRouter, Routes } from "react-router-dom";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import PageNotFound from "./pages/pageNotFound";
-import RegisterPage from "./pages/auth/register";
-import AuthenticatedGuard from "./components/authenticatedGuard";
-import AuthContext from "./utils/context/authContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-import { Conversation, SafeUser } from "./types/conversation";
-import LoginPage from "./pages/auth/login";
-import { Toaster } from "sonner";
-import ConversationPage from "./pages/conversation";
-import { ActiveChatContext } from "./utils/context/activeChatContext";
 import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
+
+import AuthenticatedGuard from "./components/authenticatedGuard";
+import LoginPage from "./pages/auth/login";
+import RegisterPage from "./pages/auth/register";
+import ConversationPage from "./pages/conversation";
+import PageNotFound from "./pages/pageNotFound";
+import { Conversation, SafeUser } from "./types/conversation";
+import { ActiveChatContext } from "./utils/context/activeChatContext";
+import AuthContext from "./utils/context/authContext";
 import { store } from "./utils/store";
 
 function App() {
@@ -86,7 +87,12 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
-      <Toaster richColors theme="dark" />
+      <Toaster
+        richColors
+        closeButton
+        toastOptions={{ className: "main__toaster" }}
+        theme="dark"
+      />
     </AppWithProviders>
   );
 }

@@ -26,7 +26,7 @@ export interface Conversation {
   createdAt: Date;
   updatedAt: Date;
   creator: User;
-  recipients: User[];
+  recipient: User;
   messages: Message[];
 }
 

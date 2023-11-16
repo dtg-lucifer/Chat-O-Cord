@@ -1,5 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Conversation } from "../../../types/conversation";
+import { getConversations } from "../../../lib/api";
 
 export interface ConversationState {
   conversations: Conversation[];
@@ -11,6 +12,13 @@ const initialState: ConversationState = {
   loading: false,
 };
 
+export const getConversationsAsync = createAsyncThunk(
+  "conversation/fetch",
+  async (mode: string) => {
+    return getConversations(mode);
+  }
+);
+
 const conversationSlice = createSlice({
   name: "conversation",
   initialState,
@@ -18,22 +26,17 @@ const conversationSlice = createSlice({
     addConversations: (state, action) => {
       state.conversations.unshift(action.payload);
     },
-    removeConversations: (state, action) => {
-      state.conversations = state.conversations.filter(
-        (conversation) => conversation.id !== action.payload
-      );
-    },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(getConversationsAsync.fulfilled, (state, action) => {
+      state.conversations = action.payload.data;
+      state.loading = false;
+    });
+  },
 });
 
-const { 
-	addConversations, 
-	removeConversations, 
-	setLoading 
-} = conversationSlice.actions;
-
-export { addConversations, removeConversations, setLoading };
+export const { addConversations, setLoading } = conversationSlice.actions;
 export default conversationSlice.reducer;
