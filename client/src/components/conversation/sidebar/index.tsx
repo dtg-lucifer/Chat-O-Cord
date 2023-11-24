@@ -62,7 +62,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
         </ButtonCVA>
       </FilterWrapper>
       <ChatWrapper>
-        {conversations.map((c, i) => {
+        {conversations.map((c) => {
           return (
             <ChatCard
               key={c.id}

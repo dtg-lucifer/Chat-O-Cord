@@ -64,7 +64,7 @@ export const ChatCard = styled.div`
   justify-content: flex-start;
   gap: 0.5rem;
   width: 100%;
-  padding: 0.4rem 0.3rem;
+  padding: 0.6rem;
   border-radius: 5px;
   cursor: pointer;
 
@@ -140,6 +140,15 @@ export const ChatTopWrapper = styled.header`
   padding: 1rem;
   position: relative;
   gap: 1.5rem;
+
+  & > img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    height: 2.5rem;
+    border-radius: 50%;
+    outline: 2px solid var(--clr-sts-light);
+    outline-offset: 2px;
+  }
 
   &::after {
     content: "";
