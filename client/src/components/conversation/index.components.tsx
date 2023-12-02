@@ -1,5 +1,9 @@
 import { VariantProps, cva } from "class-variance-authority";
-import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
+import React, {
+  AllHTMLAttributes,
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+} from "react";
 
 const inputCVA = cva("outline-none text-sm w-full", {
   variants: {
@@ -65,16 +69,31 @@ const buttonCVA = cva("outline-none text-sm", {
   },
 });
 
+const messageCVA = cva("", {
+  variants: {
+    variant: {
+      withImg: ["flex", "gap-2", "items-center", "flex"],
+      withoutImg: ["flex", "gap-2", "items-center"],
+    },
+  },
+});
+
 interface TextFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputCVA> {
-      ref?: React.Ref<HTMLInputElement>;
-    }
+  ref?: React.Ref<HTMLInputElement>;
+}
 
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonCVA> {
   children: React.ReactNode;
+}
+
+interface MessageProps
+  extends AllHTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof messageCVA> {
+  children: React.ReactNode[];
 }
 
 export const TextField = ({ variant, size, ...props }: TextFieldProps) => {
@@ -86,5 +105,15 @@ export const Button = ({ variant, children, ...props }: ButtonProps) => {
     <button className={buttonCVA({ variant })} {...props}>
       {children}
     </button>
+  );
+};
+
+export const Message = ({ variant, children, ...props }: MessageProps) => {
+  return (
+    <div className={messageCVA({ variant })} {...props}>
+      {children.map((child, index) => (
+        <React.Fragment key={index}>{child}</React.Fragment>
+      ))}
+    </div>
   );
 };

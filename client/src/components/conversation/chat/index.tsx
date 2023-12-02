@@ -1,5 +1,8 @@
 import { FaPlus, FaSmileWink } from "react-icons/fa";
-import { TextField as TextFieldCVA } from "../index.components";
+import {
+  TextField as TextFieldCVA,
+  Message as MessageCVA,
+} from "../index.components";
 import {
   ChatBottomWrapper,
   ChatSectionMainWrapper,
@@ -11,6 +14,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
+import { Message } from "../../../types/conversation";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -21,9 +25,10 @@ export default function ChatSection() {
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
 
-  const currentChatUser = activeChat?.recipient.id === user?.id
-    ? activeChat?.creator
-    : activeChat?.recipient;
+  const currentChatUser =
+    activeChat?.recipient.id === user?.id
+      ? activeChat?.creator
+      : activeChat?.recipient;
 
   useEffect(() => {
     window.addEventListener("keydown", (e) => {
@@ -47,13 +52,36 @@ export default function ChatSection() {
     }
   }, [isTyping]);
 
+  const showAvatarAndTimeStamp = <M extends Message>(msg: M) => {};
+
   return (
     <ChatSectionMainWrapper>
       <ChatTopWrapper>
         <img src={currentChatUser?.profilePic || "/BLANK.jpeg"} alt="" />
         {currentChatUser?.userName}
       </ChatTopWrapper>
-      <ConversationWrapper></ConversationWrapper>
+      <ConversationWrapper>
+        {new Array(10).fill(0).map((msg, i) => (
+          <MessageCVA
+            variant={i === 9 ? "withImg" : "withoutImg"}
+            key={msg?.id}
+          >
+            {false ? (
+              <img src={msg.author.profilePic} alt="profle_pic" />
+            ) : (
+              <img
+                src="/BLANK.jpeg"
+                className="w-10 h-10 rounded-full aspect-square"
+                alt="profile_pic"
+              />
+            )}
+            <div>
+              <h3>UserName</h3>
+              <p>{i}</p>
+            </div>
+          </MessageCVA>
+        ))}
+      </ConversationWrapper>
       <ChatBottomWrapper>
         <FaPlus size={20} onClick={() => fileInputRef.current?.click()} />
         <input

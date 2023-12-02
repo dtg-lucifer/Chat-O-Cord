@@ -164,10 +164,13 @@ export const ChatTopWrapper = styled.header`
 `;
 
 export const ConversationWrapper = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
   flex: 1;
   padding: 1rem;
   background-color: var(--clr-dark-bg);
   border-radius: 0.5rem 0 0 0;
+  overflow-y: scroll;
 `;
 
 export const ChatBottomWrapper = styled.div`
