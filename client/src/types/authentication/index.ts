@@ -10,3 +10,9 @@ export interface RegisterData extends LoginData {
   userName?: string;
   confPassword: string;
 }
+
+export interface GetMessagesData {
+  id: string;
+  limit: number;
+  page: number;
+}

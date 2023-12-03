@@ -92,6 +92,7 @@ function App() {
         closeButton
         toastOptions={{ className: "main__toaster" }}
         theme="dark"
+        position="top-right"
       />
     </AppWithProviders>
   );

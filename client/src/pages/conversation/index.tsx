@@ -1,7 +1,6 @@
 import styles from "./index.module.scss";
-import { SideBar } from "../../components/conversation";
+import { SideBar, ChatSection } from "../../components/conversation";
 import PrimaryBar from "../../components/primarybar";
-import ChatSection from "../../components/conversation/chat";
 import { useContext, useEffect, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";

@@ -18,7 +18,17 @@ export interface Message {
   createdAt: Date;
   updatedAt: Date;
   author: User;
+  userId: string;
   conversation: Conversation;
+  conversationId: string;
+  attachment: Attachment | null;
+}
+
+export interface Attachment {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  url: string;
 }
 
 export interface Conversation {

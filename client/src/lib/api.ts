@@ -1,6 +1,6 @@
 import { LoginData, RegisterData } from "../types/authentication";
 import axios from "axios";
-import { Conversation, User } from "../types/conversation";
+import { Conversation, Message, User } from "../types/conversation";
 
 export const registerUser = async (data: RegisterData) => {
   return await axios.post<Partial<Omit<User, "password">>>(
@@ -49,5 +49,11 @@ export const getConversations = async (mode: string) => {
         redirect: "/",
       },
     }
+  );
+}
+
+export const getMessages = async (data: GetMessagesData) => {
+  return await axios.get<Message[]>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/message`,
   );
 }

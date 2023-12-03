@@ -5,10 +5,11 @@ import cors from "cors";
 import { createClient } from "redis";
 import RedisStore from "connect-redis";
 
+import { AuthGuard } from "./lib/middleware.server";
 import { authRouter } from "./auth/auth.router";
 import { userRouter } from "./user/user.router";
 import { conversationRouter } from "./conversations/conversation.router";
-import { AuthGuard } from "./lib/middleware.server";
+import { messageRouter } from "./message/message.router";
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(`${BASE_URL}/auth`, authRouter);
 app.use(`${BASE_URL}/user`, AuthGuard, userRouter);
 app.use(`${BASE_URL}/conversation`, AuthGuard, conversationRouter);
+app.use(`${BASE_URL}/message`, AuthGuard, messageRouter);
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 

@@ -31,7 +31,7 @@ model Message {
   userId         String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   conversationId String
-  attachments    Attachment[]
+  attachment    Attachment?
 }
 
 model Attachment {
@@ -39,6 +39,9 @@ model Attachment {
   url       String
   message   Message @relation(fields: [messageId], references: [id])
   messageId String
+  createdAt DateTime @default(now())
+
+  @@unique([messageId])
 }
 
 model Conversation {

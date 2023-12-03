@@ -63,10 +63,24 @@ export const getConversation = async (payload: {
       recipient: true,
       messages: {
         orderBy: { createdAt: "desc" },
-        take: 100,
       },
     },
   });
 
   return conversations ?? null;
 };
+
+export const getConversationById = async (id: string) => {
+  return await __db?.conversation.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      creator: true,
+      recipient: true,
+      messages: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+}
