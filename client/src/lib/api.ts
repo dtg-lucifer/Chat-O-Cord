@@ -1,4 +1,4 @@
-import { LoginData, RegisterData } from "../types/authentication";
+import { GetMessagesData, LoginData, RegisterData } from "../types/authentication";
 import axios from "axios";
 import { Conversation, Message, User } from "../types/conversation";
 
@@ -55,5 +55,9 @@ export const getConversations = async (mode: string) => {
 export const getMessages = async (data: GetMessagesData) => {
   return await axios.get<Message[]>(
     `${process.env.REACT_APP_PUBLIC_API_URL}/message`,
+    {
+      withCredentials: true,
+      data,
+    }
   );
 }
