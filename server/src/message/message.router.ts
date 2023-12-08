@@ -33,8 +33,8 @@ messageRouter
     // @ts-ignore
     const user = req.session.user!;
     await createMessage({ content, conversationId: id, user })
-      .then((mg) => {
-        res.status(201).json(mg);
+      .then((msg) => {
+        res.status(201).json(msg);
       })
       .catch((err) => {
         res.status(500).json({ msg: err.message });

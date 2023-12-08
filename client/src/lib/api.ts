@@ -57,7 +57,11 @@ export const getMessages = async (data: GetMessagesData) => {
     `${process.env.REACT_APP_PUBLIC_API_URL}/message`,
     {
       withCredentials: true,
-      data,
+      data: { id: data.id },
+      params: {
+        limit: data.limit,
+        page: data.page,
+      }
     }
   );
 }
