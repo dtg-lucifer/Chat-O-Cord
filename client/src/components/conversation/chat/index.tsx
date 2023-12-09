@@ -15,11 +15,16 @@ import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
 import { Message } from "../../../types/conversation";
+import { getMessagesAsync } from "../../../utils/store/slices/messages.slice";
+import { AppDispatch } from "../../../utils/store";
+import { useDispatch } from "react-redux";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
+  const [messages, setMessages] = useState<{id: string, messages: Message[]}>({id: "", messages: []})
 
   const { debouncedVal, isTyping } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
@@ -51,6 +56,21 @@ export default function ChatSection() {
       console.log("Typing ends", debouncedVal);
     }
   }, [isTyping]);
+
+  useEffect(() => {
+    if (activeChat) {
+      console.log("Active chat", activeChat);
+      dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
+        .unwrap()
+        .then((data) => {
+          setMessages(data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+        
+    }
+  }, [activeChat]);
 
   const showAvatarAndTimeStamp = <M extends Message>(msg: M) => {};
 

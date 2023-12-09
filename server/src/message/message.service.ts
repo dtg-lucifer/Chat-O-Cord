@@ -2,12 +2,11 @@ import { getConversationById } from "../conversations/conversation.service";
 import { CreateMessageDTO } from "./dto/message.dto";
 
 export const getMessages = async (id: string, limit: number) => {
-
   const congversation = await getConversationById(id);
 
   if (!congversation) throw new Error("Conversation not found!");
 
-  return await __db?.message.findMany({
+  const messages = await __db?.message.findMany({
     where: {
       conversationId: id,
     },
@@ -21,7 +20,11 @@ export const getMessages = async (id: string, limit: number) => {
     },
     take: limit,
   });
+
+  return { id, messages };
 };
+
+
 
 export const createMessage = async (data: CreateMessageDTO) => {
   const { content, conversationId, user } = data;
@@ -40,15 +43,15 @@ export const createMessage = async (data: CreateMessageDTO) => {
       author: {
         connect: {
           id: user.id,
-        }
+        },
       },
       conversation: {
         connect: {
           id: conversationId,
-        }
+        },
       },
-    }
-  })
+    },
+  });
 
   return message;
 };

@@ -37,7 +37,6 @@ export const createConversation = async (
     include: {
       creator: true,
       recipient: true,
-      messages: true,
     },
   })!;
 
@@ -63,6 +62,7 @@ export const getConversation = async (payload: {
       recipient: true,
       messages: {
         orderBy: { createdAt: "desc" },
+        take: 1,
       },
     },
   });

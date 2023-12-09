@@ -67,9 +67,9 @@ export default function SideBar({ activeGroup }: SideBarProps) {
             <ChatCard
               key={c.id}
               onClick={() => {
-                navigate(`/conversations/${activeGroup}/${c.id}`);
                 setActiveChat(c)
                 console.log("Active Chat: ", c);
+                navigate(`/conversations/${activeGroup}/${c.id}`);
               }}
               style={{
                 backgroundColor:

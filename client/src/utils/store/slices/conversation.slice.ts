@@ -15,7 +15,7 @@ const initialState: ConversationState = {
 export const getConversationsAsync = createAsyncThunk(
   "conversation/fetch",
   async (mode: string) => {
-    return getConversations(mode);
+    return await getConversations(mode);
   }
 );
 
