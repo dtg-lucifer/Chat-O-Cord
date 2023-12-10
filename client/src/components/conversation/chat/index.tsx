@@ -16,24 +16,51 @@ import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
 import { Message } from "../../../types/conversation";
 import { getMessagesAsync } from "../../../utils/store/slices/messages.slice";
-import { AppDispatch } from "../../../utils/store";
-import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../../utils/store";
+import { useDispatch, useSelector } from "react-redux";
+import { formatDistance, formatRelative } from "date-fns";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<{id: string, messages: Message[]}>({id: "", messages: []})
 
   const { debouncedVal, isTyping } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
 
+  const { messages, loading } = useSelector(
+    (state: RootState) => state.messages
+  );
+  const activechatMessages = messages.find(
+    (msg) => msg.convId === activeChat!.id
+  );
+
   const currentChatUser =
     activeChat?.recipient.id === user?.id
       ? activeChat?.creator
       : activeChat?.recipient;
+
+  const timeStamp = (msg: Message): string => {
+    return formatRelative(new Date(msg.createdAt), new Date())
+  };
+
+  const showTimeStampAndAvatar = (
+    msg: Message,
+    i: number,
+    msgs: Message[]
+  ): boolean => {
+    if (i === msgs.length - 1) return true;
+
+    const index = i === msgs.length - 1 ? i : i + 1;
+
+    if (msg.author.id !== msgs[index].author.id) return true;
+    
+    if (msg.author.id === msgs[index].author.id && timeStamp(msg) === timeStamp(msgs[index])) return false;
+
+    return true
+  };
 
   useEffect(() => {
     window.addEventListener("keydown", (e) => {
@@ -62,17 +89,14 @@ export default function ChatSection() {
       console.log("Active chat", activeChat);
       dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
         .unwrap()
-        .then((data) => {
-          setMessages(data.data);
+        .then(() => {
+          //! Show some thing
         })
         .catch((err) => {
           console.log(err);
         });
-        
     }
   }, [activeChat]);
-
-  const showAvatarAndTimeStamp = <M extends Message>(msg: M) => {};
 
   return (
     <ChatSectionMainWrapper>
@@ -81,26 +105,76 @@ export default function ChatSection() {
         {currentChatUser?.userName}
       </ChatTopWrapper>
       <ConversationWrapper>
-        {new Array(10).fill(0).map((msg, i) => (
-          <MessageCVA
-            variant={i === 9 ? "withImg" : "withoutImg"}
-            key={msg?.id}
-          >
-            {false ? (
-              <img src={msg.author.profilePic} alt="profle_pic" />
-            ) : (
-              <img
-                src="/BLANK.jpeg"
-                className="w-10 h-10 rounded-full aspect-square"
-                alt="profile_pic"
-              />
-            )}
-            <div>
-              <h3>UserName</h3>
-              <p>{i}</p>
-            </div>
-          </MessageCVA>
-        ))}
+        {loading ? (
+          <h1>Loading...</h1>
+        ) : (
+          activechatMessages?.messages.map((msg, i, msgs) => (
+            <MessageCVA
+              variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
+              key={msg?.id}
+              style={{
+                marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
+                  ? ""
+                  : "0.8rem",
+              }}
+            >
+              {msg.author.profilePic ? (
+                <img
+                  src={msg.author.profilePic}
+                  className="w-10 rounded-full aspect-square"
+                  alt="profle_pic"
+                  style={{
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
+                  }}
+                />
+              ) : (
+                <img
+                  src="/BLANK.jpeg"
+                  className="w-10 rounded-full aspect-square"
+                  alt="profile_pic"
+                  style={{
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
+                  }}
+                />
+              )}
+              <div className="flex-1">
+                <h3
+                  style={{
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
+                  }}
+                  className="font-semibold text-[16px]"
+                >
+                  {msg.author.userName}
+                </h3>
+                <p
+                  style={{
+                    marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
+                      ? ""
+                      : "3rem",
+                  }}
+                  className="text-sm text-[#c5c5c5]"
+                >
+                  {msg.content}
+                </p>
+              </div>
+              <p
+                style={{
+                  display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
+                }}
+                className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
+              >
+                {formatDistance(new Date(msg.createdAt), new Date(), {
+                  addSuffix: true,
+                })
+                  .charAt(0)
+                  .toUpperCase() +
+                  formatDistance(new Date(msg.createdAt), new Date(), {
+                    addSuffix: true,
+                  }).slice(1)}
+              </p>
+            </MessageCVA>
+          ))
+        )}
       </ConversationWrapper>
       <ChatBottomWrapper>
         <FaPlus size={20} onClick={() => fileInputRef.current?.click()} />

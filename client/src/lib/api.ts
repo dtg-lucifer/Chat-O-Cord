@@ -58,10 +58,9 @@ export const getConversations = async (mode: string) => {
 
 export const getMessages = async (data: GetMessagesData) => {
   return await axios.get<{ id: string; messages: Message[] }>(
-    `${process.env.REACT_APP_PUBLIC_API_URL}/message`,
+    `${process.env.REACT_APP_PUBLIC_API_URL}/message/${data.id}`,
     {
       withCredentials: true,
-      data: { id: data.id },
       params: {
         limit: data.limit,
         page: data.page,

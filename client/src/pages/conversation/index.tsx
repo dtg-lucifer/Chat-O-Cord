@@ -23,13 +23,13 @@ const ConversationPage = () => {
   useEffect(() => {
     dispatch(getConversationsAsync(mode!))
       .unwrap()
-      .then((data) => {
+      .then(() => {
         toast.success("Fetched conversations");
       })
-      .catch((err) => {
-        toast.error(err.message);
+      .catch(() => {
+        toast.error("No conversations found on this mode");
       });
-  }, []);
+  }, [mode]);
 
   return (
     <main className={styles.main__wrapper}>

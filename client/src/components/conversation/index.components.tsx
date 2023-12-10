@@ -72,7 +72,7 @@ const buttonCVA = cva("outline-none text-sm", {
 const messageCVA = cva("", {
   variants: {
     variant: {
-      withImg: ["flex", "gap-2", "items-center", "flex"],
+      withImg: ["flex", "gap-2", "items-center"],
       withoutImg: ["flex", "gap-2", "items-center"],
     },
   },

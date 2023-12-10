@@ -67,7 +67,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
             <ChatCard
               key={c.id}
               onClick={() => {
-                setActiveChat(c)
+                setActiveChat(c);
                 console.log("Active Chat: ", c);
                 navigate(`/conversations/${activeGroup}/${c.id}`);
               }}
@@ -78,7 +78,14 @@ export default function SideBar({ activeGroup }: SideBarProps) {
                     : "",
               }}
             >
-              <img src={user?.profilePic || "/BLANK.jpeg"} alt="profile" />
+              <img
+                src={
+                  c.creator.id === user?.id
+                    ? c.recipient.profilePic || "/BLANK.jpeg"
+                    : c.creator.profilePic || "/BLANK.jpeg"
+                }
+                alt="profile"
+              />
               <div className="details__wrapper">
                 <h4>
                   {c.creator.id === user?.id

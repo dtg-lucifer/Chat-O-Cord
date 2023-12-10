@@ -16,7 +16,7 @@ const initialState: MessagesState = {
 export const getMessagesAsync = createAsyncThunk(
   "messages/fetch",
   async (data: GetMessagesData) => {
-    return (await getMessages({ ...data }));
+    return await getMessages({ ...data });
   }
 );
 
@@ -35,12 +35,22 @@ const messageSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getMessagesAsync.fulfilled, (state, action) => {
-      const { id, messages } = action.payload.data;
-      const isExists = state.messages.find((m) => m.convId === id);
-      const i = state.messages.findIndex((m) => m.convId === id);
-      if (isExists) state.messages[i] = { convId: id, messages };
-      else state.messages.push({ convId: id, messages });
-    });
+    builder
+      .addCase(getMessagesAsync.pending, (state, actiob) => {
+        state.loading = true;
+      })
+      .addCase(getMessagesAsync.fulfilled, (state, action) => {
+        const { id, messages } = action.payload.data;
+        const isExists = state.messages.find((m) => m.convId === id);
+        const i = state.messages.findIndex((m) => m.convId === id);
+
+        if (isExists) state.messages[i] = { convId: id, messages };
+        else state.messages.push({ convId: id, messages });
+
+        state.loading = false;
+      });
   },
 });
+
+export const { addMessages, setLoading } = messageSlice.actions;
+export default messageSlice.reducer;
