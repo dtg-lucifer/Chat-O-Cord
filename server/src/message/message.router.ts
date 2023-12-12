@@ -5,8 +5,8 @@ import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 export const messageRouter = Router();
 
 messageRouter
-  .get("/", (req, res) => {
-    const { id } = req.body;
+  .get("/:id", (req, res) => {
+    const { id } = req.params;
     const { limit, page } = req.query;
     getMessages(id, parseInt(limit as string))
       .then((msg) => {

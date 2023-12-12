@@ -1,6 +1,8 @@
 import * as dotenv from "dotenv";
 import session from "express-session";
 import express from "express";
+import http from "http";
+import { Server } from "socket.io";
 import cors from "cors";
 import { createClient } from "redis";
 import RedisStore from "connect-redis";
@@ -18,6 +20,14 @@ if (!process.env.PORT) process.exit(1);
 const PORT: number = parseInt(process.env.PORT as string, 10) || 9999;
 const BASE_URL: string = process.env.BASE_URL as string;
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cookie: true,
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
+});
 
 const redisClient = createClient({
   socket: {
@@ -32,6 +42,7 @@ redisClient
   .then(() => console.log("Redis connected"))
   .catch((err) => console.log(err));
 
+//! MIDDLEWARES
 app.use(
   cors({
     credentials: true,
@@ -58,11 +69,18 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+//! API ROUTES
 app.use(`${BASE_URL}/auth`, authRouter);
 app.use(`${BASE_URL}/user`, AuthGuard, userRouter);
 app.use(`${BASE_URL}/conversation`, AuthGuard, conversationRouter);
 app.use(`${BASE_URL}/message`, AuthGuard, messageRouter);
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+//! SOCKET.IO
+io.on("connection", (socket) => {
+  console.log("Socket connected", { id: socket.id });
+});
+
+//! SERVER
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 process.on("exit", () => redisClient.disconnect());

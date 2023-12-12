@@ -83,4 +83,4 @@ export const getConversationById = async (id: string) => {
       },
     },
   });
-}
+};
