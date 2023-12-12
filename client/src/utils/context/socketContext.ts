@@ -9,4 +9,4 @@ export const socket = io(process.env.REACT_APP_PUBLIC_SOCKET_URL as string, {
   withCredentials: true,
 });
 
-export const socketContext = createContext<SocketContextType>({ socket });
+export const SocketContext = createContext<SocketContextType>({ socket });
