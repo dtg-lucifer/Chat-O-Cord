@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
   console.log("Socket connected", { id: socket.id });
   socket.on("msgCreate", (data) => sendMessage());
   socket.on("msgLoad", (data) => console.log({ data }));
+  socket.on("msgSend", (data) => console.log({ data }));
   socket.on("typingStart", () => console.log("Typing starts"))
   socket.on("typingStop", () => console.log("Typing ends"))
 });

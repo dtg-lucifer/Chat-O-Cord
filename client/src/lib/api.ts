@@ -68,3 +68,11 @@ export const getMessages = async (data: GetMessagesData) => {
     }
   );
 };
+
+export const createMessage = async (data: { content: string; id: string }) => {
+  return await axios.post<Message>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/message`,
+    data,
+    { withCredentials: true }
+  );
+};

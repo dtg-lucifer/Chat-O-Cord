@@ -21,17 +21,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { de } from "date-fns/locale";
+import { createMessage } from "../../../lib/api";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
 
-  const { debouncedVal, isTyping } = useDebouncedTyping<string>(message, 2000);
+  const { isTyping } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
-  const { socket } = useContext(SocketContext)
+  const { socket } = useContext(SocketContext);
 
   const { messages, loading } = useSelector(
     (state: RootState) => state.messages
@@ -46,7 +48,7 @@ export default function ChatSection() {
       : activeChat?.recipient;
 
   const timeStamp = (msg: Message): string => {
-    return formatRelative(new Date(msg.createdAt), new Date())
+    return formatRelative(new Date(msg.createdAt), new Date());
   };
 
   const showTimeStampAndAvatar = (
@@ -59,10 +61,49 @@ export default function ChatSection() {
     const index = i === msgs.length - 1 ? i : i + 1;
 
     if (msg.author.id !== msgs[index].author.id) return true;
-    
-    if (msg.author.id === msgs[index].author.id && timeStamp(msg) === timeStamp(msgs[index])) return false;
 
-    return true
+    if (
+      msg.author.id === msgs[index].author.id &&
+      timeStamp(msg) === timeStamp(msgs[index])
+    )
+      return false;
+
+    return true;
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files![0];
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    socket.emit("msgSend", {
+      content: "",
+      convId: activeChat?.id,
+      authorId: user?.id,
+      file: formData,
+    });
+  };
+
+  /**
+   *! ---- NOTE ----
+   *! MAKE THIS FUNCTION WITH REACT-QUERY
+   *! SO THAT WE CAN RECEIVE THE MESSAGE FROM THE SERVER AND UPDATE THE UI
+   *! SOMETIMES IF THE NETWORK CONNECTION IS SLOW OR THE SERVER TAKES TOO MUCH TO TIME TO RESPOND
+   *! THEN THE MESSAGE WILL NOT BE UPDATED IN THE UI
+   *! BUT THE MESSAGE WILL BE SENT TO THE SERVER
+   *! SO THE MESSAGE WILL FIRST COME UP FADED THEN AFTER SAVING TO THE SERVER IT WILL BE UPDATED
+   *! IN CASE OF ERROR THE FADED MESSAGE WILL BE DELETED FROM THE UI
+   **/
+  const handleMessageSubmit = async () => {
+    const messageToSend = message.trim();
+    const messageFromApi = await createMessage({
+      content: messageToSend!,
+      id: activeChat!.id,
+    });
+    socket.emit("msgSend", messageFromApi.data);
   };
 
   useEffect(() => {
@@ -74,7 +115,7 @@ export default function ChatSection() {
       }
     });
 
-    socket.emit("msgLoad", { activeChatId: activeChat?.id, userId: user?.id })
+    socket.emit("msgLoad", { activeChatId: activeChat?.id, userId: user?.id });
 
     return () => {
       window.removeEventListener("keydown", () => {});
@@ -84,20 +125,13 @@ export default function ChatSection() {
   useEffect(() => {
     isTyping && socket.emit("typingStart");
 
-    if (message && !isTyping) socket.emit("typingStop")
+    if (message && !isTyping) socket.emit("typingStop");
   }, [isTyping]);
 
   useEffect(() => {
     if (activeChat) {
       console.log("Active chat", activeChat);
-      dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
-        .unwrap()
-        .then(() => {
-          //! Show some thing
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }));
     }
   }, [activeChat]);
 
@@ -194,6 +228,13 @@ export default function ChatSection() {
           autoFocus
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleMessageSubmit();
+              setMessage("");
+            }
+          }}
         />
         <FaSmileWink
           size={20}
