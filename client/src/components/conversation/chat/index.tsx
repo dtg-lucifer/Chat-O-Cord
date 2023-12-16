@@ -19,6 +19,8 @@ import { getMessagesAsync } from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
+import { SocketContext } from "../../../utils/context/socketContext";
+import { de } from "date-fns/locale";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -29,6 +31,7 @@ export default function ChatSection() {
   const { debouncedVal, isTyping } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext)
 
   const { messages, loading } = useSelector(
     (state: RootState) => state.messages
@@ -71,17 +74,17 @@ export default function ChatSection() {
       }
     });
 
+    socket.emit("msgLoad", { activeChatId: activeChat?.id, userId: user?.id })
+
     return () => {
       window.removeEventListener("keydown", () => {});
     };
   }, []);
 
   useEffect(() => {
-    isTyping && console.log("Typing starts", debouncedVal);
+    isTyping && socket.emit("typingStart");
 
-    if (message && !isTyping) {
-      console.log("Typing ends", debouncedVal);
-    }
+    if (message && !isTyping) socket.emit("typingStop")
   }, [isTyping]);
 
   useEffect(() => {

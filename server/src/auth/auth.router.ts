@@ -42,7 +42,5 @@ authRouter
       return res.status(401).json({ message: "Unauthorized" });
     }
     // @ts-ignore
-    console.log("Autheticated user:", req.session.user);
-    // @ts-ignore
     return res.status(200).json(req.session.user);
   });

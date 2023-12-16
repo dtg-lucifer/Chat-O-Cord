@@ -12,6 +12,8 @@ import { authRouter } from "./auth/auth.router";
 import { userRouter } from "./user/user.router";
 import { conversationRouter } from "./conversations/conversation.router";
 import { messageRouter } from "./message/message.router";
+import { sendMessage } from "./websocket/message.gateway";
+import { gateWayMiddleware } from "./lib/middleware.gateway";
 
 dotenv.config();
 
@@ -71,6 +73,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+io.use(gateWayMiddleware);
 
 //! API ROUTES
 app.use(`${BASE_URL}/auth`, authRouter);
@@ -81,6 +84,10 @@ app.use(`${BASE_URL}/message`, AuthGuard, messageRouter);
 //! SOCKET.IO
 io.on("connection", (socket) => {
   console.log("Socket connected", { id: socket.id });
+  socket.on("msgCreate", (data) => sendMessage());
+  socket.on("msgLoad", (data) => console.log({ data }));
+  socket.on("typingStart", () => console.log("Typing starts"))
+  socket.on("typingStop", () => console.log("Typing ends"))
 });
 
 //! SERVER
