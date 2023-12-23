@@ -15,20 +15,22 @@ import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
 import { Message } from "../../../types/conversation";
-import { getMessagesAsync } from "../../../utils/store/slices/messages.slice";
+import {
+  addMessages,
+  getMessagesAsync,
+} from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistance, formatRelative } from "date-fns";
+import { formatDistance, formatRelative, set } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
-import { de } from "date-fns/locale";
 import { createMessage } from "../../../lib/api";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
+  const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
 
   const { isTyping } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
@@ -103,7 +105,14 @@ export default function ChatSection() {
       content: messageToSend!,
       id: activeChat!.id,
     });
-    socket.emit("msgSend", messageFromApi.data);
+
+    setMessagesLocal((prevMsgs) => [messageFromApi.data, ...prevMsgs]);
+
+    socket.emit("message:create", {
+      message: messageFromApi.data,
+      authorId: user?.id,
+      convId: activeChat?.id,
+    });
   };
 
   useEffect(() => {
@@ -115,25 +124,35 @@ export default function ChatSection() {
       }
     });
 
-    socket.emit("msgLoad", { activeChatId: activeChat?.id, userId: user?.id });
-
     return () => {
       window.removeEventListener("keydown", () => {});
     };
   }, []);
 
   useEffect(() => {
-    isTyping && socket.emit("typingStart");
-
-    if (message && !isTyping) socket.emit("typingStop");
-  }, [isTyping]);
-
-  useEffect(() => {
     if (activeChat) {
       console.log("Active chat", activeChat);
-      dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }));
+      dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
+        .unwrap()
+        .then((data) => {
+          setMessagesLocal(data.data.messages);
+        });
     }
-  }, [activeChat]);
+  }, [activeChat, dispatch]);
+
+  useEffect(() => {
+    socket.on(
+      "message:received",
+      (data: { convId: string; message: Message }) => {
+        dispatch(addMessages(data));
+        setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
+      }
+    );
+
+    return () => {
+      socket.off("message:received", () => {});
+    };
+  }, [socket]);
 
   return (
     <ChatSectionMainWrapper>
@@ -145,7 +164,7 @@ export default function ChatSection() {
         {loading ? (
           <h1>Loading...</h1>
         ) : (
-          activechatMessages?.messages.map((msg, i, msgs) => (
+          messagesLocal.map((msg, i, msgs) => (
             <MessageCVA
               variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
               key={msg?.id}
@@ -228,7 +247,6 @@ export default function ChatSection() {
           autoFocus
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          ref={inputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleMessageSubmit();

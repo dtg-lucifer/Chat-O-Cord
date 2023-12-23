@@ -12,8 +12,8 @@ import { authRouter } from "./auth/auth.router";
 import { userRouter } from "./user/user.router";
 import { conversationRouter } from "./conversations/conversation.router";
 import { messageRouter } from "./message/message.router";
-import { sendMessage } from "./websocket/message.gateway";
 import { gateWayMiddleware } from "./lib/middleware.gateway";
+import { Message } from "@prisma/client";
 
 dotenv.config();
 
@@ -63,7 +63,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     },
     store: new RedisStore({
       client: redisClient,
@@ -84,11 +84,15 @@ app.use(`${BASE_URL}/message`, AuthGuard, messageRouter);
 //! SOCKET.IO
 io.on("connection", (socket) => {
   console.log("Socket connected", { id: socket.id });
-  socket.on("msgCreate", (data) => sendMessage());
-  socket.on("msgLoad", (data) => console.log({ data }));
-  socket.on("msgSend", (data) => console.log({ data }));
-  socket.on("typingStart", () => console.log("Typing starts"))
-  socket.on("typingStop", () => console.log("Typing ends"))
+  socket.on("typingStart", () => console.log("Typing starts"));
+  socket.on("typingStop", () => console.log("Typing ends"));
+
+  socket.on(
+    "message:create",
+    (data: { message: Message; authorId: string; convId: string }) => {
+      socket.broadcast.emit("message:received", data);
+    }
+  );
 });
 
 //! SERVER

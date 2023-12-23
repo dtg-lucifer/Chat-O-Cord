@@ -8,8 +8,10 @@ export const useAuth = () => {
 
   const controller = new AbortController();
 
+  const path = window.location.pathname;
+
   useEffect(() => {
-    getStatus()
+    getStatus(path)
       .then(({ data }) => {
         console.log("Use Auth Success:", data);
         setUser(data);

@@ -32,13 +32,13 @@ export const loginUser = async (data: LoginData) => {
   );
 };
 
-export const getStatus = async () => {
+export const getStatus = async (path: string) => {
   return await axios.get<Omit<Omit<User, "password">, "confPassword">>(
     `${process.env.REACT_APP_PUBLIC_API_URL}/auth/me`,
     {
       withCredentials: true,
       params: {
-        redirect: "/",
+        redirect: path,
       },
     }
   );
