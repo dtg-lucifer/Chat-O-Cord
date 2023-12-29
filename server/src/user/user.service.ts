@@ -45,7 +45,7 @@ export async function validateUser(data: LoginData) {
     include: {
       createdConversations: true,
       joinedConversations: true,
-    }
+    },
   });
 
   if (!user) throw new Error("User does not exist");
@@ -79,4 +79,34 @@ export async function getUserById(id: string) {
   });
 
   return user;
+}
+
+export async function setUserActiveStatusToggle(id: string, status: boolean) {
+  await db.user.update({
+    where: {
+      id,
+    },
+    data: {
+      online: status,
+    },
+  });
+}
+
+export async function getOnlineUsers(id: string) {
+  return await db.user.findMany({
+    where: {
+      online: true,
+      id: {
+        not: id,
+      },
+    },
+    select: {
+      id: true,
+      userName: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      profilePic: true,
+    },
+  });
 }

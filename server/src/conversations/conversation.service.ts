@@ -84,3 +84,21 @@ export const getConversationById = async (id: string) => {
     },
   });
 };
+
+export const getAllConversationId = async (userId: string) => {
+  return await __db?.conversation.findMany({
+    where: {
+      OR: [
+        {
+          creatorId: userId,
+        },
+        {
+          recipientId: userId,
+        },
+      ],
+    },
+    select: {
+      id: true,
+    }
+  });
+};

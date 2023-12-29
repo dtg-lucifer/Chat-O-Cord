@@ -8,6 +8,7 @@ export interface User extends RegisterData {
   messages: Message[];
   createdConversationId: string | null;
   joinedConversationId: string | null;
+  online: boolean;
 }
 
 export interface SafeUser extends Omit<Omit<User, "password">, "confPassword"> {}

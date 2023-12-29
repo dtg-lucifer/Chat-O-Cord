@@ -8,11 +8,13 @@ import { AppDispatch } from "../../utils/store";
 import { toast } from "sonner";
 import { getConversationsAsync } from "../../utils/store/slices/conversation.slice";
 import { ActiveChatContext } from "../../utils/context/activeChatContext";
+import { SocketContext } from "../../utils/context/socketContext";
 
 const ConversationPage = () => {
   const { id, mode } = useParams<{ id: string; mode: string }>();
   const dispatch = useDispatch<AppDispatch>();
-  const { activeChat } = useContext(ActiveChatContext)
+  const { activeChat } = useContext(ActiveChatContext);
+  const { socket } = useContext(SocketContext);
 
   useLayoutEffect(() => {
     if (mode !== "d" && mode !== "g") {
@@ -30,6 +32,16 @@ const ConversationPage = () => {
         toast.error("No conversations found on this mode");
       });
   }, [mode]);
+
+  useEffect(() => {
+    socket.on("user:connected", ({ userName }) => toast.success(`${userName} connected`));
+    socket.on("user:disconnected", ({ userName }) => toast.error(`${userName} disconnected`));
+
+    return () => {
+      socket.off("user:connected");
+      socket.off("user:disconnected");
+    };
+  }, []);
 
   return (
     <main className={styles.main__wrapper}>

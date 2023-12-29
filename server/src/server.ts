@@ -1,19 +1,24 @@
 import * as dotenv from "dotenv";
-import session from "express-session";
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import { createClient } from "redis";
-import RedisStore from "connect-redis";
 
-import { AuthGuard } from "./lib/middleware.server";
+import { AuthGuard } from "./middleware/middleware.server";
 import { authRouter } from "./auth/auth.router";
 import { userRouter } from "./user/user.router";
 import { conversationRouter } from "./conversations/conversation.router";
 import { messageRouter } from "./message/message.router";
-import { gateWayMiddleware } from "./lib/middleware.gateway";
-import { Message } from "@prisma/client";
+import { gateWayMiddleware } from "./middleware/middleware.gateway";
+import { Message, User } from "@prisma/client";
+import {
+  corsOptions,
+  redisClient,
+  sessionMiddleware,
+  wrapper,
+} from "./lib/session.server";
+import { setUserActiveStatusToggle } from "./user/user.service";
+import { GatewaySession } from "./websocket/session.gateway";
 
 dotenv.config();
 
@@ -24,55 +29,21 @@ if (!process.env.PORT) {
 
 const PORT: number = parseInt(process.env.PORT as string, 10) || 9999;
 const BASE_URL: string = process.env.BASE_URL as string;
+const SOCKET_SESSION = new GatewaySession();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cookie: true,
-  cors: {
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  },
+  cors: corsOptions,
 });
-
-const redisClient = createClient({
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: parseInt(process.env.REDIS_PORT as string),
-  },
-  password: process.env.REDIS_PASSWORD,
-});
-
-redisClient
-  .connect()
-  .then(() => console.log("Redis connected"))
-  .catch((err) => console.log(err));
 
 //! MIDDLEWARES
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.CLIENT_URL,
-  })
-);
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET as string,
-    name: "session.sid",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-    store: new RedisStore({
-      client: redisClient,
-      prefix: "session:",
-    }),
-  })
-);
+app.use(cors(corsOptions));
+app.use(sessionMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+io.use(wrapper(sessionMiddleware));
+io.use(wrapper(AuthGuard));
 io.use(gateWayMiddleware);
 
 //! API ROUTES
@@ -83,9 +54,16 @@ app.use(`${BASE_URL}/message`, AuthGuard, messageRouter);
 
 //! SOCKET.IO
 io.on("connection", (socket) => {
+  // @ts-ignore
+  const connectedUser: User = socket.request.session?.user;
   console.log("Socket connected", { id: socket.id });
-  socket.on("typingStart", () => console.log("Typing starts"));
-  socket.on("typingStop", () => console.log("Typing ends"));
+
+  setUserActiveStatusToggle(connectedUser.id, true);
+  SOCKET_SESSION.setSocket(connectedUser.id, socket);
+  socket.broadcast.emit("user:connected", { userName: connectedUser.userName });
+
+  socket.on("typing:start", () => console.log("Typing starts"));
+  socket.on("typing:stop", () => console.log("Typing ends"));
 
   socket.on(
     "message:create",
@@ -93,6 +71,18 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("message:received", data);
     }
   );
+
+  socket.on("disconnect", () => {
+    setUserActiveStatusToggle(connectedUser.id, false);
+    SOCKET_SESSION.removeSocket(connectedUser.id);
+    socket.broadcast.emit("user:disconnected", {
+      userName: connectedUser.userName,
+    });
+  });
+
+  console.log("Socket session user:", {
+    userName: connectedUser.userName,
+  });
 });
 
 //! SERVER

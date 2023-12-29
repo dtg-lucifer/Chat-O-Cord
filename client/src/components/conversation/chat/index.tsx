@@ -21,9 +21,10 @@ import {
 } from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistance, formatRelative, set } from "date-fns";
+import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage } from "../../../lib/api";
+import { text } from "stream/consumers";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -32,16 +33,15 @@ export default function ChatSection() {
   const [message, setMessage] = useState<string>("");
   const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
 
-  const { isTyping } = useDebouncedTyping<string>(message, 2000);
+  const { isTyping, debouncedVal } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
 
-  const { messages, loading } = useSelector(
-    (state: RootState) => state.messages
-  );
-  const activechatMessages = messages.find(
-    (msg) => msg.convId === activeChat!.id
+  const { loading } = useSelector((state: RootState) => state.messages);
+
+  const { conversations } = useSelector(
+    (state: RootState) => state.conversation
   );
 
   const currentChatUser =
@@ -140,12 +140,21 @@ export default function ChatSection() {
     }
   }, [activeChat, dispatch]);
 
+  /**
+   *! TODO: REMOVE ALL THE LOGIC BEFORE SAVING THE MESSAGE TO THE STATE
+   *! THOUGH THERES NOTHING TO SAVE IN THE STATE WHILE THE CONVERSATION ID IS DIFFERENT
+   *! STILL EVERY OTHER SOCKET WILL RECEIVE THE SAME MESSAGE OVER WEBSOCKET
+   *! WHICH WILL LEAD TO PERMONANCE ISSUE
+   */
   useEffect(() => {
     socket.on(
       "message:received",
       (data: { convId: string; message: Message }) => {
-        dispatch(addMessages(data));
-        setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
+        const conv = conversations.find((conv) => conv.id === data.convId);
+        if (conv) {
+          dispatch(addMessages(data));
+          setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
+        }
       }
     );
 
@@ -154,11 +163,22 @@ export default function ChatSection() {
     };
   }, [socket]);
 
+  useEffect(() => {
+    isTyping &&
+      socket.emit("typing:start", {
+        convId: activeChat?.id,
+        content: debouncedVal,
+      });
+
+    if (message && !isTyping) socket.emit("typing:stop");
+  }, [isTyping]);
+
   return (
     <ChatSectionMainWrapper>
       <ChatTopWrapper>
         <img src={currentChatUser?.profilePic || "/BLANK.jpeg"} alt="" />
-        {currentChatUser?.userName}
+        <span>{currentChatUser?.userName}</span>
+        <span>{currentChatUser?.online}</span>
       </ChatTopWrapper>
       <ConversationWrapper>
         {loading ? (
@@ -251,6 +271,7 @@ export default function ChatSection() {
             if (e.key === "Enter") {
               handleMessageSubmit();
               setMessage("");
+              socket.emit("typing:stop");
             }
           }}
         />

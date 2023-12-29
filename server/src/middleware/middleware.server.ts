@@ -7,8 +7,12 @@ export const AuthGuard = (
 ) => {
 	// @ts-ignore
 	const user = req.session.user;
-
-	if (!user) return res.status(401).send("UNAUTHORIZED");
+	
+	if (!user) {
+		// @ts-ignore
+		if (res !== {}) return next(new Error("UNAUTHORIZED"));
+		else return next(new Error("UNAUTHORIZED"));
+	};
 
 	return next();
 };
