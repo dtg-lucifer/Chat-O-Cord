@@ -24,7 +24,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage } from "../../../lib/api";
-import { text } from "stream/consumers";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -101,15 +100,15 @@ export default function ChatSection() {
    **/
   const handleMessageSubmit = async () => {
     const messageToSend = message.trim();
-    const messageFromApi = await createMessage({
+    const { data: messageFromApi } = await createMessage({
       content: messageToSend!,
       id: activeChat!.id,
     });
 
-    setMessagesLocal((prevMsgs) => [messageFromApi.data, ...prevMsgs]);
+    setMessagesLocal((prevMsgs) => [messageFromApi, ...prevMsgs]);
 
     socket.emit("message:create", {
-      message: messageFromApi.data,
+      message: messageFromApi,
       authorId: user?.id,
       convId: activeChat?.id,
     });
@@ -138,14 +137,15 @@ export default function ChatSection() {
           setMessagesLocal(data.data.messages);
         });
     }
-  }, [activeChat, dispatch]);
+    socket.emit("conversation:join", { convId: activeChat?.id, userId: user?.id, userName: user?.userName });
+  }, [activeChat, dispatch, socket]);
 
-  /**
-   *! TODO: REMOVE ALL THE LOGIC BEFORE SAVING THE MESSAGE TO THE STATE
+  /***
+   ** TODO: REMOVE ALL THE LOGIC BEFORE SAVING THE MESSAGE TO THE STATE
    *! THOUGH THERES NOTHING TO SAVE IN THE STATE WHILE THE CONVERSATION ID IS DIFFERENT
    *! STILL EVERY OTHER SOCKET WILL RECEIVE THE SAME MESSAGE OVER WEBSOCKET
    *! WHICH WILL LEAD TO PERMONANCE ISSUE
-   */
+   **/
   useEffect(() => {
     socket.on(
       "message:received",
@@ -170,7 +170,9 @@ export default function ChatSection() {
         content: debouncedVal,
       });
 
-    if (message && !isTyping) socket.emit("typing:stop");
+    if (message && !isTyping) socket.emit("typing:stop", {
+      convId: activeChat?.id,
+    });
   }, [isTyping]);
 
   return (

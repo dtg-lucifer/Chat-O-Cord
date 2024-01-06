@@ -9,12 +9,14 @@ import { toast } from "sonner";
 import { getConversationsAsync } from "../../utils/store/slices/conversation.slice";
 import { ActiveChatContext } from "../../utils/context/activeChatContext";
 import { SocketContext } from "../../utils/context/socketContext";
+import AuthContext from "../../utils/context/authContext";
 
 const ConversationPage = () => {
   const { id, mode } = useParams<{ id: string; mode: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { activeChat } = useContext(ActiveChatContext);
   const { socket } = useContext(SocketContext);
+  const { user } = useContext(AuthContext);
 
   useLayoutEffect(() => {
     if (mode !== "d" && mode !== "g") {
@@ -34,12 +36,21 @@ const ConversationPage = () => {
   }, [mode]);
 
   useEffect(() => {
-    socket.on("user:connected", ({ userName }) => toast.success(`${userName} connected`));
-    socket.on("user:disconnected", ({ userName }) => toast.error(`${userName} disconnected`));
+    socket.on("user:connected", ({ userName }) => {
+      toast.success(`${userName} is online`);
+    });
+    socket.on("user:disconnected", ({ userName }) => {
+      toast.error(`${userName} is offline`);
+    });
+    socket.on("conversation:joined", ({ userName }) => {
+      userName !== user?.userName &&
+        toast.success(`${userName} joined this conversation`);
+    });
 
     return () => {
       socket.off("user:connected");
       socket.off("user:disconnected");
+      socket.off("conversation:joined");
     };
   }, []);
 

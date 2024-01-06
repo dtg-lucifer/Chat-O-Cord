@@ -62,6 +62,14 @@ io.on("connection", (socket) => {
   SOCKET_SESSION.setSocket(connectedUser.id, socket);
   socket.broadcast.emit("user:connected", { userName: connectedUser.userName });
 
+  socket.on(
+    "conversation:join",
+    ({ convId, userId, userName }: { convId: string; userId: string; userName: string }) => {
+      socket.join(convId);
+      io.to(convId).emit("conversation:joined", { convId, userId, userName });
+    }
+  );
+
   socket.on("typing:start", () => console.log("Typing starts"));
   socket.on("typing:stop", () => console.log("Typing ends"));
 
