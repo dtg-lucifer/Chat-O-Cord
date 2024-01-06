@@ -64,14 +64,33 @@ io.on("connection", (socket) => {
 
   socket.on(
     "conversation:join",
-    ({ convId, userId, userName }: { convId: string; userId: string; userName: string }) => {
+    ({
+      convId,
+      userId,
+      userName,
+    }: {
+      convId: string;
+      userId: string;
+      userName: string;
+    }) => {
       socket.join(convId);
       io.to(convId).emit("conversation:joined", { convId, userId, userName });
     }
   );
 
-  socket.on("typing:start", () => console.log("Typing starts"));
-  socket.on("typing:stop", () => console.log("Typing ends"));
+  socket.on(
+    "typing:start",
+    ({ convId, userName }: { convId: string; userName: string }) => {
+      io.to(convId).emit("typing:started", { convId, userName });
+    }
+  );
+
+  socket.on(
+    "typing:stop",
+    ({ convId, userName }: { convId: string; userName: string }) => {
+      io.to(convId).emit("typing:stopped", { convId, userName });
+    }
+  );
 
   socket.on(
     "message:create",

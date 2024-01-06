@@ -92,7 +92,12 @@ export default function SideBar({ activeGroup }: SideBarProps) {
                     ? c.recipient.userName
                     : c.creator.userName}
                 </h4>
-                <p>{c.messages[0]?.content ?? "No messages yet"}</p>
+                <p>
+                  {c.messages[0]?.content
+                    ? c.messages[0]?.content.slice(0, 30) +
+                      (c.messages[0]?.content.length > 30 ? "..." : "")
+                    : "No messages yet"}
+                </p>
               </div>
             </ChatCard>
           );

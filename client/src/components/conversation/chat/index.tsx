@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage } from "../../../lib/api";
+import { toast } from "sonner";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -137,7 +138,11 @@ export default function ChatSection() {
           setMessagesLocal(data.data.messages);
         });
     }
-    socket.emit("conversation:join", { convId: activeChat?.id, userId: user?.id, userName: user?.userName });
+    socket.emit("conversation:join", {
+      convId: activeChat?.id,
+      userId: user?.id,
+      userName: user?.userName,
+    });
   }, [activeChat, dispatch, socket]);
 
   /***
@@ -158,8 +163,18 @@ export default function ChatSection() {
       }
     );
 
+    socket.on("typing:started", ({ userName }) => {
+      toast!.loading(`${userName} is typing...`);
+    });
+
+    socket.on("typing:stopped", () => {
+      toast!.dismiss();
+    });
+
     return () => {
       socket.off("message:received", () => {});
+      socket.off("typing:started", () => {});
+      socket.off("typing:stopped", () => {});
     };
   }, [socket]);
 
@@ -167,12 +182,14 @@ export default function ChatSection() {
     isTyping &&
       socket.emit("typing:start", {
         convId: activeChat?.id,
-        content: debouncedVal,
+        userName: user?.userName,
       });
 
-    if (message && !isTyping) socket.emit("typing:stop", {
-      convId: activeChat?.id,
-    });
+    if (message && !isTyping)
+      socket.emit("typing:stop", {
+        convId: activeChat?.id,
+        userName: user?.userName,
+      });
   }, [isTyping]);
 
   return (
@@ -229,8 +246,11 @@ export default function ChatSection() {
                     marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
                       ? ""
                       : "3rem",
+                    wordWrap: "break-word",
+                    wordBreak: "break-all",
+                    whiteSpace: "pre-wrap"
                   }}
-                  className="text-sm text-[#c5c5c5]"
+                  className=" text-sm text-[#c5c5c5]"
                 >
                   {msg.content}
                 </p>
@@ -273,7 +293,10 @@ export default function ChatSection() {
             if (e.key === "Enter") {
               handleMessageSubmit();
               setMessage("");
-              socket.emit("typing:stop");
+              socket.emit("typing:stop", {
+                convId: activeChat?.id,
+                userName: user?.userName,
+              });
             }
           }}
         />
