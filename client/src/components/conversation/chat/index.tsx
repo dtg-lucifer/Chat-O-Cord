@@ -189,7 +189,6 @@ export default function ChatSection() {
         convId: activeChat?.id,
         userName: user?.userName,
       });
-      setIsTypingStatus({ userName: user!.userName, status: true });
     }
 
     if (message && !isTyping) {
@@ -197,7 +196,6 @@ export default function ChatSection() {
         convId: activeChat?.id,
         userName: user?.userName,
       });
-      setIsTypingStatus({ userName: "", status: false });
     }
   }, [isTyping]);
 
