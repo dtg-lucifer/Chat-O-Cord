@@ -129,6 +129,7 @@ export const ChatSectionMainWrapper = styled.main`
   flex-direction: column;
   z-index: -1;
   animation: ${MainWrapperAnimation} 0.2s ease-in-out;
+  position: relative;
 `;
 
 export const ChatTopWrapper = styled.header`
@@ -172,6 +173,19 @@ export const ConversationWrapper = styled.div`
   border-radius: 0.5rem 0 0 0;
   overflow-y: scroll;
 `;
+
+export const ChatTypingStatusWrapper = styled.div`
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(85 85 85);
+  align-self: flex-start;
+  margin-top: 5px;
+  margin-inline-start: 3rem;
+  /* position: fixed;
+  bottom: 6rem;
+  z-index: 1;
+  left: 27%; */
+`
 
 export const ChatBottomWrapper = styled.div`
   display: flex;

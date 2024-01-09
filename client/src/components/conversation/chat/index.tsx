@@ -7,6 +7,7 @@ import {
   ChatBottomWrapper,
   ChatSectionMainWrapper,
   ChatTopWrapper,
+  ChatTypingStatusWrapper,
   ConversationWrapper,
 } from "../index.styled";
 import EmojiPicker, { EmojiStyle, SkinTones, Theme } from "emoji-picker-react";
@@ -21,7 +22,7 @@ import {
 } from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistance, formatRelative } from "date-fns";
+import { formatDistance, formatRelative, set } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage } from "../../../lib/api";
 import { toast } from "sonner";
@@ -32,6 +33,10 @@ export default function ChatSection() {
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
   const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
+  const [isTypingStatus, setIsTypingStatus] = useState<{
+    userName: string;
+    status: boolean;
+  }>({ userName: "", status: false });
 
   const { isTyping, debouncedVal } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
@@ -164,11 +169,11 @@ export default function ChatSection() {
     );
 
     socket.on("typing:started", ({ userName }) => {
-      toast!.loading(`${userName} is typing...`);
+      setIsTypingStatus({ userName, status: true });
     });
 
     socket.on("typing:stopped", () => {
-      toast!.dismiss();
+      setIsTypingStatus({ userName: "", status: false });
     });
 
     return () => {
@@ -179,17 +184,21 @@ export default function ChatSection() {
   }, [socket]);
 
   useEffect(() => {
-    isTyping &&
+    if (isTyping) {
       socket.emit("typing:start", {
         convId: activeChat?.id,
         userName: user?.userName,
       });
+      setIsTypingStatus({ userName: user!.userName, status: true });
+    }
 
-    if (message && !isTyping)
+    if (message && !isTyping) {
       socket.emit("typing:stop", {
         convId: activeChat?.id,
         userName: user?.userName,
       });
+      setIsTypingStatus({ userName: "", status: false });
+    }
   }, [isTyping]);
 
   return (
@@ -248,7 +257,7 @@ export default function ChatSection() {
                       : "3rem",
                     wordWrap: "break-word",
                     wordBreak: "break-all",
-                    whiteSpace: "pre-wrap"
+                    whiteSpace: "pre-wrap",
                   }}
                   className=" text-sm text-[#c5c5c5]"
                 >
@@ -274,8 +283,21 @@ export default function ChatSection() {
           ))
         )}
       </ConversationWrapper>
+      {isTypingStatus.status && isTypingStatus.userName !== user?.userName && (
+        <ChatTypingStatusWrapper>
+          {isTypingStatus.userName} is typing...
+        </ChatTypingStatusWrapper>
+      )}
       <ChatBottomWrapper>
         <FaPlus size={20} onClick={() => fileInputRef.current?.click()} />
+        <FaSmileWink
+          size={20}
+          onClick={() => {
+            emojiPanelRef.current?.firstElementChild?.classList.toggle(
+              "emoji__wrapper__active"
+            );
+          }}
+        />
         <input
           ref={fileInputRef}
           type="file"
@@ -288,7 +310,15 @@ export default function ChatSection() {
           placeholder="Send something"
           autoFocus
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            if (e.target.value.trim() === "") {
+              socket.emit("typing:stop", {
+                convId: activeChat?.id,
+                userName: user?.userName,
+              });
+            }
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleMessageSubmit();
@@ -298,14 +328,6 @@ export default function ChatSection() {
                 userName: user?.userName,
               });
             }
-          }}
-        />
-        <FaSmileWink
-          size={20}
-          onClick={() => {
-            emojiPanelRef.current?.firstElementChild?.classList.toggle(
-              "emoji__wrapper__active"
-            );
           }}
         />
         <div

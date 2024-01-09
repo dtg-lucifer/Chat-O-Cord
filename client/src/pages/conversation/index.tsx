@@ -43,8 +43,7 @@ const ConversationPage = () => {
       toast.error(`${userName} is offline`);
     });
     socket.on("conversation:joined", ({ userName }) => {
-      userName !== user?.userName &&
-        toast.success(`${userName} joined this conversation`);
+      userName !== user?.userName && toast.success(`${userName} joined this conversation`);
     });
 
     return () => {
