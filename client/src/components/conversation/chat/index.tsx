@@ -22,10 +22,9 @@ import {
 } from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistance, formatRelative, set } from "date-fns";
+import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage } from "../../../lib/api";
-import { toast } from "sonner";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -150,21 +149,13 @@ export default function ChatSection() {
     });
   }, [activeChat, dispatch, socket]);
 
-  /***
-   ** TODO: REMOVE ALL THE LOGIC BEFORE SAVING THE MESSAGE TO THE STATE
-   *! THOUGH THERES NOTHING TO SAVE IN THE STATE WHILE THE CONVERSATION ID IS DIFFERENT
-   *! STILL EVERY OTHER SOCKET WILL RECEIVE THE SAME MESSAGE OVER WEBSOCKET
-   *! WHICH WILL LEAD TO PERMONANCE ISSUE
-   **/
   useEffect(() => {
     socket.on(
       "message:received",
-      (data: { convId: string; message: Message }) => {
-        const conv = conversations.find((conv) => conv.id === data.convId);
-        if (conv) {
-          dispatch(addMessages(data));
-          setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
-        }
+      (data: { convId: string; message: Message; authorId: string }) => {
+        if (data.authorId === user?.id) return;
+        dispatch(addMessages(data));
+        setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
       }
     );
 

@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
   socket.on(
     "message:create",
     (data: { message: Message; authorId: string; convId: string }) => {
-      socket.broadcast.emit("message:received", data);
+      io.to(data.convId).emit("message:received", data);
     }
   );
 
