@@ -1,10 +1,16 @@
 import express from "express";
-import { getOnlineUsers } from "./user.service";
+import { searchUsers } from "./user.service";
 
 export const userRouter = express.Router();
 
-userRouter.get("/online", async (req, res) => {
-	// @ts-ignore
-  const users = await getOnlineUsers(req.session.user?.id as string);
-  res.status(200).json(users);
-});
+userRouter
+  .get("/search", async (req, res) => {
+    const { userName } = req.query as { userName: string };
+    await searchUsers(userName)
+      .then((users) => {
+        res.status(200).json(users);
+      })
+      .catch((err: Error) => {
+        res.status(404).json(err.message);
+      });
+  });

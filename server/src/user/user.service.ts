@@ -92,13 +92,13 @@ export async function setUserActiveStatusToggle(id: string, status: boolean) {
   });
 }
 
-export async function getOnlineUsers(id: string) {
+export async function searchUsers(userName: string) {
+  if (userName.trim() === "" || userName.trim() === "@")
+    throw new Error("You cannot search without any characters");
+
   return await db.user.findMany({
     where: {
-      online: true,
-      id: {
-        not: id,
-      },
+      userName: { contains: userName.toLowerCase() },
     },
     select: {
       id: true,
@@ -107,6 +107,7 @@ export async function getOnlineUsers(id: string) {
       firstName: true,
       lastName: true,
       profilePic: true,
+      online: true,
     },
   });
 }

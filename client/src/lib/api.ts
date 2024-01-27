@@ -54,7 +54,19 @@ export const getOnlineUsers = async (path?: string) => {
       },
     }
   );
-}
+};
+
+export const searchUsers = async (userName: string) => {
+  return await axios.get<User[]>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/user/search`,
+    {
+      withCredentials: true,
+      params: {
+        userName,
+      },
+    }
+  );
+};
 
 export const getConversations = async (mode: string) => {
   return await axios.get<Conversation[]>(
