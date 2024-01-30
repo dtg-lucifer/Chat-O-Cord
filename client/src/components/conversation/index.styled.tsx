@@ -18,19 +18,42 @@ export const TopWrapper = styled.div`
   width: 100%;
   position: relative;
   padding: 0 0.5rem;
+`;
 
-  // ! NO LONGER NEEDED
-  /* &::after {
-		content: "";
-		display: block;
-		position: absolute;
-		width: calc(100% - .5rem);
-		bottom: -30%;
-		left: 50%;
-		translate: -50%;
-		height: 1px;
-		background-color: var(--clr-light-bg-faint);
-	} */
+export const SearchBarDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  width: 100%;
+  gap: 0.5rem;
+  background-color: var(--clr-dark-bg-faint);
+  box-shadow: var(--shadow-dark);
+  border-radius: 0.5rem;
+
+  & > * {
+    color: var(--clr-light-bg);
+    background-color: var(--clr-dark-bg-faint);
+    padding: 0.3rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 0.5rem;
+
+    &:hover {
+      color: var(--clr-light-bg);
+      background-color: var(--clr-dark-bg);
+    }
+
+    & > img {
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      height: 2.5rem;
+      border-radius: 50%;
+      outline: 2px solid var(--clr-sts-light);
+      outline-offset: 2px;
+    }
+  }
 `;
 
 export const FilterWrapper = styled.div`
@@ -185,7 +208,7 @@ export const ChatTypingStatusWrapper = styled.div`
   bottom: 6rem;
   z-index: 1;
   left: 27%; */
-`
+`;
 
 export const ChatBottomWrapper = styled.div`
   display: flex;

@@ -7,6 +7,7 @@ import {
   ChatCard,
   ChatWrapper,
   FilterWrapper,
+  SearchBarDiv,
   SideBarWrapper,
   TopWrapper,
 } from "../index.styled";
@@ -49,6 +50,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
 
   useEffect(() => {
     if (!debouncedVal) return setSearchResults([]);
+    if (debouncedVal === "") return setSearchResults([]);
     search(debouncedVal);
   }, [debouncedVal]);
 
@@ -62,14 +64,19 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <div style={{ display: searchResults.length === 0 ? "none" : "unset" }}>
+        <SearchBarDiv
+          style={{ display: searchResults.length === 0 ? "none" : "flex" }}
+        >
           {searchResults.length !== 0 &&
             searchResults.map((user) => (
-              <p style={{ cursor: "pointer" }}>{user.userName}</p>
+              <div>
+                <img src={user.profilePic || "/BLANK.jpeg"} alt="" />
+                <span style={{ cursor: "pointer" }}>{user.userName}</span>
+              </div>
             ))}
-        </div>
+        </SearchBarDiv>
       </TopWrapper>
-      <FilterWrapper>
+      <FilterWrapper style={{ display: searchResults.length !== 0 ? "none" : "inline-flex" }}>
         <ButtonCVA
           variant={activeGroup === "d" ? "active" : "sideBarFilter"}
           onClick={() => {
@@ -93,7 +100,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           Group
         </ButtonCVA>
       </FilterWrapper>
-      <ChatWrapper>
+      <ChatWrapper style={{ display: searchResults.length !== 0 ? "none" : "inline-flex" }}>
         {conversations.map((c) => {
           return (
             <ChatCard
