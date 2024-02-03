@@ -80,6 +80,16 @@ export const getConversations = async (mode: string) => {
   );
 };
 
+export const createConversation = async (data: { userName: string, mode: string }) => {
+  return await axios.post<Conversation>(
+    `${process.env.REACT_APP_PUBLIC_API_URL}/conversation/${data.mode}`,
+    data,
+    {
+      withCredentials: true,
+    }
+  );
+}
+
 export const getMessages = async (data: GetMessagesData) => {
   return await axios.get<{ id: string; messages: Message[] }>(
     `${process.env.REACT_APP_PUBLIC_API_URL}/message/${data.id}`,

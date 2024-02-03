@@ -19,7 +19,7 @@ import { RootState } from "../../../utils/store";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { useMutation } from "@tanstack/react-query";
-import { searchUsers } from "../../../lib/api";
+import { createConversation, searchUsers } from "../../../lib/api";
 import { toast } from "sonner";
 
 export default function SideBar({ activeGroup }: SideBarProps) {
@@ -27,7 +27,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const { debouncedVal } = useDebouncedTyping(query, 1000);
-  const { user } = useContext(AuthContext);
+  const { user: self } = useContext(AuthContext);
   const { activeChat, setActiveChat } = useContext(ActiveChatContext);
   const conversations = useSelector(
     (state: RootState) => state.conversation.conversations
@@ -36,7 +36,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   //! It is setting the new data of searched users along with the old ones
   //! Needs debugging
   const { mutate: search } = useMutation({
-    mutationKey: ["searchConversations", debouncedVal, user?.id],
+    mutationKey: ["searchConversations", debouncedVal, self?.id],
     mutationFn: (term: string) => searchUsers(term),
     onSuccess: ({ data: users }) => {
       setSearchResults(users);
@@ -47,6 +47,25 @@ export default function SideBar({ activeGroup }: SideBarProps) {
       console.log(err.message);
     },
   });
+
+  const createConversationHandler = async (user: User) => {
+    createConversation({
+      userName: user.userName,
+      mode: "d",
+    })
+      .then((res) => {
+        if (res.data) {
+          navigate(`/conversations/d/${res.data.id}`);
+          setActiveChat(res.data);
+          setQuery("");
+          setSearchResults([]);
+        }
+      })
+      .catch((err) => {
+        toast.error("Something went wrong !!");
+        console.log(err.message);
+      });
+  };
 
   useEffect(() => {
     if (!debouncedVal) return setSearchResults([]);
@@ -68,15 +87,20 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           style={{ display: searchResults.length === 0 ? "none" : "flex" }}
         >
           {searchResults.length !== 0 &&
-            searchResults.map((user) => (
-              <div>
-                <img src={user.profilePic || "/BLANK.jpeg"} alt="" />
-                <span style={{ cursor: "pointer" }}>{user.userName}</span>
-              </div>
-            ))}
+            searchResults.map(
+              (user) =>
+                user.id !== self?.id && (
+                  <div onClick={(e) => createConversationHandler(user)}>
+                    <img src={user.profilePic || "/BLANK.jpeg"} alt="" />
+                    <span style={{ cursor: "pointer" }}>{user.userName}</span>
+                  </div>
+                )
+            )}
         </SearchBarDiv>
       </TopWrapper>
-      <FilterWrapper style={{ display: searchResults.length !== 0 ? "none" : "inline-flex" }}>
+      <FilterWrapper
+        style={{ display: searchResults.length !== 0 ? "none" : "inline-flex" }}
+      >
         <ButtonCVA
           variant={activeGroup === "d" ? "active" : "sideBarFilter"}
           onClick={() => {
@@ -100,7 +124,9 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           Group
         </ButtonCVA>
       </FilterWrapper>
-      <ChatWrapper style={{ display: searchResults.length !== 0 ? "none" : "inline-flex" }}>
+      <ChatWrapper
+        style={{ display: searchResults.length !== 0 ? "none" : "inline-flex" }}
+      >
         {conversations.map((c) => {
           return (
             <ChatCard
@@ -119,7 +145,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
             >
               <img
                 src={
-                  c.creator.id === user?.id
+                  c.creator.id === self?.id
                     ? c.recipient.profilePic || "/BLANK.jpeg"
                     : c.creator.profilePic || "/BLANK.jpeg"
                 }
@@ -127,7 +153,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
               />
               <div className="details__wrapper">
                 <h4>
-                  {c.creator.id === user?.id
+                  {c.creator.id === self?.id
                     ? c.recipient.userName
                     : c.creator.userName}
                 </h4>

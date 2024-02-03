@@ -29,8 +29,9 @@ export const SearchBarDiv = styled.div`
   background-color: var(--clr-dark-bg-faint);
   box-shadow: var(--shadow-dark);
   border-radius: 0.5rem;
-
+  
   & > * {
+    cursor: pointer;
     color: var(--clr-light-bg);
     background-color: var(--clr-dark-bg-faint);
     padding: 0.3rem 0.5rem;
