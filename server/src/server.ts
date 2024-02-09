@@ -16,7 +16,7 @@ import {
   corsOptions,
   redisClient,
   sessionMiddleware,
-  wrapper
+  wrapper,
 } from "./lib/session.server";
 import { setUserActiveStatusToggle } from "./user/user.service";
 import { GatewaySession } from "./websocket/session.gateway";
@@ -35,7 +35,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cookie: true,
-  cors: corsOptions
+  cors: corsOptions,
 });
 
 //! MIDDLEWARES
@@ -66,10 +66,10 @@ io.on("connection", (socket) => {
   socket.on(
     "conversation:join",
     ({
-       convId,
-       userId,
-       userName
-     }: {
+      convId,
+      userId,
+      userName,
+    }: {
       convId: string;
       userId: string;
       userName: string;
@@ -79,15 +79,22 @@ io.on("connection", (socket) => {
     }
   );
 
-  socket.on("conversation:create", (data: { conversation: Conversation, self: User }) => {
-    const { conversation, self } = data;
-    const userSocket = SOCKET_SESSION.getSocket(conversation.recipientId) || null;
-    socket.join(conversation.id);
-    if (userSocket) {
-      userSocket.join(conversation.id);
+  socket.on(
+    "conversation:create",
+    (data: { conversation: Conversation; self: User }) => {
+      const { conversation, self } = data;
+      const userSocket =
+        SOCKET_SESSION.getSocket(conversation.recipientId) || null;
+      socket.join(conversation.id);
+      if (userSocket) {
+        userSocket.join(conversation.id);
+      }
+      io.to(conversation.id).emit("conversation:created", {
+        conversation,
+        self,
+      });
     }
-    io.to(conversation.id).emit("conversation:created", { conversation, self });
-  });
+  );
 
   socket.on(
     "typing:start",
@@ -114,12 +121,12 @@ io.on("connection", (socket) => {
     setUserActiveStatusToggle(connectedUser.id, false);
     SOCKET_SESSION.removeSocket(connectedUser.id);
     socket.broadcast.emit("user:disconnected", {
-      userName: connectedUser.userName
+      userName: connectedUser.userName,
     });
   });
 
   console.log("Socket session user:", {
-    userName: connectedUser.userName
+    userName: connectedUser.userName,
   });
 });
 

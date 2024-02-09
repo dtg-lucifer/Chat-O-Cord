@@ -29,7 +29,7 @@ export const SearchBarDiv = styled.div`
   background-color: var(--clr-dark-bg-faint);
   box-shadow: var(--shadow-dark);
   border-radius: 0.5rem;
-  
+
   & > * {
     cursor: pointer;
     color: var(--clr-light-bg);
@@ -188,6 +188,28 @@ export const ChatTopWrapper = styled.header`
   }
 `;
 
+export const ChatMessagesStatus = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+
+  & > img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    height: 7rem;
+  }
+
+  & > span {
+    font-size: 1.3rem;
+    color: rgb(85 85 85);
+    font-family: var(--primary-font);
+  }
+`;
+
 export const ConversationWrapper = styled.div`
   display: flex;
   flex-direction: column-reverse;
@@ -205,10 +227,6 @@ export const ChatTypingStatusWrapper = styled.div`
   align-self: flex-start;
   margin-top: 5px;
   margin-inline-start: 3rem;
-  /* position: fixed;
-  bottom: 6rem;
-  z-index: 1;
-  left: 27%; */
 `;
 
 export const ChatBottomWrapper = styled.div`

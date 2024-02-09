@@ -1,14 +1,15 @@
 import { FaPlus, FaSmileWink } from "react-icons/fa";
 import {
   TextField as TextFieldCVA,
-  Message as MessageCVA
+  Message as MessageCVA,
 } from "../index.components";
 import {
   ChatBottomWrapper,
+  ChatMessagesStatus,
   ChatSectionMainWrapper,
   ChatTopWrapper,
   ChatTypingStatusWrapper,
-  ConversationWrapper
+  ConversationWrapper,
 } from "../index.styled";
 import EmojiPicker, { EmojiStyle, SkinTones, Theme } from "emoji-picker-react";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -18,7 +19,7 @@ import AuthContext from "../../../utils/context/authContext";
 import { Message } from "../../../types/conversation";
 import {
   addMessages,
-  getMessagesAsync
+  getMessagesAsync,
 } from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -89,7 +90,7 @@ export default function ChatSection() {
       content: "",
       convId: activeChat?.id,
       authorId: user?.id,
-      file: formData
+      file: formData,
     });
   };
 
@@ -107,7 +108,7 @@ export default function ChatSection() {
     const messageToSend = message.trim();
     const { data: messageFromApi } = await createMessage({
       content: messageToSend!,
-      id: activeChat!.id
+      id: activeChat!.id,
     });
 
     setMessagesLocal((prevMsgs) => [messageFromApi, ...prevMsgs]);
@@ -115,7 +116,7 @@ export default function ChatSection() {
     socket.emit("message:create", {
       message: messageFromApi,
       authorId: user?.id,
-      convId: activeChat?.id
+      convId: activeChat?.id,
     });
   };
 
@@ -129,8 +130,7 @@ export default function ChatSection() {
     });
 
     return () => {
-      window.removeEventListener("keydown", () => {
-      });
+      window.removeEventListener("keydown", () => {});
     };
   }, []);
 
@@ -146,7 +146,7 @@ export default function ChatSection() {
     socket.emit("conversation:join", {
       convId: activeChat?.id,
       userId: user?.id,
-      userName: user?.userName
+      userName: user?.userName,
     });
   }, [activeChat, dispatch, socket]);
 
@@ -179,14 +179,14 @@ export default function ChatSection() {
     if (isTyping) {
       socket.emit("typing:start", {
         convId: activeChat?.id,
-        userName: user?.userName
+        userName: user?.userName,
       });
     }
 
     if (message && !isTyping) {
       socket.emit("typing:stop", {
         convId: activeChat?.id,
-        userName: user?.userName
+        userName: user?.userName,
       });
     }
   }, [isTyping]);
@@ -200,7 +200,16 @@ export default function ChatSection() {
       </ChatTopWrapper>
       <ConversationWrapper>
         {loading ? (
-          <h1>Loading...</h1>
+          <ChatMessagesStatus>
+            <img src="/ECLIPSE_LOADER.svg" alt="loader" />
+            <span>Loading up your messages !!</span>
+          </ChatMessagesStatus>
+        ) : messagesLocal.length === 0 ? (
+          <ChatMessagesStatus>
+            <span>
+              Seems like no ones here for a while, add something up here...
+            </span>
+          </ChatMessagesStatus>
         ) : (
           messagesLocal.map((msg, i, msgs) => (
             <MessageCVA
@@ -209,7 +218,7 @@ export default function ChatSection() {
               style={{
                 marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
                   ? ""
-                  : "0.8rem"
+                  : "0.8rem",
               }}
             >
               {msg.author.profilePic ? (
@@ -218,7 +227,7 @@ export default function ChatSection() {
                   className="w-10 rounded-full aspect-square"
                   alt="profle_pic"
                   style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none"
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
                   }}
                 />
               ) : (
@@ -227,14 +236,14 @@ export default function ChatSection() {
                   className="w-10 rounded-full aspect-square"
                   alt="profile_pic"
                   style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none"
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
                   }}
                 />
               )}
               <div className="flex-1">
                 <h3
                   style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none"
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
                   }}
                   className="font-semibold text-[16px]"
                 >
@@ -247,7 +256,7 @@ export default function ChatSection() {
                       : "3rem",
                     wordWrap: "break-word",
                     wordBreak: "break-all",
-                    whiteSpace: "pre-wrap"
+                    whiteSpace: "pre-wrap",
                   }}
                   className=" text-sm text-[#c5c5c5]"
                 >
@@ -256,17 +265,17 @@ export default function ChatSection() {
               </div>
               <p
                 style={{
-                  display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none"
+                  display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
                 }}
                 className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
               >
                 {formatDistance(new Date(msg.createdAt), new Date(), {
-                    addSuffix: true
-                  })
-                    .charAt(0)
-                    .toUpperCase() +
+                  addSuffix: true,
+                })
+                  .charAt(0)
+                  .toUpperCase() +
                   formatDistance(new Date(msg.createdAt), new Date(), {
-                    addSuffix: true
+                    addSuffix: true,
                   }).slice(1)}
               </p>
             </MessageCVA>
@@ -305,7 +314,7 @@ export default function ChatSection() {
             if (e.target.value.trim() === "") {
               socket.emit("typing:stop", {
                 convId: activeChat?.id,
-                userName: user?.userName
+                userName: user?.userName,
               });
             }
           }}
@@ -315,7 +324,7 @@ export default function ChatSection() {
               setMessage("");
               socket.emit("typing:stop", {
                 convId: activeChat?.id,
-                userName: user?.userName
+                userName: user?.userName,
               });
             }
           }}
