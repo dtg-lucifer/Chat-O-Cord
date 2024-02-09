@@ -17,7 +17,7 @@ messageRouter
         if (err instanceof PrismaClientValidationError)
           res
             .status(401)
-            .json({ msg: "Limit and pageination info is required!" });
+            .json({ msg: "Limit and pagination info is required!" });
         else if (err instanceof Error)
           res
             .status(500)

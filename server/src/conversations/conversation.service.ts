@@ -65,6 +65,9 @@ export const getConversation = async (payload: {
         take: 1,
       },
     },
+    orderBy: {
+      updatedAt: "desc",
+    }
   });
 
   return conversations ?? null;

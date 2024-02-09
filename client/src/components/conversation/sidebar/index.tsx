@@ -13,14 +13,21 @@ import {
 } from "../index.styled";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../../utils/context/authContext";
-import { SideBarProps, User } from "../../../types/conversation";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../utils/store";
+import {
+  Conversation,
+  SafeUser,
+  SideBarProps,
+  User,
+} from "../../../types/conversation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../utils/store";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { useMutation } from "@tanstack/react-query";
 import { createConversation, searchUsers } from "../../../lib/api";
 import { toast } from "sonner";
+import { SocketContext } from "../../../utils/context/socketContext";
+import { addConversations } from "../../../utils/store/slices/conversation.slice";
 
 export default function SideBar({ activeGroup }: SideBarProps) {
   const navigate = useNavigate();
@@ -29,6 +36,8 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   const { debouncedVal } = useDebouncedTyping(query, 1000);
   const { user: self } = useContext(AuthContext);
   const { activeChat, setActiveChat } = useContext(ActiveChatContext);
+  const { socket } = useContext(SocketContext);
+  const dispatch = useDispatch<AppDispatch>();
   const conversations = useSelector(
     (state: RootState) => state.conversation.conversations
   );
@@ -59,6 +68,10 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           setActiveChat(res.data);
           setQuery("");
           setSearchResults([]);
+          socket.emit("conversation:create", {
+            conversation: res.data,
+            self,
+          });
         }
       })
       .catch((err) => {
@@ -72,6 +85,19 @@ export default function SideBar({ activeGroup }: SideBarProps) {
     if (debouncedVal === "") return setSearchResults([]);
     search(debouncedVal);
   }, [debouncedVal]);
+
+  useEffect(() => {
+    socket.on(
+      "conversation:created",
+      (data: { conversation: Conversation; self: SafeUser }) => {
+        dispatch(addConversations(data.conversation));
+      }
+    );
+
+    return () => {
+      socket.off("conversation:created");
+    };
+  }, [socket]);
 
   return (
     <SideBarWrapper>
@@ -104,7 +130,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
         <ButtonCVA
           variant={activeGroup === "d" ? "active" : "sideBarFilter"}
           onClick={() => {
-            navigate("/conversations/d");
+            navigate(`/conversations/${activeGroup}`);
           }}
           style={{
             boxShadow: activeGroup === "d" ? "var(--shadow-primary)" : "",
@@ -158,10 +184,12 @@ export default function SideBar({ activeGroup }: SideBarProps) {
                     : c.creator.userName}
                 </h4>
                 <p>
-                  {c.messages[0]?.content
-                    ? c.messages[0]?.content.slice(0, 30) +
-                      (c.messages[0]?.content.length > 30 ? "..." : "")
-                    : "No messages yet"}
+                  {c.messages !== undefined
+                    ? c.lastMessageContent
+                      ? c.lastMessageContent.slice(0, 30) +
+                        (c.lastMessageContent.length > 30 ? "..." : "")
+                      : "No messages yet..."
+                    : "No messages yet..."}
                 </p>
               </div>
             </ChatCard>

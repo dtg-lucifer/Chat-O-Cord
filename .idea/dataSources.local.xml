@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="WS-233.14015.89">
+    <data-source name="@localhost" uuid="1b5c83a5-f9da-4142-a441-edf817cc8985">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>piush</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>

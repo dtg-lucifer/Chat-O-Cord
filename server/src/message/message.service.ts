@@ -32,6 +32,16 @@ export const createMessage = async (data: CreateMessageDTO) => {
 
   if (!conversation) throw new Error("Conversation not found!");
 
+  await __db?.conversation.update({
+    where: {
+      id: conversationId,
+    },
+    data: {
+      lastMessageContent: content,
+      updatedAt: new Date(),
+    },
+  });
+
   const message = await __db?.message.create({
     include: {
       attachment: true,

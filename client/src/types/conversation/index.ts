@@ -39,6 +39,7 @@ export interface Conversation {
   creator: User;
   recipient: User;
   messages: Message[];
+  lastMessageContent: string;
 }
 
 export interface SideBarProps {
