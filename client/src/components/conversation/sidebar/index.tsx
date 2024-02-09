@@ -51,11 +51,11 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   const createConversationHandler = async (user: User) => {
     createConversation({
       userName: user.userName,
-      mode: "d",
+      mode: activeGroup!,
     })
       .then((res) => {
         if (res.data) {
-          navigate(`/conversations/d/${res.data.id}`);
+          navigate(`/conversations/${activeGroup}/${res.data.id}`);
           setActiveChat(res.data);
           setQuery("");
           setSearchResults([]);

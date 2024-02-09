@@ -1,7 +1,7 @@
 import {
   GetMessagesData,
   LoginData,
-  RegisterData,
+  RegisterData
 } from "../types/authentication";
 import axios from "axios";
 import { Conversation, Message, User } from "../types/conversation";
@@ -13,8 +13,8 @@ export const registerUser = async (data: RegisterData) => {
     {
       withCredentials: true,
       params: {
-        redirect: "/",
-      },
+        redirect: "/"
+      }
     }
   );
 };
@@ -26,8 +26,8 @@ export const loginUser = async (data: LoginData) => {
     {
       withCredentials: true,
       params: {
-        redirect: "/",
-      },
+        redirect: "/"
+      }
     }
   );
 };
@@ -38,8 +38,8 @@ export const getStatus = async (path: string) => {
     {
       withCredentials: true,
       params: {
-        redirect: path,
-      },
+        redirect: path
+      }
     }
   );
 };
@@ -50,8 +50,8 @@ export const getOnlineUsers = async (path?: string) => {
     {
       withCredentials: true,
       params: {
-        redirect: path || "/",
-      },
+        redirect: path || "/"
+      }
     }
   );
 };
@@ -62,8 +62,8 @@ export const searchUsers = async (userName: string) => {
     {
       withCredentials: true,
       params: {
-        userName,
-      },
+        userName
+      }
     }
   );
 };
@@ -74,8 +74,8 @@ export const getConversations = async (mode: string) => {
     {
       withCredentials: true,
       params: {
-        redirect: "/",
-      },
+        redirect: "/"
+      }
     }
   );
 };
@@ -85,10 +85,10 @@ export const createConversation = async (data: { userName: string, mode: string 
     `${process.env.REACT_APP_PUBLIC_API_URL}/conversation/${data.mode}`,
     data,
     {
-      withCredentials: true,
+      withCredentials: true
     }
   );
-}
+};
 
 export const getMessages = async (data: GetMessagesData) => {
   return await axios.get<{ id: string; messages: Message[] }>(
@@ -97,8 +97,8 @@ export const getMessages = async (data: GetMessagesData) => {
       withCredentials: true,
       params: {
         limit: data.limit,
-        page: data.page,
-      },
+        page: data.page
+      }
     }
   );
 };
