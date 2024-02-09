@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage } from "../../../lib/api";
+import { updateLastMessage } from "../../../utils/store/slices/conversation.slice";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -154,8 +155,22 @@ export default function ChatSection() {
     socket.on(
       "message:received",
       (data: { convId: string; message: Message; authorId: string }) => {
-        if (data.authorId === user?.id) return;
+        if (data.authorId === user?.id) {
+          dispatch(
+            updateLastMessage({
+              id: data.convId,
+              lastMessageContent: data.message.content,
+            })
+          );
+          return;
+        };
         dispatch(addMessages(data));
+        dispatch(
+          updateLastMessage({
+            id: data.convId,
+            lastMessageContent: data.message.content,
+          })
+        );
         setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
       }
     );
@@ -201,7 +216,7 @@ export default function ChatSection() {
       <ConversationWrapper>
         {loading ? (
           <ChatMessagesStatus>
-            <img src="/ECLIPSE_LOADER.svg" alt="loader" />
+            <img src="/ECLIPSE_LOADER.svg" alt="" />
             <span>Loading up your messages !!</span>
           </ChatMessagesStatus>
         ) : messagesLocal.length === 0 ? (

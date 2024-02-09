@@ -29,6 +29,14 @@ const conversationSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    updateLastMessage: (state, action) => {
+      const conversation = state.conversations.find(
+        (c) => c.id === action.payload.id
+      );
+      if (conversation) {
+        conversation.lastMessageContent = action.payload.lastMessageContent;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getConversationsAsync.fulfilled, (state, action) => {
@@ -38,5 +46,5 @@ const conversationSlice = createSlice({
   },
 });
 
-export const { addConversations, setLoading } = conversationSlice.actions;
+export const { addConversations, setLoading, updateLastMessage } = conversationSlice.actions;
 export default conversationSlice.reducer;

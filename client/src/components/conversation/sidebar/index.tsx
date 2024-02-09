@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { lazy, useContext, useEffect, useState } from "react";
 import {
   Button as ButtonCVA,
   TextField as TextFieldCVA,
@@ -28,6 +28,7 @@ import { createConversation, searchUsers } from "../../../lib/api";
 import { toast } from "sonner";
 import { SocketContext } from "../../../utils/context/socketContext";
 import { addConversations } from "../../../utils/store/slices/conversation.slice";
+import { AxiosError } from "axios";
 
 export default function SideBar({ activeGroup }: SideBarProps) {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   const conversations = useSelector(
     (state: RootState) => state.conversation.conversations
   );
+
 
   //! It is setting the new data of searched users along with the old ones
   //! Needs debugging
@@ -74,9 +76,13 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           });
         }
       })
-      .catch((err) => {
-        toast.error("Something went wrong !!");
+      .catch((err: AxiosError) => {
+        if (err.response?.status === 500) {
+          console.log("Server Error");
+          return toast.error("Conversation already exists !!");
+        }
         console.log(err.message);
+        return toast.error("Something went wrong !!");
       });
   };
 
@@ -116,7 +122,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
             searchResults.map(
               (user) =>
                 user.id !== self?.id && (
-                  <div onClick={(e) => createConversationHandler(user)}>
+                  <div key={user.id} onClick={(e) => createConversationHandler(user)}>
                     <img src={user.profilePic || "/BLANK.jpeg"} alt="" />
                     <span style={{ cursor: "pointer" }}>{user.userName}</span>
                   </div>
@@ -130,7 +136,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
         <ButtonCVA
           variant={activeGroup === "d" ? "active" : "sideBarFilter"}
           onClick={() => {
-            navigate(`/conversations/${activeGroup}`);
+            navigate(`/conversations/d`);
           }}
           style={{
             boxShadow: activeGroup === "d" ? "var(--shadow-primary)" : "",
