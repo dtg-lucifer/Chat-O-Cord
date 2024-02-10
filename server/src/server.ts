@@ -10,7 +10,6 @@ import { userRouter } from "./user/user.router";
 import { conversationRouter } from "./conversations/conversation.router";
 import { messageRouter } from "./message/message.router";
 import { gateWayMiddleware } from "./middleware/middleware.gateway";
-// @ts-ignore
 import { Conversation, User, Message } from "@prisma/client";
 import {
   corsOptions,

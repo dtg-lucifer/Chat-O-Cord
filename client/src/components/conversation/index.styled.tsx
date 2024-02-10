@@ -146,6 +146,12 @@ const MainWrapperAnimation = keyframes`
   }
 `;
 
+const SpinnerAnimation = keyframes`
+  0% { transform: rotate(0deg) }
+  50% { transform: rotate(180deg) }
+  100% { transform: rotate(360deg) }
+`;
+
 export const ChatSectionMainWrapper = styled.main`
   flex: 1;
   height: 100%;
@@ -197,10 +203,34 @@ export const ChatMessagesStatus = styled.div`
   width: 100%;
   text-align: center;
 
-  & > img {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    height: 7rem;
+  & > div.spinner__wrapper {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    overflow: hidden;
+    background: rgba(241, 242, 243, 0);
+
+    & > div.spinner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform: translateZ(0) scale(1);
+      backface-visibility: hidden;
+      transform-origin: 0 0;
+
+      & > div {
+        box-sizing: content-box;
+        position: absolute;
+        animation: ${SpinnerAnimation} 1s linear infinite;
+        width: 73px;
+        height: 73px;
+        top: 14px;
+        left: 14px;
+        border-radius: 50%;
+        box-shadow: 0 1.1px 0 0 #55ff00;
+        transform-origin: 36px 36.55px;
+      }
+    }
   }
 
   & > span {

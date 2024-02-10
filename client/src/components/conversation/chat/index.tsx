@@ -163,7 +163,7 @@ export default function ChatSection() {
             })
           );
           return;
-        };
+        }
         dispatch(addMessages(data));
         dispatch(
           updateLastMessage({
@@ -216,7 +216,11 @@ export default function ChatSection() {
       <ConversationWrapper>
         {loading ? (
           <ChatMessagesStatus>
-            <img src="/ECLIPSE_LOADER.svg" alt="" />
+            <div className="spinner__wrapper">
+              <div className="spinner">
+                <div></div>
+              </div>
+            </div>
             <span>Loading up your messages !!</span>
           </ChatMessagesStatus>
         ) : messagesLocal.length === 0 ? (
