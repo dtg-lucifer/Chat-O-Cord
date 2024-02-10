@@ -16,7 +16,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
-import { Message } from "../../../types/conversation";
+import { Attachment, Message } from "../../../types/conversation";
 import {
   addMessages,
   getMessagesAsync,
@@ -25,8 +25,9 @@ import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
 import { SocketContext } from "../../../utils/context/socketContext";
-import { createMessage } from "../../../lib/api";
+import { createMessage, createMessageWithAsset } from "../../../lib/api";
 import { updateLastMessage } from "../../../utils/store/slices/conversation.slice";
+import classNames from "classnames";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -34,6 +35,8 @@ export default function ChatSection() {
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
   const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [image, setImage] = useState<string>("");
   const [isTypingStatus, setIsTypingStatus] = useState<{
     userName: string;
     status: boolean;
@@ -79,22 +82,6 @@ export default function ChatSection() {
     return true;
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files![0];
-
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    socket.emit("msgSend", {
-      content: "",
-      convId: activeChat?.id,
-      authorId: user?.id,
-      file: formData,
-    });
-  };
-
   /**
    *! ---- NOTE ----
    *! MAKE THIS FUNCTION WITH REACT-QUERY
@@ -107,6 +94,24 @@ export default function ChatSection() {
    **/
   const handleMessageSubmit = async () => {
     const messageToSend = message.trim();
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("attachment", file);
+      formData.append("content", messageToSend!);
+      formData.append("id", activeChat!.id);
+      const { data: messageFromApi } = await createMessageWithAsset(formData);
+      setMessagesLocal((prevMsgs) => [messageFromApi.message, ...prevMsgs]);
+      socket.emit("message:create", {
+        message: messageFromApi.message,
+        authorId: user?.id,
+        convId: activeChat?.id,
+      });
+      setFile(null);
+      setImage("");
+      return;
+    }
+
     const { data: messageFromApi } = await createMessage({
       content: messageToSend!,
       id: activeChat!.id,
@@ -164,7 +169,12 @@ export default function ChatSection() {
           );
           return;
         }
-        dispatch(addMessages(data));
+        dispatch(
+          addMessages({
+            convId: data.convId,
+            message: data.message,
+          })
+        );
         dispatch(
           updateLastMessage({
             id: data.convId,
@@ -230,75 +240,105 @@ export default function ChatSection() {
             </span>
           </ChatMessagesStatus>
         ) : (
-          messagesLocal.map((msg, i, msgs) => (
-            <MessageCVA
-              variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
-              key={msg?.id}
-              style={{
-                marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
-                  ? ""
-                  : "0.8rem",
-              }}
-            >
-              {msg.author.profilePic ? (
-                <img
-                  src={msg.author.profilePic}
-                  className="w-10 rounded-full aspect-square"
-                  alt="profle_pic"
-                  style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
-                  }}
-                />
-              ) : (
-                <img
-                  src="/BLANK.jpeg"
-                  className="w-10 rounded-full aspect-square"
-                  alt="profile_pic"
-                  style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
-                  }}
-                />
-              )}
-              <div className="flex-1">
-                <h3
-                  style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
-                  }}
-                  className="font-semibold text-[16px]"
-                >
-                  {msg.author.userName}
-                </h3>
+          messagesLocal.map((msg, i, msgs) => {
+            console.log(msg.attachment?.blob);
+            return (
+              <MessageCVA
+                variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
+                key={msg?.id}
+                style={{
+                  marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
+                    ? ""
+                    : "0.8rem",
+                }}
+              >
+                {msg.author.profilePic ? (
+                  <img
+                    src={msg.author.profilePic}
+                    className="w-10 rounded-full aspect-square"
+                    alt="profle_pic"
+                    style={{
+                      display: showTimeStampAndAvatar(msg, i, msgs)
+                        ? ""
+                        : "none",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src="/BLANK.jpeg"
+                    className="w-10 rounded-full aspect-square"
+                    alt="profile_pic"
+                    style={{
+                      display: showTimeStampAndAvatar(msg, i, msgs)
+                        ? ""
+                        : "none",
+                    }}
+                  />
+                )}
+                <div className="flex-1">
+                  <h3
+                    style={{
+                      display: showTimeStampAndAvatar(msg, i, msgs)
+                        ? ""
+                        : "none",
+                    }}
+                    className="font-semibold text-[16px]"
+                  >
+                    {msg.author.userName}
+                  </h3>
+                  <div>
+                    {msg.attachment && (
+                      <img
+                        src={`data:${
+                          msg.attachment.mimeType
+                          // @ts-ignore
+                        };base64,${msg.attachment?.blob.data.toString("base64")}`}
+                        alt="attachment"
+                        className="w-[200px] h-[200px] rounded-md"
+                        style={{
+                          marginBlockStart: !showTimeStampAndAvatar(
+                            msg,
+                            i,
+                            msgs
+                          )
+                            ? ""
+                            : "0.8rem",
+                        }}
+                      />
+                    )}
+                    <p
+                      style={{
+                        marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
+                          ? ""
+                          : "3rem",
+                        wordWrap: "break-word",
+                        wordBreak: "break-all",
+                        whiteSpace: "pre-wrap",
+                      }}
+                      className=" text-sm text-[#c5c5c5]"
+                    >
+                      {msg.content}
+                    </p>
+                  </div>
+                </div>
                 <p
                   style={{
-                    marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
-                      ? ""
-                      : "3rem",
-                    wordWrap: "break-word",
-                    wordBreak: "break-all",
-                    whiteSpace: "pre-wrap",
+                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
                   }}
-                  className=" text-sm text-[#c5c5c5]"
+                  className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
                 >
-                  {msg.content}
-                </p>
-              </div>
-              <p
-                style={{
-                  display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
-                }}
-                className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
-              >
-                {formatDistance(new Date(msg.createdAt), new Date(), {
-                  addSuffix: true,
-                })
-                  .charAt(0)
-                  .toUpperCase() +
-                  formatDistance(new Date(msg.createdAt), new Date(), {
+                  {formatDistance(new Date(msg.createdAt), new Date(), {
                     addSuffix: true,
-                  }).slice(1)}
-              </p>
-            </MessageCVA>
-          ))
+                  })
+                    .charAt(0)
+                    .toUpperCase() +
+                    formatDistance(new Date(msg.createdAt), new Date(), {
+                      addSuffix: true,
+                    }).slice(1)}
+                </p>
+              </MessageCVA>
+            );
+          })
         )}
       </ConversationWrapper>
       {isTypingStatus.status && isTypingStatus.userName !== user?.userName && (
@@ -316,11 +356,34 @@ export default function ChatSection() {
             );
           }}
         />
+        <img
+          className={classNames(
+            "w-10 h-10",
+            "rounded-full aspect-square",
+            "cursor-pointer",
+            "outline-1 outline-blue-500",
+            "outline-solid outline-opacity-50",
+            {
+              hidden: !image,
+              block: image,
+            }
+          )}
+          src={image && image}
+          alt="preview"
+        />
         <input
           ref={fileInputRef}
           type="file"
-          accept=".jpg,.jpeg,.png,.mkv,.mp4,.mp3,.m4a,.doc,.docx,.pdf,.ppt,.pptx,.txt"
+          name="attachment"
+          accept=".jpg,.jpeg,.png"
           hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setFile(file);
+              setImage(URL.createObjectURL(file));
+            }
+          }}
         />
         <TextFieldCVA
           variant={"chat"}

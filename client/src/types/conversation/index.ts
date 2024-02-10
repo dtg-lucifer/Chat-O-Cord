@@ -22,14 +22,16 @@ export interface Message {
   userId: string;
   conversation: Conversation;
   conversationId: string;
-  attachment: Attachment | null;
+  attachment?: Attachment;
 }
 
 export interface Attachment {
   id: string;
   createdAt: Date;
   updatedAt: Date;
-  url: string;
+  blob: Buffer;
+  filename: string;
+  mimeType: string;
 }
 
 export interface Conversation {

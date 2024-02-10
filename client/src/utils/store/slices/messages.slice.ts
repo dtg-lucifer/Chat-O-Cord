@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Message } from "../../../types/conversation";
+import { Attachment, Message } from "../../../types/conversation";
 import { GetMessagesData } from "../../../types/authentication";
 import { getMessages } from "../../../lib/api";
 
@@ -26,7 +26,11 @@ const messageSlice = createSlice({
   reducers: {
     addMessages: (
       state,
-      action: PayloadAction<{ convId: string; message: Message }>
+      action: PayloadAction<{
+        convId: string;
+        message: Message;
+        attachment?: Attachment;
+      }>
     ) => {
       const conversationMessage = state.messages.find(
         (c) => c.convId === action.payload.convId

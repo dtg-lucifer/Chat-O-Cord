@@ -36,7 +36,9 @@ model Message {
 
 model Attachment {
   id        String   @id @default(uuid())
-  url       String
+  blob      Bytes
+  fileName  String
+  mimeType  String
   message   Message  @relation(fields: [messageId], references: [id])
   messageId String
   createdAt DateTime @default(now())

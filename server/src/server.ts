@@ -3,6 +3,13 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import {
+  corsOptions,
+  redisClient,
+  sessionMiddleware,
+  wrapper,
+} from "./lib/session.server";
+import { Conversation, User, Message, Attachment } from "@prisma/client";
 
 import { AuthGuard } from "./middleware/middleware.server";
 import { authRouter } from "./auth/auth.router";
@@ -10,13 +17,6 @@ import { userRouter } from "./user/user.router";
 import { conversationRouter } from "./conversations/conversation.router";
 import { messageRouter } from "./message/message.router";
 import { gateWayMiddleware } from "./middleware/middleware.gateway";
-import { Conversation, User, Message } from "@prisma/client";
-import {
-  corsOptions,
-  redisClient,
-  sessionMiddleware,
-  wrapper,
-} from "./lib/session.server";
 import { setUserActiveStatusToggle } from "./user/user.service";
 import { GatewaySession } from "./websocket/session.gateway";
 
@@ -51,6 +51,7 @@ app.use(`${BASE_URL}/auth`, authRouter);
 app.use(`${BASE_URL}/user`, AuthGuard, userRouter);
 app.use(`${BASE_URL}/conversation`, AuthGuard, conversationRouter);
 app.use(`${BASE_URL}/message`, AuthGuard, messageRouter);
+app.use(`${BASE_URL}/`, AuthGuard);
 
 //! SOCKET.IO
 io.on("connection", (socket) => {
