@@ -241,7 +241,23 @@ export default function ChatSection() {
           </ChatMessagesStatus>
         ) : (
           messagesLocal.map((msg, i, msgs) => {
-            console.log(msg.attachment?.blob);
+            let base64String = "";
+            if (
+              msg.attachment &&
+              msg.attachment.blob &&
+              typeof window !== "undefined"
+            ) {
+              // @ts-ignore
+              const uint8Array = new Uint8Array(msg.attachment.blob.data);
+              const binaryString = uint8Array.reduce(
+                (acc, byte) => acc + String.fromCharCode(byte),
+                ""
+              );
+              base64String = window.btoa(binaryString);
+            }
+
+            let src = `data:${msg.attachment?.mimeType};base64,${base64String}`;
+
             return (
               <MessageCVA
                 variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
@@ -289,20 +305,17 @@ export default function ChatSection() {
                   <div>
                     {msg.attachment && (
                       <img
-                        src={`data:${
-                          msg.attachment.mimeType
-                          // @ts-ignore
-                        };base64,${msg.attachment?.blob.data.toString("base64")}`}
+                        src={src}
                         alt="attachment"
                         className="w-[200px] h-[200px] rounded-md"
                         style={{
-                          marginBlockStart: !showTimeStampAndAvatar(
+                          marginInlineStart: showTimeStampAndAvatar(
                             msg,
                             i,
                             msgs
                           )
                             ? ""
-                            : "0.8rem",
+                            : "3rem",
                         }}
                       />
                     )}
