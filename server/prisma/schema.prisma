@@ -32,6 +32,7 @@ model Message {
   conversation   Conversation @relation(name: "convTOmsg", fields: [conversationId], references: [id], onUpdate: Cascade)
   conversationId String
   attachment     Attachment?
+  attachmentSrc  String?
 }
 
 model Attachment {

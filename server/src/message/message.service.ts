@@ -1,4 +1,5 @@
 import { getConversationById } from "../conversations/conversation.service";
+import { bufferToSrc } from "../lib/utils";
 import { CreateMessageDTO } from "./dto/message.dto";
 
 export const getMessages = async (id: string, limit: number) => {
@@ -119,5 +120,16 @@ export const createMessageWithAsset = async (
     },
   });
 
-  return { message, attachment };
+  const attachmentSrc = bufferToSrc()(file.buffer, file.mimetype);
+
+  await __db?.message.update({
+    where: {
+      id: message!.id,
+    },
+    data: {
+      attachmentSrc: attachmentSrc,
+    }
+  })
+
+  return { message, attachment, attachmentSrc };
 };

@@ -28,6 +28,7 @@ import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage, createMessageWithAsset } from "../../../lib/api";
 import { updateLastMessage } from "../../../utils/store/slices/conversation.slice";
 import classNames from "classnames";
+import { useBufferToImageSrc } from "../../../utils/hooks/useBufferToImageSrc";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -36,7 +37,7 @@ export default function ChatSection() {
   const [message, setMessage] = useState<string>("");
   const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
   const [file, setFile] = useState<File | null>(null);
-  const [image, setImage] = useState<string>("");
+  const [imagePreviewSrc, setImagePreviewSrc] = useState<string>("");
   const [isTypingStatus, setIsTypingStatus] = useState<{
     userName: string;
     status: boolean;
@@ -46,6 +47,7 @@ export default function ChatSection() {
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
+  const getSrc = useBufferToImageSrc();
 
   const { loading } = useSelector((state: RootState) => state.messages);
 
@@ -95,20 +97,24 @@ export default function ChatSection() {
   const handleMessageSubmit = async () => {
     const messageToSend = message.trim();
 
-    if (file) {
+    if (!messageToSend && !file) return;
+
+    if ((!messageToSend && file) || (messageToSend && file)) {
       const formData = new FormData();
       formData.append("attachment", file);
       formData.append("content", messageToSend!);
       formData.append("id", activeChat!.id);
       const { data: messageFromApi } = await createMessageWithAsset(formData);
       setMessagesLocal((prevMsgs) => [messageFromApi.message, ...prevMsgs]);
+      setFile(null);
+      setImagePreviewSrc("");
+      console.log("create message with asset: ", messageFromApi.attachmentSrc);
       socket.emit("message:create", {
         message: messageFromApi.message,
         authorId: user?.id,
         convId: activeChat?.id,
+        attachmentSrc: messageFromApi.attachmentSrc,
       });
-      setFile(null);
-      setImage("");
       return;
     }
 
@@ -159,7 +165,12 @@ export default function ChatSection() {
   useEffect(() => {
     socket.on(
       "message:received",
-      (data: { convId: string; message: Message; authorId: string }) => {
+      (data: {
+        convId: string;
+        message: Message;
+        authorId: string;
+        attachmentSrc: string;
+      }) => {
         if (data.authorId === user?.id) {
           dispatch(
             updateLastMessage({
@@ -184,6 +195,16 @@ export default function ChatSection() {
         setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
       }
     );
+
+    socket.on("attachment:received", (data: { convId: string; attachmentSrc: string }) => {
+      console.log("attachment received: ", data);
+      setMessagesLocal((prevMsgs) => {
+        return prevMsgs.map((msg) => {
+          if (msg.attachmentSrc) return msg;
+          return { ...msg, attachmentSrc: data.attachmentSrc };
+        });
+      });
+    });
 
     socket.on("typing:started", ({ userName }) => {
       setIsTypingStatus({ userName, status: true });
@@ -241,23 +262,6 @@ export default function ChatSection() {
           </ChatMessagesStatus>
         ) : (
           messagesLocal.map((msg, i, msgs) => {
-            let base64String = "";
-            if (
-              msg.attachment &&
-              msg.attachment.blob &&
-              typeof window !== "undefined"
-            ) {
-              // @ts-ignore
-              const uint8Array = new Uint8Array(msg.attachment.blob.data);
-              const binaryString = uint8Array.reduce(
-                (acc, byte) => acc + String.fromCharCode(byte),
-                ""
-              );
-              base64String = window.btoa(binaryString);
-            }
-
-            let src = `data:${msg.attachment?.mimeType};base64,${base64String}`;
-
             return (
               <MessageCVA
                 variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
@@ -303,9 +307,10 @@ export default function ChatSection() {
                     {msg.author.userName}
                   </h3>
                   <div>
-                    {msg.attachment && (
+                    {msg.attachmentSrc && (
                       <img
-                        src={src}
+                        // src={getSrc(msg)}
+                        src={msg.attachmentSrc}
                         alt="attachment"
                         className="w-[200px] h-[200px] rounded-md"
                         style={{
@@ -316,6 +321,13 @@ export default function ChatSection() {
                           )
                             ? ""
                             : "3rem",
+                          marginBlockStart: !showTimeStampAndAvatar(
+                            msg,
+                            i,
+                            msgs
+                          )
+                            ? ""
+                            : "0.8rem",
                         }}
                       />
                     )}
@@ -377,11 +389,11 @@ export default function ChatSection() {
             "outline-1 outline-blue-500",
             "outline-solid outline-opacity-50",
             {
-              hidden: !image,
-              block: image,
+              hidden: !imagePreviewSrc,
+              block: imagePreviewSrc,
             }
           )}
-          src={image && image}
+          src={imagePreviewSrc && imagePreviewSrc}
           alt="preview"
         />
         <input
@@ -394,7 +406,7 @@ export default function ChatSection() {
             const file = e.target.files?.[0];
             if (file) {
               setFile(file);
-              setImage(URL.createObjectURL(file));
+              setImagePreviewSrc(URL.createObjectURL(file));
             }
           }}
         />

@@ -23,6 +23,7 @@ export interface Message {
   conversation: Conversation;
   conversationId: string;
   attachment?: Attachment;
+  attachmentSrc?: string;
 }
 
 export interface Attachment {

@@ -46,5 +46,6 @@ const conversationSlice = createSlice({
   },
 });
 
-export const { addConversations, setLoading, updateLastMessage } = conversationSlice.actions;
+export const { addConversations, setLoading, updateLastMessage } =
+  conversationSlice.actions;
 export default conversationSlice.reducer;

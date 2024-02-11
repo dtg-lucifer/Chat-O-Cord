@@ -112,8 +112,16 @@ io.on("connection", (socket) => {
 
   socket.on(
     "message:create",
-    (data: { message: Message; authorId: string; convId: string }) => {
+    (data: {
+      message: Message;
+      authorId: string;
+      convId: string;
+      attachmentSrc: string;
+    }) => {
       io.to(data.convId).emit("message:received", data);
+      if (data.attachmentSrc) {
+        io.to(data.convId).emit("attachment:received", data);
+      }
     }
   );
 
