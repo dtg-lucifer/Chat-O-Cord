@@ -4,6 +4,7 @@ import {
   Message as MessageCVA,
 } from "../index.components";
 import {
+  AttachmentPreviewImage,
   ChatBottomWrapper,
   ChatMessagesStatus,
   ChatSectionMainWrapper,
@@ -108,12 +109,15 @@ export default function ChatSection() {
       setMessagesLocal((prevMsgs) => [messageFromApi.message, ...prevMsgs]);
       setFile(null);
       setImagePreviewSrc("");
-      console.log("create message with asset: ", messageFromApi.attachmentSrc);
       socket.emit("message:create", {
         message: messageFromApi.message,
         authorId: user?.id,
         convId: activeChat?.id,
+      });
+      socket.emit("attachment:create", {
+        convId: activeChat?.id,
         attachmentSrc: messageFromApi.attachmentSrc,
+        message: messageFromApi.message,
       });
       return;
     }
@@ -148,7 +152,6 @@ export default function ChatSection() {
 
   useEffect(() => {
     if (activeChat) {
-      console.log("Active chat", activeChat);
       dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
         .unwrap()
         .then((data) => {
@@ -196,15 +199,19 @@ export default function ChatSection() {
       }
     );
 
-    socket.on("attachment:received", (data: { convId: string; attachmentSrc: string }) => {
-      console.log("attachment received: ", data);
-      setMessagesLocal((prevMsgs) => {
-        return prevMsgs.map((msg) => {
-          if (msg.attachmentSrc) return msg;
-          return { ...msg, attachmentSrc: data.attachmentSrc };
+    socket.on(
+      "attachment:received",
+      (data: { convId: string; attachmentSrc: string; message: Message }) => {
+        setMessagesLocal((prevMsgs) => {
+          return prevMsgs.map((msg) => {
+            if (msg.attachmentSrc) return msg;
+            if (msg.id === data.message.id)
+              return { ...msg, attachmentSrc: data.attachmentSrc };
+            return msg;
+          });
         });
-      });
-    });
+      }
+    );
 
     socket.on("typing:started", ({ userName }) => {
       setIsTypingStatus({ userName, status: true });
@@ -215,6 +222,7 @@ export default function ChatSection() {
     });
 
     return () => {
+      socket.off("attachment:received", () => {});
       socket.off("message:received", () => {});
       socket.off("typing:started", () => {});
       socket.off("typing:stopped", () => {});
@@ -312,7 +320,8 @@ export default function ChatSection() {
                         // src={getSrc(msg)}
                         src={msg.attachmentSrc}
                         alt="attachment"
-                        className="w-[200px] h-[200px] rounded-md"
+                        className="w-[300px] rounded-md lazyload"
+                        loading="lazy"
                         style={{
                           marginInlineStart: showTimeStampAndAvatar(
                             msg,
@@ -381,13 +390,13 @@ export default function ChatSection() {
             );
           }}
         />
-        <img
+        <AttachmentPreviewImage
           className={classNames(
-            "w-10 h-10",
-            "rounded-full aspect-square",
+            "h-20",
             "cursor-pointer",
             "outline-1 outline-blue-500",
             "outline-solid outline-opacity-50",
+            "absolute -top-[5.5rem] left-[1rem]",
             {
               hidden: !imagePreviewSrc,
               block: imagePreviewSrc,

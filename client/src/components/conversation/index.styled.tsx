@@ -273,7 +273,7 @@ export const ChatBottomWrapper = styled.form`
     box-shadow: var(--shadow-primary);
   }
 
-  & > :not(input, div) {
+  & > :not(input, div, img) {
     cursor: pointer;
     box-sizing: content-box;
     background-color: var(--clr-dark-bg-faint);
@@ -298,4 +298,11 @@ export const ChatBottomWrapper = styled.form`
     appearance: none;
     visibility: visible;
   }
+`;
+
+export const AttachmentPreviewImage = styled.img`
+  padding: 0.5rem;
+  box-sizing: content-box;
+  background-color: var(--clr-dark-bg-faint);
+  border-radius: 3px;
 `;

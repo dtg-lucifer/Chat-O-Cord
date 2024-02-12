@@ -112,16 +112,15 @@ io.on("connection", (socket) => {
 
   socket.on(
     "message:create",
-    (data: {
-      message: Message;
-      authorId: string;
-      convId: string;
-      attachmentSrc: string;
-    }) => {
+    async (data: { message: Message; authorId: string; convId: string }) => {
       io.to(data.convId).emit("message:received", data);
-      if (data.attachmentSrc) {
-        io.to(data.convId).emit("attachment:received", data);
-      }
+    }
+  );
+
+  socket.on(
+    "attachment:create",
+    (data: { convId: string; attachmentSrc: string; message: Message }) => {
+      io.to(data.convId).emit("attachment:received", data);
     }
   );
 

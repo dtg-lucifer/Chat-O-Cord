@@ -12,7 +12,6 @@ export const getMessages = async (id: string, limit: number) => {
       conversationId: id,
     },
     include: {
-      attachment: true,
       author: true,
       conversation: true,
     },
@@ -43,7 +42,6 @@ export const createMessage = async (data: CreateMessageDTO) => {
 
   const message = await __db?.message.create({
     include: {
-      attachment: true,
       author: true,
       conversation: true,
     },
@@ -128,8 +126,8 @@ export const createMessageWithAsset = async (
     },
     data: {
       attachmentSrc: attachmentSrc,
-    }
-  })
+    },
+  });
 
   return { message, attachment, attachmentSrc };
 };
