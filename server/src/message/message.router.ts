@@ -49,7 +49,7 @@ messageRouter
     const { content, id } = req.body;
     await createMessageWithAsset({ content, conversationId: id, user, file })
       .then((msg) => {
-        res.status(201).send(JSON.parse(JSON.stringify(msg)));
+        res.status(201).send(msg);
       })
       .catch((err) => {
         res.status(500).json({ msg: err.message });

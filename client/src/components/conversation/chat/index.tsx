@@ -1,4 +1,5 @@
 import { FaPlus, FaSmileWink } from "react-icons/fa";
+import { BiX } from "react-icons/bi";
 import {
   TextField as TextFieldCVA,
   Message as MessageCVA,
@@ -11,13 +12,14 @@ import {
   ChatTopWrapper,
   ChatTypingStatusWrapper,
   ConversationWrapper,
+  ImageViewerWrapper,
 } from "../index.styled";
 import EmojiPicker, { EmojiStyle, SkinTones, Theme } from "emoji-picker-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
-import { Attachment, Message } from "../../../types/conversation";
+import { Message } from "../../../types/conversation";
 import {
   addMessages,
   getMessagesAsync,
@@ -30,6 +32,7 @@ import { createMessage, createMessageWithAsset } from "../../../lib/api";
 import { updateLastMessage } from "../../../utils/store/slices/conversation.slice";
 import classNames from "classnames";
 import { useBufferToImageSrc } from "../../../utils/hooks/useBufferToImageSrc";
+import { toast } from "sonner";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -39,6 +42,8 @@ export default function ChatSection() {
   const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [imagePreviewSrc, setImagePreviewSrc] = useState<string>("");
+  const [activeAssetToView, setActiveAssetToView] = useState<string>("");
+  const [activeImage, setActiveImage] = useState<boolean>(false);
   const [isTypingStatus, setIsTypingStatus] = useState<{
     userName: string;
     status: boolean;
@@ -97,13 +102,16 @@ export default function ChatSection() {
    **/
   const handleMessageSubmit = async () => {
     const messageToSend = message.trim();
+    let messageToBeSent: string = "";
 
     if (!messageToSend && !file) return;
 
-    if ((!messageToSend && file) || (messageToSend && file)) {
+    if (!messageToSend && file) messageToBeSent = "📷 𝔸𝕥𝕥𝕒𝕔𝕙𝕞𝕖𝕟𝕥";
+
+    if (file) {
       const formData = new FormData();
       formData.append("attachment", file);
-      formData.append("content", messageToSend!);
+      formData.append("content", messageToBeSent);
       formData.append("id", activeChat!.id);
       const { data: messageFromApi } = await createMessageWithAsset(formData);
       setMessagesLocal((prevMsgs) => [messageFromApi.message, ...prevMsgs]);
@@ -116,7 +124,7 @@ export default function ChatSection() {
       });
       socket.emit("attachment:create", {
         convId: activeChat?.id,
-        attachmentSrc: messageFromApi.attachmentSrc,
+        attachmentSrc: messageFromApi.secureUrl,
         message: messageFromApi.message,
       });
       return;
@@ -201,7 +209,12 @@ export default function ChatSection() {
 
     socket.on(
       "attachment:received",
-      (data: { convId: string; attachmentSrc: string; message: Message }) => {
+      (data: {
+        convId: string;
+        secureUrl: string;
+        message: Message;
+        attachmentSrc: string;
+      }) => {
         setMessagesLocal((prevMsgs) => {
           return prevMsgs.map((msg) => {
             if (msg.attachmentSrc) return msg;
@@ -247,6 +260,26 @@ export default function ChatSection() {
 
   return (
     <ChatSectionMainWrapper>
+      {activeImage && (
+        <ImageViewerWrapper>
+          <img
+            src={activeAssetToView}
+            alt="attachment"
+            className={classNames("w-full h-full", {
+              hidden: !activeImage,
+              block: activeImage,
+            })}
+          />
+          <BiX
+            size={30}
+            className="cursor-pointer text-white absolute top-2 right-2"
+            onClick={() => {
+              setActiveImage(false);
+              setActiveAssetToView("");
+            }}
+          />
+        </ImageViewerWrapper>
+      )}
       <ChatTopWrapper>
         <img src={currentChatUser?.profilePic || "/BLANK.jpeg"} alt="" />
         <span>{currentChatUser?.userName}</span>
@@ -320,8 +353,12 @@ export default function ChatSection() {
                         // src={getSrc(msg)}
                         src={msg.attachmentSrc}
                         alt="attachment"
-                        className="w-[300px] rounded-md lazyload"
+                        className="w-[300px] rounded-md lazyload cursor-pointer"
                         loading="lazy"
+                        onClick={() => {
+                          setActiveAssetToView(msg.attachmentSrc!);
+                          setActiveImage(true);
+                        }}
                         style={{
                           marginInlineStart: showTimeStampAndAvatar(
                             msg,
@@ -351,7 +388,7 @@ export default function ChatSection() {
                       }}
                       className=" text-sm text-[#c5c5c5]"
                     >
-                      {msg.content}
+                      {msg.content === "📷 𝔸𝕥𝕥𝕒𝕔𝕙𝕞𝕖𝕟𝕥" ? "" : msg.content}
                     </p>
                   </div>
                 </div>
@@ -404,6 +441,11 @@ export default function ChatSection() {
           )}
           src={imagePreviewSrc && imagePreviewSrc}
           alt="preview"
+          onClick={() => {
+            setFile(null);
+            setImagePreviewSrc("");
+            toast.error("Attachment removed !!");
+          }}
         />
         <input
           ref={fileInputRef}

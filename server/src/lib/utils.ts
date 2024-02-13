@@ -1,4 +1,6 @@
 import * as bcrypt from "bcrypt";
+import DataURIParser from "datauri/parser";
+import path from "path";
 
 export const hashPassword = async (password: string): Promise<string> => {
   const salt = bcrypt.genSaltSync();
@@ -27,4 +29,10 @@ export const bufferToSrc = () => {
 
     return `data:${mimeType};base64,${base64String}`;
   };
+};
+
+export const getDataUri = (file: Express.Multer.File) => {
+  const parser = new DataURIParser();
+  const extName = path.extname(file.originalname).toString();
+  return parser.format(extName, file.buffer).content;
 };

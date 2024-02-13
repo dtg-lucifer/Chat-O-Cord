@@ -162,6 +162,25 @@ export const ChatSectionMainWrapper = styled.main`
   position: relative;
 `;
 
+export const ImageViewerWrapper = styled.div`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  padding: 1rem;
+  gap: 1rem;
+
+  & > img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+`;
+
 export const ChatTopWrapper = styled.header`
   height: 4rem;
   background-color: var(--clr-dark-bg-faint);

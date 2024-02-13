@@ -38,6 +38,7 @@ model Message {
 model Attachment {
   id        String   @id @default(uuid())
   blob      Bytes
+  publicUrl String?
   fileName  String
   mimeType  String
   message   Message  @relation(fields: [messageId], references: [id])

@@ -19,6 +19,7 @@ import { messageRouter } from "./message/message.router";
 import { gateWayMiddleware } from "./middleware/middleware.gateway";
 import { setUserActiveStatusToggle } from "./user/user.service";
 import { GatewaySession } from "./websocket/session.gateway";
+import { cloudinaryConfig } from "./lib/cloudinary";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ const io = new Server(server, {
   cookie: true,
   cors: corsOptions,
 });
+cloudinaryConfig();
 
 //! MIDDLEWARES
 app.use(cors(corsOptions));
@@ -119,7 +121,12 @@ io.on("connection", (socket) => {
 
   socket.on(
     "attachment:create",
-    (data: { convId: string; attachmentSrc: string; message: Message }) => {
+    (data: {
+      convId: string;
+      secureUrl: string;
+      message: Message;
+      attachmentSrc: string;
+    }) => {
       io.to(data.convId).emit("attachment:received", data);
     }
   );
