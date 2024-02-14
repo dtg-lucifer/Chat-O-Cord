@@ -169,7 +169,7 @@ export const ImageViewerWrapper = styled.div`
   height: 100%;
   display: grid;
   place-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 100;
   padding: 1rem;
   gap: 1rem;
@@ -178,6 +178,7 @@ export const ImageViewerWrapper = styled.div`
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 1);
   }
 `;
 

@@ -353,7 +353,7 @@ export default function ChatSection() {
                         // src={getSrc(msg)}
                         src={msg.attachmentSrc}
                         alt="attachment"
-                        className="w-[300px] rounded-md lazyload cursor-pointer"
+                        className="max-w-[450px] max-h-[400px] rounded-md lazyload cursor-pointer"
                         loading="lazy"
                         onClick={() => {
                           setActiveAssetToView(msg.attachmentSrc!);
