@@ -43,9 +43,6 @@ export default function SideBar({ activeGroup }: SideBarProps) {
     (state: RootState) => state.conversation.conversations
   );
 
-
-  //! It is setting the new data of searched users along with the old ones
-  //! Needs debugging
   const { mutate: search } = useMutation({
     mutationKey: ["searchConversations", debouncedVal, self?.id],
     mutationFn: (term: string) => searchUsers(term),

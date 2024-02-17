@@ -166,12 +166,7 @@ export default function ChatSection() {
           setMessagesLocal(data.data.messages);
         });
     }
-    socket.emit("conversation:join", {
-      convId: activeChat?.id,
-      userId: user?.id,
-      userName: user?.userName,
-    });
-  }, [activeChat, dispatch, socket]);
+  }, [activeChat, dispatch]);
 
   useEffect(() => {
     socket.on(

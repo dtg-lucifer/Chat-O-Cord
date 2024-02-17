@@ -20,6 +20,7 @@ import { gateWayMiddleware } from "./middleware/middleware.gateway";
 import { setUserActiveStatusToggle } from "./user/user.service";
 import { GatewaySession } from "./websocket/session.gateway";
 import { cloudinaryConfig } from "./lib/cloudinary";
+import { getConversation } from "./conversations/conversation.service";
 
 dotenv.config();
 
@@ -64,6 +65,12 @@ io.on("connection", (socket) => {
   setUserActiveStatusToggle(connectedUser.id, true);
   SOCKET_SESSION.setSocket(connectedUser.id, socket);
   socket.broadcast.emit("user:connected", { userName: connectedUser.userName });
+
+  getConversation({ id: connectedUser.id }).then((conversations) => {
+    conversations?.forEach(async (c) => {
+      await socket.join(c.id);
+    });
+  });
 
   socket.on(
     "conversation:join",
