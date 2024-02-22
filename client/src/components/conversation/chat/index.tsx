@@ -27,12 +27,12 @@ import {
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistance, formatRelative } from "date-fns";
-import { SocketContext } from "../../../utils/context/socketContext";
 import { createMessage, createMessageWithAsset } from "../../../lib/api";
 import { updateLastMessage } from "../../../utils/store/slices/conversation.slice";
 import classNames from "classnames";
 import { useBufferToImageSrc } from "../../../utils/hooks/useBufferToImageSrc";
 import { toast } from "sonner";
+import { useSocket } from "../../../utils/hooks/useSocket";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ export default function ChatSection() {
   const { isTyping, debouncedVal } = useDebouncedTyping<string>(message, 2000);
   const { activeChat } = useContext(ActiveChatContext);
   const { user } = useContext(AuthContext);
-  const { socket } = useContext(SocketContext);
+  const { socket } = useSocket();
   const getSrc = useBufferToImageSrc();
 
   const { loading } = useSelector((state: RootState) => state.messages);
@@ -117,12 +117,12 @@ export default function ChatSection() {
       setMessagesLocal((prevMsgs) => [messageFromApi.message, ...prevMsgs]);
       setFile(null);
       setImagePreviewSrc("");
-      socket.emit("message:create", {
+      socket?.emit("message:create", {
         message: messageFromApi.message,
         authorId: user?.id,
         convId: activeChat?.id,
       });
-      socket.emit("attachment:create", {
+      socket?.emit("attachment:create", {
         convId: activeChat?.id,
         attachmentSrc: messageFromApi.secureUrl,
         message: messageFromApi.message,
@@ -137,7 +137,7 @@ export default function ChatSection() {
 
     setMessagesLocal((prevMsgs) => [messageFromApi, ...prevMsgs]);
 
-    socket.emit("message:create", {
+    socket?.emit("message:create", {
       message: messageFromApi,
       authorId: user?.id,
       convId: activeChat?.id,
@@ -169,7 +169,7 @@ export default function ChatSection() {
   }, [activeChat, dispatch]);
 
   useEffect(() => {
-    socket.on(
+    socket?.on(
       "message:received",
       (data: {
         convId: string;
@@ -202,7 +202,7 @@ export default function ChatSection() {
       }
     );
 
-    socket.on(
+    socket?.on(
       "attachment:received",
       (data: {
         convId: string;
@@ -221,32 +221,32 @@ export default function ChatSection() {
       }
     );
 
-    socket.on("typing:started", ({ userName }) => {
+    socket?.on("typing:started", ({ userName }) => {
       setIsTypingStatus({ userName, status: true });
     });
 
-    socket.on("typing:stopped", () => {
+    socket?.on("typing:stopped", () => {
       setIsTypingStatus({ userName: "", status: false });
     });
 
     return () => {
-      socket.off("attachment:received", () => {});
-      socket.off("message:received", () => {});
-      socket.off("typing:started", () => {});
-      socket.off("typing:stopped", () => {});
+      socket?.off("attachment:received", () => {});
+      socket?.off("message:received", () => {});
+      socket?.off("typing:started", () => {});
+      socket?.off("typing:stopped", () => {});
     };
   }, [socket]);
 
   useEffect(() => {
     if (isTyping) {
-      socket.emit("typing:start", {
+      socket?.emit("typing:start", {
         convId: activeChat?.id,
         userName: user?.userName,
       });
     }
 
     if (message && !isTyping) {
-      socket.emit("typing:stop", {
+      socket?.emit("typing:stop", {
         convId: activeChat?.id,
         userName: user?.userName,
       });
@@ -465,7 +465,7 @@ export default function ChatSection() {
           onChange={(e) => {
             setMessage(e.target.value);
             if (e.target.value.trim() === "") {
-              socket.emit("typing:stop", {
+              socket?.emit("typing:stop", {
                 convId: activeChat?.id,
                 userName: user?.userName,
               });
@@ -475,7 +475,7 @@ export default function ChatSection() {
             if (e.key === "Enter") {
               handleMessageSubmit();
               setMessage("");
-              socket.emit("typing:stop", {
+              socket?.emit("typing:stop", {
                 convId: activeChat?.id,
                 userName: user?.userName,
               });

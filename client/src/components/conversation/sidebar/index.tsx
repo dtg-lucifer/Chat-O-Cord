@@ -26,9 +26,9 @@ import { useDebouncedTyping } from "../../../utils/hooks/useDebounce";
 import { useMutation } from "@tanstack/react-query";
 import { createConversation, searchUsers } from "../../../lib/api";
 import { toast } from "sonner";
-import { SocketContext } from "../../../utils/context/socketContext";
 import { addConversations } from "../../../utils/store/slices/conversation.slice";
 import { AxiosError } from "axios";
+import { useSocket } from "../../../utils/hooks/useSocket";
 
 export default function SideBar({ activeGroup }: SideBarProps) {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   const { debouncedVal } = useDebouncedTyping(query, 1000);
   const { user: self } = useContext(AuthContext);
   const { activeChat, setActiveChat } = useContext(ActiveChatContext);
-  const { socket } = useContext(SocketContext);
+  const { socket } = useSocket();
   const dispatch = useDispatch<AppDispatch>();
   const conversations = useSelector(
     (state: RootState) => state.conversation.conversations
@@ -67,7 +67,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
           setActiveChat(res.data);
           setQuery("");
           setSearchResults([]);
-          socket.emit("conversation:create", {
+          socket?.emit("conversation:create", {
             conversation: res.data,
             self,
           });
@@ -90,7 +90,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
   }, [debouncedVal]);
 
   useEffect(() => {
-    socket.on(
+    socket?.on(
       "conversation:created",
       (data: { conversation: Conversation; self: SafeUser }) => {
         dispatch(addConversations(data.conversation));
@@ -98,7 +98,7 @@ export default function SideBar({ activeGroup }: SideBarProps) {
     );
 
     return () => {
-      socket.off("conversation:created");
+      socket?.off("conversation:created");
     };
   }, [socket]);
 

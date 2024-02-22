@@ -13,7 +13,7 @@ import { Conversation, SafeUser } from "./types/conversation";
 import { ActiveChatContext } from "./utils/context/activeChatContext";
 import AuthContext from "./utils/context/authContext";
 import { store } from "./utils/store";
-import { SocketContext, socket } from "./utils/context/socketContext";
+import { SocketProvider } from "./utils/context/socketContext";
 
 function App() {
   return (
@@ -106,13 +106,13 @@ function AppWithProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <SocketContext.Provider value={{ socket }}>
+        <SocketProvider>
           <AuthContext.Provider value={{ user, setUser }}>
             <ActiveChatContext.Provider value={{ activeChat, setActiveChat }}>
               {children}
             </ActiveChatContext.Provider>
           </AuthContext.Provider>
-        </SocketContext.Provider>
+        </SocketProvider>
       </Provider>
     </QueryClientProvider>
   );
