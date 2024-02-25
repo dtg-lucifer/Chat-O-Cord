@@ -39,8 +39,7 @@ export default function ChatSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
-  const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
-  const [localMsgState, setLocalMsgState] = useState<[{ convId: string, messages: Message[] }] | []>([])
+  const [localMsgState, setLocalMsgState] = useState<{ convId: string; messages: Message[]; }[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [imagePreviewSrc, setImagePreviewSrc] = useState<string>("");
   const [activeAssetToView, setActiveAssetToView] = useState<string>("");
@@ -115,28 +114,68 @@ export default function ChatSection() {
       formData.append("content", messageToBeSent);
       formData.append("id", activeChat!.id);
       const { data: messageFromApi } = await createMessageWithAsset(formData);
-      setMessagesLocal((prevMsgs) => [messageFromApi.message, ...prevMsgs]);
+
+      // Update local message state for attachments
+      setLocalMsgState((prev) => {
+        const foundIndex = prev.findIndex(
+          (state) => state.convId === messageFromApi.conversationId
+        );
+        if (foundIndex !== -1) {
+          const updatedState = [...prev];
+          updatedState[foundIndex] = {
+            convId: updatedState[foundIndex].convId,
+            messages: [messageFromApi, ...updatedState[foundIndex].messages],
+          };
+          return updatedState;
+        } else {
+          return [
+            ...prev,
+            { convId: messageFromApi.conversationId, messages: [messageFromApi] },
+          ];
+        }
+      });
+
       setFile(null);
       setImagePreviewSrc("");
       socket?.emit("message:create", {
-        message: messageFromApi.message,
+        message: messageFromApi,
         authorId: user?.id,
         convId: activeChat?.id,
       });
       socket?.emit("attachment:create", {
         convId: activeChat?.id,
-        attachmentSrc: messageFromApi.secureUrl,
-        message: messageFromApi.message,
+        attachmentSrc: messageFromApi.attachmentSrc!,
+        message: messageFromApi,
       });
       return;
     }
 
+    // Handle sending text messages
     const { data: messageFromApi } = await createMessage({
       content: messageToSend!,
       id: activeChat!.id,
     });
 
-    setMessagesLocal((prevMsgs) => [messageFromApi, ...prevMsgs]);
+
+    // Update local message state for text messages
+    setLocalMsgState((prev) => {
+      const foundIndex = prev.findIndex(
+        (state) => state.convId === messageFromApi.conversationId
+      );
+      if (foundIndex !== -1) {
+        const updatedState = [...prev];
+        updatedState[foundIndex] = {
+          ...updatedState[foundIndex],
+          messages: [messageFromApi, ...updatedState[foundIndex].messages],
+        };
+        return updatedState;
+      } else {
+        return [
+          ...prev,
+          { convId: messageFromApi.conversationId, messages: [messageFromApi] },
+        ];
+      }
+    });
 
     socket?.emit("message:create", {
       message: messageFromApi,
@@ -164,7 +203,7 @@ export default function ChatSection() {
       dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
         .unwrap()
         .then((data) => {
-          setMessagesLocal(data.data.messages);
+          setLocalMsgState([{ convId: data.data.id, messages: data.data.messages }])
         });
     }
   }, [activeChat, dispatch]);
@@ -187,19 +226,26 @@ export default function ChatSection() {
           );
           return;
         }
-        dispatch(
-          addMessages({
-            convId: data.convId,
-            message: data.message,
-          })
-        );
-        dispatch(
-          updateLastMessage({
-            id: data.convId,
-            lastMessageContent: data.message.content,
-          })
-        );
-        setMessagesLocal((prevMsgs) => [data.message, ...prevMsgs]);
+
+        //* Update localMsgState
+        setLocalMsgState((prev) => {
+          const foundIndex = prev.findIndex(
+            (state) => state.convId === data.convId
+          );
+          if (foundIndex !== -1) {
+            const updatedState = [...prev];
+            updatedState[foundIndex] = {
+              ...updatedState[foundIndex],
+              messages: [data.message, ...updatedState[foundIndex].messages],
+            };
+            return updatedState;
+          } else {
+            return [
+              ...prev,
+              { convId: data.convId, messages: [data.message] }
+            ];
+          }
+        });
       }
     );
 
@@ -211,14 +257,7 @@ export default function ChatSection() {
         message: Message;
         attachmentSrc: string;
       }) => {
-        setMessagesLocal((prevMsgs) => {
-          return prevMsgs.map((msg) => {
-            if (msg.attachmentSrc) return msg;
-            if (msg.id === data.message.id)
-              return { ...msg, attachmentSrc: data.attachmentSrc };
-            return msg;
-          });
-        });
+        //TODO:  IMPLEMENT
       }
     );
 
@@ -291,120 +330,123 @@ export default function ChatSection() {
             </div>
             <span>Loading up your messages !!</span>
           </ChatMessagesStatus>
-        ) : messagesLocal.length === 0 ? (
+        ) : localMsgState.length === 0 ? (
           <ChatMessagesStatus>
             <span>
-              Seems like no ones here for a while, add something up here...
+              Seems like no one's here for a while, add something up here...
             </span>
           </ChatMessagesStatus>
         ) : (
-          messagesLocal.map((msg, i, msgs) => {
-            return (
-              <MessageCVA
-                variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
-                key={msg?.id}
-                style={{
-                  marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
-                    ? ""
-                    : "0.8rem",
-                }}
-              >
-                {msg.author.profilePic ? (
-                  <img
-                    src={msg.author.profilePic}
-                    className="w-10 rounded-full aspect-square"
-                    alt="profle_pic"
+          localMsgState.map(state => {
+            if (state.convId === activeChat!.id) {
+              return state.messages.map((msg, i, msgs) => {
+                return (
+                  <MessageCVA
+                    variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
+                    key={msg?.id}
                     style={{
-                      display: showTimeStampAndAvatar(msg, i, msgs)
+                      marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
                         ? ""
-                        : "none",
+                        : "0.8rem",
                     }}
-                  />
-                ) : (
-                  <img
-                    src="/BLANK.jpeg"
-                    className="w-10 rounded-full aspect-square"
-                    alt="profile_pic"
-                    style={{
-                      display: showTimeStampAndAvatar(msg, i, msgs)
-                        ? ""
-                        : "none",
-                    }}
-                  />
-                )}
-                <div className="flex-1">
-                  <h3
-                    style={{
-                      display: showTimeStampAndAvatar(msg, i, msgs)
-                        ? ""
-                        : "none",
-                    }}
-                    className="font-semibold text-[16px]"
                   >
-                    {msg.author.userName}
-                  </h3>
-                  <div>
-                    {msg.attachmentSrc && (
+                    {msg.author.profilePic ? (
                       <img
-                        // src={getSrc(msg)}
-                        src={msg.attachmentSrc}
-                        alt="attachment"
-                        className="max-w-[450px] max-h-[400px] rounded-md lazyload cursor-pointer"
-                        loading="lazy"
-                        onClick={() => {
-                          setActiveAssetToView(msg.attachmentSrc!);
-                          setActiveImage(true);
-                        }}
+                        src={msg.author.profilePic}
+                        className="w-10 rounded-full aspect-square"
+                        alt="profle_pic"
                         style={{
-                          marginInlineStart: showTimeStampAndAvatar(
-                            msg,
-                            i,
-                            msgs
-                          )
+                          display: showTimeStampAndAvatar(msg, i, msgs)
                             ? ""
-                            : "3rem",
-                          marginBlockStart: !showTimeStampAndAvatar(
-                            msg,
-                            i,
-                            msgs
-                          )
+                            : "none",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="/BLANK.jpeg"
+                        className="w-10 rounded-full aspect-square"
+                        alt="profile_pic"
+                        style={{
+                          display: showTimeStampAndAvatar(msg, i, msgs)
                             ? ""
-                            : "0.8rem",
+                            : "none",
                         }}
                       />
                     )}
+                    <div className="flex-1">
+                      <h3
+                        style={{
+                          display: showTimeStampAndAvatar(msg, i, msgs)
+                            ? ""
+                            : "none",
+                        }}
+                        className="font-semibold text-[16px]"
+                      >
+                        {msg.author.userName}
+                      </h3>
+                      <div>
+                        {msg.attachmentSrc && (
+                          <img
+                            src={msg.attachmentSrc}
+                            alt="attachment"
+                            className="max-w-[450px] max-h-[400px] rounded-md lazyload cursor-pointer"
+                            loading="lazy"
+                            onClick={() => {
+                              setActiveAssetToView(msg.attachmentSrc!);
+                              setActiveImage(true);
+                            }}
+                            style={{
+                              marginInlineStart: showTimeStampAndAvatar(
+                                msg,
+                                i,
+                                msgs
+                              )
+                                ? ""
+                                : "3rem",
+                              marginBlockStart: !showTimeStampAndAvatar(
+                                msg,
+                                i,
+                                msgs
+                              )
+                                ? ""
+                                : "0.8rem",
+                            }}
+                          />
+                        )}
+                        <p
+                          style={{
+                            marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
+                              ? ""
+                              : "3rem",
+                            wordWrap: "break-word",
+                            wordBreak: "break-all",
+                            whiteSpace: "pre-wrap",
+                          }}
+                          className="text-sm text-[#c5c5c5]"
+                        >
+                          {msg.content === "📷 𝔸𝕥𝕥𝕒𝕔𝕙𝕞𝕖𝕟𝕥" ? "" : msg.content}
+                        </p>
+                      </div>
+                    </div>
                     <p
                       style={{
-                        marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
-                          ? ""
-                          : "3rem",
-                        wordWrap: "break-word",
-                        wordBreak: "break-all",
-                        whiteSpace: "pre-wrap",
+                        display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
                       }}
-                      className=" text-sm text-[#c5c5c5]"
+                      className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
                     >
-                      {msg.content === "📷 𝔸𝕥𝕥𝕒𝕔𝕙𝕞𝕖𝕟𝕥" ? "" : msg.content}
+                      {formatDistance(new Date(msg.createdAt), new Date(), {
+                        addSuffix: true,
+                      })
+                        .charAt(0)
+                        .toUpperCase() +
+                        formatDistance(new Date(msg.createdAt), new Date(), {
+                          addSuffix: true,
+                        }).slice(1)}
                     </p>
-                  </div>
-                </div>
-                <p
-                  style={{
-                    display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
-                  }}
-                  className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
-                >
-                  {formatDistance(new Date(msg.createdAt), new Date(), {
-                    addSuffix: true,
-                  })
-                    .charAt(0)
-                    .toUpperCase() +
-                    formatDistance(new Date(msg.createdAt), new Date(), {
-                      addSuffix: true,
-                    }).slice(1)}
-                </p>
-              </MessageCVA>
-            );
+                  </MessageCVA>
+                );
+              });
+            }
           })
         )}
       </ConversationWrapper>
