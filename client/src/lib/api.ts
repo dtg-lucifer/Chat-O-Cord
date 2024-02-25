@@ -124,11 +124,7 @@ export const createMessage = async (data: { content: string; id: string }) => {
 };
 
 export const createMessageWithAsset = async (formData: FormData) => {
-  return await axios.post<{
-    message: Message;
-    attachment: Attachment;
-    secureUrl: string;
-  }>(`${process.env.REACT_APP_PUBLIC_API_URL}/message/asset`, formData, {
+  return await axios.post<Message>(`${process.env.REACT_APP_PUBLIC_API_URL}/message/asset`, formData, {
     withCredentials: true,
     headers: {
       "Content-Type": "multipart/form-data",
