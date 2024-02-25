@@ -40,6 +40,7 @@ export default function ChatSection() {
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
   const [messagesLocal, setMessagesLocal] = useState<Message[]>([]);
+  const [localMsgState, setLocalMsgState] = useState<[{ convId: string, messages: Message[] }] | []>([])
   const [file, setFile] = useState<File | null>(null);
   const [imagePreviewSrc, setImagePreviewSrc] = useState<string>("");
   const [activeAssetToView, setActiveAssetToView] = useState<string>("");
@@ -154,7 +155,7 @@ export default function ChatSection() {
     });
 
     return () => {
-      window.removeEventListener("keydown", () => {});
+      window.removeEventListener("keydown", () => { });
     };
   }, []);
 
@@ -230,10 +231,10 @@ export default function ChatSection() {
     });
 
     return () => {
-      socket?.off("attachment:received", () => {});
-      socket?.off("message:received", () => {});
-      socket?.off("typing:started", () => {});
-      socket?.off("typing:stopped", () => {});
+      socket?.off("attachment:received", () => { });
+      socket?.off("message:received", () => { });
+      socket?.off("typing:started", () => { });
+      socket?.off("typing:stopped", () => { });
     };
   }, [socket]);
 
