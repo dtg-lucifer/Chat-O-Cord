@@ -14,13 +14,14 @@ import { ActiveChatContext } from "./utils/context/activeChatContext";
 import AuthContext from "./utils/context/authContext";
 import { store } from "./utils/store";
 import { SocketProvider } from "./utils/context/socketContext";
+import HomePage from "./pages/home";
 
 function App() {
   return (
     <AppWithProviders>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<>Home</>} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/auth">
             <Route
               path="login"

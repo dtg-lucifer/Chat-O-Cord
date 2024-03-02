@@ -110,14 +110,14 @@ export default function ChatSection() {
       return;
     }
 
-    // Handle sending text messages
+    //* Handle sending text messages
     const { data: messageFromApi } = await createMessage({
       content: messageToSend!,
       id: activeChat!.id,
     });
 
 
-    // Update local message state for text messages
+    //* Update local message state for text messages
     setLocalMsgState((prev) => setLocalMsgStateHelper(messageFromApi, prev));
 
     socket?.emit("message:create", {
@@ -183,7 +183,7 @@ export default function ChatSection() {
         message: Message;
         attachmentSrc: string;
       }) => {
-        //TODO:  IMPLEMENT
+        // TODO:  IMPLEMENT
       }
     );
 
