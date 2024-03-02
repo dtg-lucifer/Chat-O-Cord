@@ -59,7 +59,7 @@ app.use(`${BASE_URL}/`, AuthGuard);
 
 //! SOCKET.IO
 io.on("connection", (socket) => {
-  // @ts-ignore
+  // @ts-ignore 
   const connectedUser: User = socket.request.session?.user;
   console.log("Socket connected", { id: socket.id });
 
