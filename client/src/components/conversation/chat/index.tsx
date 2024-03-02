@@ -33,6 +33,7 @@ import classNames from "classnames";
 import { useBufferToImageSrc } from "../../../utils/hooks/useBufferToImageSrc";
 import { toast } from "sonner";
 import { useSocket } from "../../../utils/hooks/useSocket";
+import { setLocalMsgStateHelper, showTimeStampAndAvatar } from "../../../lib/conversationsUtils";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -66,29 +67,6 @@ export default function ChatSection() {
       ? activeChat?.creator
       : activeChat?.recipient;
 
-  const timeStamp = (msg: Message): string => {
-    return formatRelative(new Date(msg.createdAt), new Date());
-  };
-
-  const showTimeStampAndAvatar = (
-    msg: Message,
-    i: number,
-    msgs: Message[]
-  ): boolean => {
-    if (i === msgs.length - 1) return true;
-
-    const index = i === msgs.length - 1 ? i : i + 1;
-
-    if (msg.author.id !== msgs[index].author.id) return true;
-
-    if (
-      msg.author.id === msgs[index].author.id &&
-      timeStamp(msg) === timeStamp(msgs[index])
-    )
-      return false;
-
-    return true;
-  };
 
   /**
    *! ---- NOTE ----
@@ -115,25 +93,7 @@ export default function ChatSection() {
       formData.append("id", activeChat!.id);
       const { data: messageFromApi } = await createMessageWithAsset(formData);
 
-      // Update local message state for attachments
-      setLocalMsgState((prev) => {
-        const foundIndex = prev.findIndex(
-          (state) => state.convId === messageFromApi.conversationId
-        );
-        if (foundIndex !== -1) {
-          const updatedState = [...prev];
-          updatedState[foundIndex] = {
-            convId: updatedState[foundIndex].convId,
-            messages: [messageFromApi, ...updatedState[foundIndex].messages],
-          };
-          return updatedState;
-        } else {
-          return [
-            ...prev,
-            { convId: messageFromApi.conversationId, messages: [messageFromApi] },
-          ];
-        }
-      });
+      setLocalMsgState((prev) => setLocalMsgStateHelper(messageFromApi, prev));
 
       setFile(null);
       setImagePreviewSrc("");
@@ -150,32 +110,15 @@ export default function ChatSection() {
       return;
     }
 
-    // Handle sending text messages
+    //* Handle sending text messages
     const { data: messageFromApi } = await createMessage({
       content: messageToSend!,
       id: activeChat!.id,
     });
 
 
-    // Update local message state for text messages
-    setLocalMsgState((prev) => {
-      const foundIndex = prev.findIndex(
-        (state) => state.convId === messageFromApi.conversationId
-      );
-      if (foundIndex !== -1) {
-        const updatedState = [...prev];
-        updatedState[foundIndex] = {
-          ...updatedState[foundIndex],
-          messages: [messageFromApi, ...updatedState[foundIndex].messages],
-        };
-        return updatedState;
-      } else {
-        return [
-          ...prev,
-          { convId: messageFromApi.conversationId, messages: [messageFromApi] },
-        ];
-      }
-    });
+    //* Update local message state for text messages
+    setLocalMsgState((prev) => setLocalMsgStateHelper(messageFromApi, prev));
 
     socket?.emit("message:create", {
       message: messageFromApi,
@@ -228,24 +171,7 @@ export default function ChatSection() {
         }
 
         //* Update localMsgState
-        setLocalMsgState((prev) => {
-          const foundIndex = prev.findIndex(
-            (state) => state.convId === data.convId
-          );
-          if (foundIndex !== -1) {
-            const updatedState = [...prev];
-            updatedState[foundIndex] = {
-              ...updatedState[foundIndex],
-              messages: [data.message, ...updatedState[foundIndex].messages],
-            };
-            return updatedState;
-          } else {
-            return [
-              ...prev,
-              { convId: data.convId, messages: [data.message] }
-            ];
-          }
-        });
+        setLocalMsgState((prev) => setLocalMsgStateHelper(data.message, prev));
       }
     );
 
@@ -257,7 +183,7 @@ export default function ChatSection() {
         message: Message;
         attachmentSrc: string;
       }) => {
-        //TODO:  IMPLEMENT
+        // TODO:  IMPLEMENT
       }
     );
 

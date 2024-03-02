@@ -21,6 +21,7 @@ import { setUserActiveStatusToggle } from "./user/user.service";
 import { GatewaySession } from "./websocket/session.gateway";
 import { cloudinaryConfig } from "./lib/cloudinary";
 import { getConversation } from "./conversations/conversation.service";
+import { conversationCreate, conversationJoin } from "./websocket/conversation.gateway";
 
 dotenv.config();
 
@@ -58,7 +59,7 @@ app.use(`${BASE_URL}/`, AuthGuard);
 
 //! SOCKET.IO
 io.on("connection", (socket) => {
-  // @ts-ignore
+  // @ts-ignore 
   const connectedUser: User = socket.request.session?.user;
   console.log("Socket connected", { id: socket.id });
 
@@ -74,34 +75,15 @@ io.on("connection", (socket) => {
 
   socket.on(
     "conversation:join",
-    ({
-      convId,
-      userId,
-      userName,
-    }: {
-      convId: string;
-      userId: string;
-      userName: string;
-    }) => {
-      socket.join(convId);
-      io.to(convId).emit("conversation:joined", { convId, userId, userName });
+    (data) => {
+      conversationJoin(io, socket, { ...data });
     }
   );
 
   socket.on(
     "conversation:create",
-    (data: { conversation: Conversation; self: User }) => {
-      const { conversation, self } = data;
-      const userSocket =
-        SOCKET_SESSION.getSocket(conversation.recipientId) || null;
-      socket.join(conversation.id);
-      if (userSocket) {
-        userSocket.join(conversation.id);
-      }
-      io.to(conversation.id).emit("conversation:created", {
-        conversation,
-        self,
-      });
+    (data) => {
+      conversationCreate(SOCKET_SESSION, socket, io, data);
     }
   );
 
