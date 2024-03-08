@@ -21,26 +21,31 @@ import { ActiveChatContext } from "../../../utils/context/activeChatContext";
 import AuthContext from "../../../utils/context/authContext";
 import { Message } from "../../../types/conversation";
 import {
-  addMessages,
   getMessagesAsync,
 } from "../../../utils/store/slices/messages.slice";
 import { AppDispatch, RootState } from "../../../utils/store";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistance, formatRelative } from "date-fns";
+import { formatDistance } from "date-fns";
 import { createMessage, createMessageWithAsset } from "../../../lib/api";
 import { updateLastMessage } from "../../../utils/store/slices/conversation.slice";
 import classNames from "classnames";
 import { useBufferToImageSrc } from "../../../utils/hooks/useBufferToImageSrc";
 import { toast } from "sonner";
 import { useSocket } from "../../../utils/hooks/useSocket";
-import { setLocalMsgStateHelper, showTimeStampAndAvatar } from "../../../lib/conversationsUtils";
+import {
+  setLocalMsgStateHelper,
+  showTimeStampAndAvatar,
+} from "../../../lib/conversationsUtils";
 
 export default function ChatSection() {
   const emojiPanelRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [message, setMessage] = useState<string>("");
-  const [localMsgState, setLocalMsgState] = useState<{ convId: string; messages: Message[]; }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [localMsgState, setLocalMsgState] = useState<
+    { convId: string; messages: Message[] }[]
+  >([]);
   const [file, setFile] = useState<File | null>(null);
   const [imagePreviewSrc, setImagePreviewSrc] = useState<string>("");
   const [activeAssetToView, setActiveAssetToView] = useState<string>("");
@@ -67,7 +72,6 @@ export default function ChatSection() {
       ? activeChat?.creator
       : activeChat?.recipient;
 
-
   /**
    *! ---- NOTE ----
    *! MAKE THIS FUNCTION WITH REACT-QUERY
@@ -93,7 +97,29 @@ export default function ChatSection() {
       formData.append("id", activeChat!.id);
       const { data: messageFromApi } = await createMessageWithAsset(formData);
 
-      setLocalMsgState((prev) => setLocalMsgStateHelper(messageFromApi, prev));
+      setLocalMsgState((prev) => {
+        const foundIndex = prev.findIndex(
+          (state) => state.convId === messageFromApi.conversationId
+        );
+        if (foundIndex !== -1) {
+          const updatedState = [...prev];
+          updatedState[foundIndex] = {
+            convId: updatedState[foundIndex].convId,
+            messages: [messageFromApi, ...updatedState[foundIndex].messages],
+          };
+          console.log("added the asset");
+          return updatedState;
+        } else {
+          console.log("added the asset");
+          return [
+            ...prev,
+            {
+              convId: messageFromApi.conversationId,
+              messages: [messageFromApi],
+            },
+          ];
+        }
+      });
 
       setFile(null);
       setImagePreviewSrc("");
@@ -116,7 +142,6 @@ export default function ChatSection() {
       id: activeChat!.id,
     });
 
-
     //* Update local message state for text messages
     setLocalMsgState((prev) => setLocalMsgStateHelper(messageFromApi, prev));
 
@@ -137,7 +162,7 @@ export default function ChatSection() {
     });
 
     return () => {
-      window.removeEventListener("keydown", () => { });
+      window.removeEventListener("keydown", () => {});
     };
   }, []);
 
@@ -146,7 +171,9 @@ export default function ChatSection() {
       dispatch(getMessagesAsync({ id: activeChat.id, limit: 100, page: 1 }))
         .unwrap()
         .then((data) => {
-          setLocalMsgState([{ convId: data.data.id, messages: data.data.messages }])
+          setLocalMsgState([
+            { convId: data.data.id, messages: data.data.messages },
+          ]);
         });
     }
   }, [activeChat, dispatch]);
@@ -154,12 +181,7 @@ export default function ChatSection() {
   useEffect(() => {
     socket?.on(
       "message:received",
-      (data: {
-        convId: string;
-        message: Message;
-        authorId: string;
-        attachmentSrc: string;
-      }) => {
+      (data: { convId: string; message: Message; authorId: string }) => {
         if (data.authorId === user?.id) {
           dispatch(
             updateLastMessage({
@@ -181,9 +203,19 @@ export default function ChatSection() {
         convId: string;
         secureUrl: string;
         message: Message;
-        attachmentSrc: string;
       }) => {
-        // TODO:  IMPLEMENT
+        if (data.convId === activeChat?.id) {
+          dispatch(
+            updateLastMessage({
+              id: data.convId,
+              lastMessageContent: data.message.content,
+            })
+          );
+          return;
+        }
+
+        //* Update localMsgState
+        setLocalMsgState((prev) => setLocalMsgStateHelper(data.message, prev));
       }
     );
 
@@ -196,10 +228,10 @@ export default function ChatSection() {
     });
 
     return () => {
-      socket?.off("attachment:received", () => { });
-      socket?.off("message:received", () => { });
-      socket?.off("typing:started", () => { });
-      socket?.off("typing:stopped", () => { });
+      socket?.off("attachment:received", () => {});
+      socket?.off("message:received", () => {});
+      socket?.off("typing:started", () => {});
+      socket?.off("typing:stopped", () => {});
     };
   }, [socket]);
 
@@ -226,7 +258,7 @@ export default function ChatSection() {
           <img
             src={activeAssetToView}
             alt="attachment"
-            className={classNames("w-full h-full", {
+            className={classNames("w-full min-h-full", "", {
               hidden: !activeImage,
               block: activeImage,
             })}
@@ -263,18 +295,21 @@ export default function ChatSection() {
             </span>
           </ChatMessagesStatus>
         ) : (
-          localMsgState.map(state => {
+          localMsgState.map((state) => {
             if (state.convId === activeChat!.id) {
               return state.messages.map((msg, i, msgs) => {
                 return (
                   <MessageCVA
-                    variant={currentChatUser?.profilePic ? "withImg" : "withoutImg"}
+                    variant={
+                      currentChatUser?.profilePic ? "withImg" : "withoutImg"
+                    }
                     key={msg?.id}
                     style={{
                       marginBlockStart: !showTimeStampAndAvatar(msg, i, msgs)
                         ? ""
                         : "0.8rem",
                     }}
+                    ref={null}
                   >
                     {msg.author.profilePic ? (
                       <img
@@ -315,7 +350,7 @@ export default function ChatSection() {
                           <img
                             src={msg.attachmentSrc}
                             alt="attachment"
-                            className="max-w-[450px] max-h-[400px] rounded-md lazyload cursor-pointer"
+                            className="max-w-[450px] max-h-[400px] rounded-md lazyload cursor-pointer my-1"
                             loading="lazy"
                             onClick={() => {
                               setActiveAssetToView(msg.attachmentSrc!);
@@ -341,7 +376,11 @@ export default function ChatSection() {
                         )}
                         <p
                           style={{
-                            marginInlineStart: showTimeStampAndAvatar(msg, i, msgs)
+                            marginInlineStart: showTimeStampAndAvatar(
+                              msg,
+                              i,
+                              msgs
+                            )
                               ? ""
                               : "3rem",
                             wordWrap: "break-word",
@@ -356,7 +395,9 @@ export default function ChatSection() {
                     </div>
                     <p
                       style={{
-                        display: showTimeStampAndAvatar(msg, i, msgs) ? "" : "none",
+                        display: showTimeStampAndAvatar(msg, i, msgs)
+                          ? ""
+                          : "none",
                       }}
                       className="text-xs text-[#555555] self-start mt-[5px] ml-[3rem]"
                     >

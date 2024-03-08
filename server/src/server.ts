@@ -9,7 +9,7 @@ import {
   sessionMiddleware,
   wrapper,
 } from "./lib/session.server";
-import { Conversation, User, Message, Attachment } from "@prisma/client";
+import { User, Message } from "@prisma/client";
 
 import { AuthGuard } from "./middleware/middleware.server";
 import { authRouter } from "./auth/auth.router";

@@ -1,6 +1,6 @@
 import { getConversationById } from "../conversations/conversation.service";
 import { v2 as cloudinary } from "cloudinary";
-import { bufferToSrc, getDataUri } from "../lib/utils";
+import { getDataUri } from "../lib/utils";
 import { CreateMessageDTO } from "./dto/message.dto";
 
 export const getMessages = async (id: string, limit: number) => {
@@ -109,7 +109,6 @@ export const createMessageWithAsset = async (
     resource_type: "auto",
     use_asset_folder_as_public_id_prefix: true,
   });
-  const attachmentSrc = bufferToSrc()(file.buffer, file.mimetype);
 
   const attachment = await __db?.attachment.create({
     data: {
@@ -123,9 +122,6 @@ export const createMessageWithAsset = async (
         },
       },
     },
-    include: {
-      message: true,
-    },
   });
 
   await __db?.message.update({
@@ -137,5 +133,5 @@ export const createMessageWithAsset = async (
     },
   });
 
-  return { message, attachment, secureUrl: secure_url, attachmentSrc };
+  return { message, attachment, secureUrl: secure_url };
 };
