@@ -94,6 +94,7 @@ interface MessageProps
   extends AllHTMLAttributes<HTMLDivElement>,
     VariantProps<typeof messageCVA> {
   children: React.ReactNode[];
+  ref: React.RefObject<HTMLDivElement> | null;
 }
 
 export const TextField = ({ variant, size, ...props }: TextFieldProps) => {
@@ -108,9 +109,9 @@ export const Button = ({ variant, children, ...props }: ButtonProps) => {
   );
 };
 
-export const Message = ({ variant, children, ...props }: MessageProps) => {
+export const Message = ({ variant, children, ref, ...props }: MessageProps) => {
   return (
-    <div className={messageCVA({ variant })} {...props}>
+    <div className={messageCVA({ variant })} ref={ref} {...props}>
       {children.map((child, index) => (
         <React.Fragment key={index}>{child}</React.Fragment>
       ))}
